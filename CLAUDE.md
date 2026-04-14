@@ -221,23 +221,34 @@ If all four are answered clearly — the structure is correct.
 
 ## Stack
 
-**Frontend**
-- Next.js (App Router)
+**Runtime**
+- Next.js 16 (App Router)
+- React 19
 - TypeScript
-- Tailwind CSS
-- shadcn/ui
-- Framer Motion
-- Lucide React
 
-**Deploy:** Render
+**Styling**
+- Tailwind CSS v4 (`@theme inline` for design tokens)
+- Syne — display/headline font (`@fontsource/syne`)
+- DM Mono — technical/UI font (`@fontsource/dm-mono`)
+- System sans-serif — body text
 
-**Forms (v1):** Next.js Server Actions or API route → email
+**UI & Motion**
+- Framer Motion — entrance animations, SVG draw-in
+- Lucide React — icons
+- shadcn/ui — add when a component is needed, not upfront
 
-**Data (v1):** no database — content hardcoded in files
+**Forms (v1)**
+- Next.js Server Actions or API route → email
 
-**Later:**
+**Data (v1)**
+- No database — content hardcoded in files
+
+**Deploy**
+- Render (confirmed, no Vercel)
+
+**Future additions (not in scope yet)**
 - Supabase or PostgreSQL + Prisma
-- File uploads
+- File uploads (Uploadthing or similar)
 - Admin panel
 - Order/request tracking
 
@@ -355,8 +366,10 @@ No shadow. No scale on click. CSS transitions only on hover (`duration-150`).
 
 ## Status
 
-- Stack: Next.js + TS + Tailwind + shadcn/ui + Framer Motion — confirmed
-- Structure: defined (see Site Structure above)
-- Language: Norwegian (primary)
-- Hero section: built (`src/components/hero/`)
+- Stack: confirmed and installed (see Stack above)
+- Deploy target: Render
+- Language: English-first — Norwegian localisation added later
+- Hero section: **built and locked** — `src/components/hero/Hero.tsx` + `TechnicalGraphic.tsx`
+- Global UI system: defined (see above)
 - Next step: build Navbar
+- Build approach: one section at a time — spec first, then implement, then lock
