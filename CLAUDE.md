@@ -243,10 +243,120 @@ If all four are answered clearly — the structure is correct.
 
 ---
 
+## Global UI System
+
+### Container & Layout
+- Max width: `max-w-7xl` (1280px) for all sections
+- Narrow content (text, forms): `max-w-[800px]`
+- Padding: `px-6 lg:px-8`
+- Layout system: CSS Grid for section splits; Flexbox only for inline alignment
+- Standard splits: 55/45, 50/50, 1/3+2/3, full-width
+
+### Section Spacing
+- Default: `py-24 lg:py-32`
+- Tight / related sections: `py-16 lg:py-24`
+- Intra-section element gaps: `mb-4` / `mb-6` / `mb-10` — same tokens as Hero
+- No ad-hoc spacing values
+
+### Border Rules
+- Always `1px solid`
+- Color: `--iris-dusk` at `15–50%` opacity (structural: 20–35%, interactive hover: 50–70%)
+- No thick borders, no colored accent borders
+
+### Radius Rules
+- Buttons, cards, inputs: `rounded-sm` (2px)
+- Tags / badges: `rounded-full` only for small inline labels
+- No `rounded-lg` or `rounded-xl` on structural elements
+
+### Button System
+| Variant | Style |
+|---|---|
+| Primary | `bg-cold-pearl text-ink-shadow h-12 px-6 rounded-sm font-technical text-[13px] tracking-[0.06em]` — hover dims bg |
+| Secondary | `border border-iris-dusk text-lavender-smoke` — hover: `border-lavender-smoke text-cold-pearl` |
+| Tertiary | No border, no bg, `text-lavender-smoke` — hover: `text-cold-pearl` |
+
+No shadow. No scale on click. CSS transitions only on hover (`duration-150`).
+
+### Heading Scale
+| Level | Size | Font | Weight | Leading | Tracking |
+|---|---|---|---|---|---|
+| Display | `clamp(42px,6vw,72px)` | Syne | 700 | 1.05 | −0.02em |
+| H1 | `clamp(32px,4vw,52px)` | Syne | 700 | 1.08 | −0.02em |
+| H2 | `clamp(24px,3vw,40px)` | Syne | 700 | 1.10 | −0.01em |
+| H3 | `20–24px` | Syne | 600 | 1.20 | 0 |
+| H4 / eyebrow | `11–13px` | DM Mono | 500 | — | +0.12–0.18em |
+
+### Body Text Scale
+| Context | Size | Leading |
+|---|---|---|
+| Large body | 17px | 1.70 |
+| Default body | 15–16px | 1.65 |
+| Caption / small | 13px | 1.50 |
+| Label / eyebrow | 11px, DM Mono, uppercase | — |
+
+### Card Style
+- Border: `1px solid iris-dusk/25–30%`
+- Background: transparent — no elevation, no shadow
+- Padding: `p-6`
+- Radius: `rounded-sm` or none
+- Hover: border opacity increases to `50–60%`
+
+### Input Style
+- Height: `h-12`; radius: `rounded-sm`
+- Border: `1px solid iris-dusk/40%`; bg: transparent
+- Text: cold-pearl; placeholder: `lavender-smoke/50%`
+- Focus: border shifts to lavender-smoke — no glow, no shadow
+- Label: `11px DM Mono uppercase tracking-[0.12em]`
+
+### Dividers
+- `1px solid iris-dusk/20%`
+- Use only between major content blocks
+- Prefer generous spacing over drawn lines
+
+### Dark Theme
+- Background: `#1E2028` always
+- Text: Cold Pearl (primary) → Lavender Smoke (secondary) → Iris Dusk (muted/borders)
+- No pure white, no pure black, no light mode in v1
+
+### Motion Rules
+- Scroll entrance: `whileInView` + `once: true` + `viewport={{ margin: "-80px" }}`
+- Entrance animation: `opacity 0→1`, `y -12→0`
+- Easing: `[0.16, 1, 0.3, 1]` everywhere
+- Duration: `0.45–0.6s`; stagger: `0.08–0.12s`
+- Hover: CSS `transition` only, `150–200ms` — no Framer Motion on hover
+- No looping, no bounce, no decorative float/pulse
+
+---
+
+## Navbar Spec
+
+**Structure:** `[Logo]` — `[Nav links]` — `[Request a Quote]`
+
+**Visual**
+- Height: `h-16` (64px); position: `sticky top-0 z-50`
+- Base: `bg-ink-shadow border-b border-iris-dusk/20`
+- On scroll: `backdrop-blur-sm` + border → `iris-dusk/35` (CSS transition, no Framer Motion)
+
+**Logo:** `PROTOGRID` — DM Mono, 13px, `tracking-[0.2em]`, Cold Pearl
+
+**Nav items:** DM Mono, 12px, `tracking-[0.08em]`, Lavender Smoke
+- Hover: Cold Pearl, `duration-150`
+- Active page: Cold Pearl, no underline or dot
+
+**CTA:** Primary button — "Request a Quote"
+
+**Mobile**
+- Hamburger: Lucide `Menu` 20px, replaces with `X` when open
+- Dropdown: full-width, same bg, items stacked with `h-12` touch targets
+- CTA: full-width at bottom of menu
+- Open/close: short `opacity + translateY` animation
+
+---
+
 ## Status
 
 - Stack: Next.js + TS + Tailwind + shadcn/ui + Framer Motion — confirmed
 - Structure: defined (see Site Structure above)
 - Language: Norwegian (primary)
 - Hero section: built (`src/components/hero/`)
-- Next step: build next section or wire up contact form
+- Next step: build Navbar
