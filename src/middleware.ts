@@ -5,17 +5,19 @@ export async function middleware(request: NextRequest) {
   const session = getSessionCookie(request);
   const { pathname } = request.nextUrl;
 
-  // Protect admin routes
-  if (pathname.startsWith("/admin")) {
+  // Protect admin and account routes
+  if (pathname.startsWith("/admin") || pathname.startsWith("/account")) {
     if (!session) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      const url = new URL("/login", request.url);
+      url.searchParams.set("from", pathname);
+      return NextResponse.redirect(url);
     }
   }
 
-  // Redirect authenticated users away from auth pages
+  // Redirect already-authenticated users away from auth pages
   if (pathname === "/login" || pathname === "/register") {
     if (session) {
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+      return NextResponse.redirect(new URL("/account", request.url));
     }
   }
 
@@ -23,5 +25,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/login", "/register"],
+  matcher: ["/admin/:path*", "/account/:path*", "/account", "/login", "/register"],
 };

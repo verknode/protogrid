@@ -1,14 +1,6 @@
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { redirect } from "next/navigation";
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="min-h-screen flex bg-ink-shadow">
-      <AdminSidebar />
-      <main className="flex-1 min-w-0 p-8">{children}</main>
-    </div>
-  );
+// This route group is superseded by /admin — redirect any stale hits
+export default function OldAdminLayout() {
+  redirect("/admin/dashboard");
 }

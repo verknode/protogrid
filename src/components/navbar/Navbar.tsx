@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { NavAuthButton } from "./NavAuthButton";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -72,13 +73,16 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Desktop CTA */}
-          <Link
-            href="/contact"
-            className="hidden lg:inline-flex items-center h-10 px-5 bg-cold-pearl text-ink-shadow text-[12px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-150 whitespace-nowrap shrink-0"
-          >
-            Request a Quote
-          </Link>
+          {/* Desktop CTA group */}
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
+            <NavAuthButton />
+            <Link
+              href="/contact"
+              className="inline-flex items-center h-10 px-5 bg-cold-pearl text-ink-shadow text-[12px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-150 whitespace-nowrap"
+            >
+              Request a Quote
+            </Link>
+          </div>
 
           {/* Mobile toggle */}
           <button
