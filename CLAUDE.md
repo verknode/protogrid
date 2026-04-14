@@ -193,9 +193,33 @@ If all four are answered clearly — the structure is correct.
 
 ---
 
+## Stack
+
+**Frontend**
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Framer Motion
+- Lucide React
+
+**Deploy:** Render
+
+**Forms (v1):** Next.js Server Actions or API route → email
+
+**Data (v1):** no database — content hardcoded in files
+
+**Later:**
+- Supabase or PostgreSQL + Prisma
+- File uploads
+- Admin panel
+- Order/request tracking
+
+---
+
 ## Status
 
-- Stack: not yet decided
-- Structure: defined (see above)
+- Stack: Next.js + TS + Tailwind + shadcn/ui + Framer Motion — confirmed
+- Structure: defined (see Site Structure above)
 - Language: Norwegian (primary)
-- Next step: decide stack, then build section by section
+- Next step: build Hero section
