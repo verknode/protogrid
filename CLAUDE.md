@@ -1,98 +1,101 @@
-# CLAUDE.md
+# CLAUDE.md — protogrid
 
-This file provides guidance for AI assistants (Claude Code and others) working in this repository.
+Working document for AI-assisted development. No fluff.
 
-## Project Overview
+---
 
-**protogrid** is a newly initialized repository. As of the initial commit, no source code, tooling, or framework has been established. This file will be updated as the project evolves.
+## Goal
 
-- **Repository**: `verknode/protogrid`
-- **Default branch**: `main`
+Build a high-quality product together, step by step.
+Priority: clean UI/UX, maintainable code, thoughtful structure.
+No rushing. No premature architecture.
 
-## Repository State
+---
 
-The repository currently contains:
-- `README.md` — minimal placeholder (`# protogrid`)
-- `CLAUDE.md` — this file
+## Principles of Changes
 
-No language, framework, build system, or directory structure has been chosen yet.
+- **Analyze before acting.** Read relevant files first. Understand the context.
+- **Minimal footprint.** Change only what the task requires. Nothing more.
+- **Don't break existing.** Before touching working code, understand why it works.
+- **Step by step.** Propose changes in small, reviewable increments.
+- **Ask if unclear.** Don't invent requirements. Clarify before generating.
 
-## Git Workflow
+---
 
-### Branching
+## Work Style
 
-- `main` is the protected default branch — do not push directly to it without explicit permission.
-- Feature work goes on dedicated branches (e.g., `feature/my-feature`, `fix/my-bugfix`, `claude/task-description`).
-- Always check the current branch before starting work: `git branch --show-current`.
+- Read the file before editing it.
+- One task = one focused change. Don't bundle unrelated fixes.
+- Don't add abstractions, helpers, or utilities "just in case."
+- Don't add error handling for impossible scenarios.
+- Don't refactor surrounding code unless the task explicitly requires it.
+- Don't add comments to code you didn't write.
+- Don't use emojis unless asked.
 
-### Commits
+---
 
-- Write clear, imperative commit messages (e.g., `Add user authentication module`).
-- Keep commits focused — one logical change per commit.
-- Never use `--no-verify` to skip hooks unless explicitly instructed.
-- Never amend published commits; create new ones instead.
+## Rules Before Generating Code
 
-### Pushing
+1. Confirm the task scope is clear.
+2. Read all relevant files.
+3. Identify what currently exists — don't duplicate.
+4. State the approach in one sentence before starting.
+5. If multiple approaches exist, name them briefly and ask which to take.
+6. If a change touches UI — consider visual consistency and UX impact before writing.
 
-```bash
-git push -u origin <branch-name>
+---
+
+## Working with UI/UX
+
+- Consistency first: spacing, typography, color, interaction patterns must feel unified.
+- Don't introduce new visual patterns without reason.
+- When building components: think about states (empty, loading, error, disabled, active).
+- Prefer accessible markup (semantic HTML, ARIA where needed).
+- Animations and transitions should serve the user, not decorate.
+- When reviewing UI code: read it as a user would experience it, not just as markup.
+
+---
+
+## Working with Skills
+
+Installed skills and when to use them:
+
+| Skill | Trigger | Use when |
+|---|---|---|
+| `graphify` | `/graphify` | You want to visualize the structure of the codebase, understand connections between modules, or explore a new part of the project |
+| `simplify` | `/simplify` | After writing code — review it for quality, redundancy, and efficiency |
+| `update-config` | — | Changing Claude Code settings, hooks, permissions, or env vars |
+
+To run graphify on the current directory:
+```
+/graphify .
 ```
 
-If a push fails due to a network error, retry up to 4 times with exponential backoff (2s, 4s, 8s, 16s).
+---
 
-### Pull Requests
+## Communication Format
 
-- Do not create a pull request unless the user explicitly requests one.
-- PR titles should be concise (under 70 characters).
-- Use the PR body for context, test plans, and links to related issues.
+- **Short answers by default.** Long explanations only when complexity demands it.
+- **Before acting:** one line describing what you're about to do.
+- **After acting:** one line summarizing what changed and why.
+- **If blocked:** say what's missing and what's needed to unblock.
+- **Proposals:** list options briefly, don't pick one without asking.
+- **No filler phrases.** ("Great question!", "Certainly!", "Of course!" — skip these.)
 
-## Development Guidelines (To Be Updated)
+---
 
-These sections are placeholders to be filled in once the project stack is chosen.
+## Git
 
-### Tech Stack
+- Branch: never push directly to `main`.
+- Commits: imperative, focused (`Add login form`, not `changes`).
+- No `git add -A` — stage files by name.
+- No `--no-verify` unless explicitly instructed.
+- Don't create PRs unless asked.
 
-_Not yet decided. Update this section when languages, frameworks, and tools are selected._
+---
 
-### Directory Structure
+## Status
 
-_Not yet established. Update this section with the layout once source directories are created._
-
-### Environment Setup
-
-_No environment variables or external services configured yet._
-
-### Running the Project
-
-_No runnable code exists yet. Add build/run/test instructions here._
-
-### Testing
-
-_No test framework chosen yet. Document test commands here when added._
-
-### Code Style & Linting
-
-_No linter or formatter configured yet. Document style rules and commands here when added._
-
-## AI Assistant Conventions
-
-When working in this repository:
-
-1. **Read before editing** — Always read a file before modifying it.
-2. **Minimal footprint** — Only create or change files directly required by the task. Do not generate extra documentation, helpers, or boilerplate unless asked.
-3. **No speculative abstractions** — Implement exactly what is requested; avoid adding features or refactoring beyond the task scope.
-4. **Security** — Never introduce command injection, SQL injection, XSS, hardcoded secrets, or other OWASP Top 10 vulnerabilities. Validate only at system boundaries.
-5. **Confirm destructive actions** — Ask before force-pushing, deleting branches, resetting hard, or any action that is difficult to reverse.
-6. **Commit hygiene** — Stage specific files by name; avoid `git add -A` unless intentional. Never commit `.env` or credential files.
-7. **Branch discipline** — All development work must go on the designated feature branch, not `main`.
-
-## Updating This File
-
-Keep CLAUDE.md current as the project grows. When any of the following change, update the relevant section:
-
-- Tech stack or major dependencies added
-- Directory layout established
-- Environment variables introduced
-- Build, test, or lint commands defined
-- CI/CD pipelines configured
-- Code style conventions decided
+- Stack: not yet decided
+- Structure: not yet created
+- Next step: discuss project direction before writing any code
