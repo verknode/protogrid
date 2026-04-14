@@ -62,6 +62,7 @@ Installed skills and when to use them:
 
 | Skill | Trigger | Use when |
 |---|---|---|
+| `massgen` | `/massgen` | Running complex tasks with multiple AI agents in parallel — agents critique each other's work and vote on the best solution |
 | `frontend-design` | `/frontend-design` | Starting any UI work — forces design thinking (structure, layout, states) before writing a single line of code |
 | `brand-guidelines` | `/brand-guidelines` | Defining or enforcing brand colors, fonts, spacing, tone — keeps visual identity consistent across all output |
 | `theme-factory` | `/theme-factory` | Generating a color palette + font pairing for the project; pick from 10 ready themes or generate a custom one |
