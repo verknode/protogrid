@@ -42,7 +42,7 @@ export function Navbar() {
       ].join(" ")}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[72px]">
+        <div className="flex items-center h-[72px]">
 
           {/* Wordmark */}
           <Link
@@ -53,7 +53,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+          <nav className="hidden lg:flex flex-1 items-center justify-center gap-8" aria-label="Main navigation">
             {NAV_LINKS.map(({ label, href }) => (
               <Link
                 key={href}
@@ -82,7 +82,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
-            className="lg:hidden flex items-center justify-center w-8 h-8 text-cold-pearl -mr-1"
+            className="lg:hidden ml-auto flex items-center justify-center w-8 h-8 text-cold-pearl -mr-1"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
           >
