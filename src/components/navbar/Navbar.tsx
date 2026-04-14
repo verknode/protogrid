@@ -27,7 +27,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
@@ -35,10 +34,10 @@ export function Navbar() {
   return (
     <header
       className={[
-        "sticky top-0 z-50 border-b transition-colors duration-200",
+        "sticky top-0 z-50 border-b transition-all duration-200",
         scrolled
-          ? "bg-ink-shadow border-iris-dusk/20"
-          : "bg-transparent border-transparent",
+          ? "bg-ink-shadow/95 backdrop-blur-sm border-iris-dusk/35"
+          : "bg-ink-shadow/80 border-iris-dusk/20",
       ].join(" ")}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -53,7 +52,10 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex flex-1 items-center justify-center gap-8" aria-label="Main navigation">
+          <nav
+            className="hidden lg:flex flex-1 items-center justify-center gap-8"
+            aria-label="Main navigation"
+          >
             {NAV_LINKS.map(({ label, href }) => (
               <Link
                 key={href}
@@ -86,7 +88,11 @@ export function Navbar() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
           >
-            {menuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
+            {menuOpen ? (
+              <X size={20} strokeWidth={1.5} />
+            ) : (
+              <Menu size={20} strokeWidth={1.5} />
+            )}
           </button>
 
         </div>
