@@ -99,8 +99,39 @@ To run graphify on the current directory:
 
 ---
 
+## Project: ProtoGrid
+
+**One-line definition:** Engineering / prototyping / fabrication studio — turns an idea, task, or raw concept into a real, working product or part.
+
+**Core logic:** Client comes with a problem, not a spec. ProtoGrid takes it through the full cycle:
+```
+request → task analysis → solution selection → prototype → test → production → repeatable products
+```
+
+**What it is NOT:** a CAD service, a "CNC website", a digital-only offering.
+
+**What it IS:** a physical result service — custom fabrication, rapid prototyping, small-batch production.
+
+**Growth path:**
+1. Custom orders — first revenue, real cases
+2. Accumulate cases — understand demand patterns
+3. Extract repeatable solutions from custom work
+4. Launch own product lines
+5. Scale as a brand, not just a hands-on service
+
+**Target clients:** individual makers, small businesses, local production needs, DIY / hobby / workshop segment.
+
+**Key capabilities:**
+- CNC fabrication
+- Part prototyping and enclosures
+- Small-batch runs
+- Redesign / replacement of existing parts
+- Idea-to-object support
+
+---
+
 ## Status
 
 - Stack: not yet decided
 - Structure: not yet created
-- Next step: discuss project direction before writing any code
+- Next step: map out site structure by sections, then decide stack
