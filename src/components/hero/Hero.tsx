@@ -16,7 +16,7 @@ function fadeUp(delay: number, duration = 0.55) {
 
 export function Hero() {
   return (
-    <section className="relative bg-ink-shadow min-h-[88svh] lg:min-h-screen flex items-center py-24 lg:py-32">
+    <section className="relative bg-ink-shadow min-h-[88svh] lg:min-h-screen flex items-center pt-28 pb-20 lg:py-32">
       <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid lg:grid-cols-[55fr_45fr] gap-16 lg:gap-0 items-center">
 
