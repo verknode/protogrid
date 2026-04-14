@@ -134,4 +134,5 @@ request → task analysis → solution selection → prototype → test → prod
 
 - Stack: not yet decided
 - Structure: not yet created
+- Language: Norwegian (primary)
 - Next step: map out site structure by sections, then decide stack
