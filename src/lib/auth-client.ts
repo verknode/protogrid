@@ -1,7 +1,11 @@
 import { createAuthClient } from "better-auth/react";
+import { inferAdditionalFields } from "better-auth/client/plugins";
+import type { Auth } from "./auth";
 
-// No explicit baseURL — uses same origin as the current page.
-// This avoids localhost vs 127.0.0.1 CORS mismatches in local dev.
-export const authClient = createAuthClient();
+// inferAdditionalFields makes `role` and other server-side additionalFields
+// available in useSession() types on the client.
+export const authClient = createAuthClient({
+  plugins: [inferAdditionalFields<Auth>()],
+});
 
 export const { signIn, signOut, signUp, useSession } = authClient;

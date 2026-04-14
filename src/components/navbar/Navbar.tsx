@@ -6,20 +6,22 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { NavAuthButton } from "./NavAuthButton";
+import { useSession } from "@/lib/auth-client";
 
 const NAV_LINKS = [
-  { label: "Home", href: "/" },
+  { label: "Home",     href: "/" },
   { label: "Services", href: "/services" },
-  { label: "Process", href: "/process" },
+  { label: "Process",  href: "/process" },
   { label: "Projects", href: "/projects" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "About",    href: "/about" },
+  { label: "Contact",  href: "/contact" },
 ] as const;
 
 export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -73,7 +75,7 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Desktop CTA group */}
+          {/* Desktop right: auth + CTA */}
           <div className="hidden lg:flex items-center gap-3 shrink-0">
             <NavAuthButton />
             <Link
@@ -92,11 +94,7 @@ export function Navbar() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
           >
-            {menuOpen ? (
-              <X size={20} strokeWidth={1.5} />
-            ) : (
-              <Menu size={20} strokeWidth={1.5} />
-            )}
+            {menuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
           </button>
 
         </div>
@@ -113,27 +111,59 @@ export function Navbar() {
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
             className="lg:hidden bg-ink-shadow border-t border-iris-dusk/20"
           >
-            <nav
-              aria-label="Mobile navigation"
-              className="max-w-7xl mx-auto px-6"
-            >
+            <nav aria-label="Mobile navigation" className="max-w-7xl mx-auto px-6">
+              {/* Public links */}
               {NAV_LINKS.map(({ label, href }) => (
                 <Link
                   key={href}
                   href={href}
                   className={[
                     "flex items-center h-12 font-technical text-[12px] tracking-[0.08em]",
-                    "border-b border-iris-dusk/15 last:border-0",
+                    "border-b border-iris-dusk/15",
                     "transition-colors duration-150",
-                    pathname === href
-                      ? "text-cold-pearl"
-                      : "text-lavender-smoke hover:text-cold-pearl",
+                    pathname === href ? "text-cold-pearl" : "text-lavender-smoke hover:text-cold-pearl",
                   ].join(" ")}
                 >
                   {label}
                 </Link>
               ))}
 
+              {/* Auth links */}
+              {session ? (
+                <>
+                  <Link
+                    href="/account"
+                    className="flex items-center h-12 font-technical text-[12px] tracking-[0.08em] border-b border-iris-dusk/15 text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+                  >
+                    Account
+                  </Link>
+                  {session.user.role === "admin" && (
+                    <Link
+                      href="/admin/dashboard"
+                      className="flex items-center h-12 font-technical text-[12px] tracking-[0.08em] border-b border-iris-dusk/15 text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+                    >
+                      Admin
+                    </Link>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="flex items-center h-12 font-technical text-[12px] tracking-[0.08em] border-b border-iris-dusk/15 text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="flex items-center h-12 font-technical text-[12px] tracking-[0.08em] border-b border-iris-dusk/15 text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
+
+              {/* Primary CTA */}
               <div className="py-4">
                 <Link
                   href="/contact"
