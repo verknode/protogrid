@@ -370,6 +370,7 @@ No shadow. No scale on click. CSS transitions only on hover (`duration-150`).
 - Deploy target: Render
 - Language: English-first — Norwegian localisation added later
 - Hero section: **built and locked** — `src/components/hero/Hero.tsx` + `TechnicalGraphic.tsx`
+- Navbar: **built and locked** — `src/components/navbar/Navbar.tsx`
 - Global UI system: defined (see above)
-- Next step: build Navbar
+- Next step: What We Do section (service cards)
 - Build approach: one section at a time — spec first, then implement, then lock
