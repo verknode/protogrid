@@ -62,8 +62,12 @@ Installed skills and when to use them:
 
 | Skill | Trigger | Use when |
 |---|---|---|
-| `graphify` | `/graphify` | You want to visualize the structure of the codebase, understand connections between modules, or explore a new part of the project |
-| `simplify` | `/simplify` | After writing code — review it for quality, redundancy, and efficiency |
+| `frontend-design` | `/frontend-design` | Starting any UI work — forces design thinking (structure, layout, states) before writing a single line of code |
+| `brand-guidelines` | `/brand-guidelines` | Defining or enforcing brand colors, fonts, spacing, tone — keeps visual identity consistent across all output |
+| `theme-factory` | `/theme-factory` | Generating a color palette + font pairing for the project; pick from 10 ready themes or generate a custom one |
+| `skill-creator` | `/skill-creator` | Creating a new custom skill — for project-specific workflows, design system rules, or repeated task patterns |
+| `graphify` | `/graphify` | Visualizing codebase structure, understanding module connections, exploring a new part of the project |
+| `simplify` | `/simplify` | After writing code — review for quality, redundancy, and efficiency |
 | `update-config` | — | Changing Claude Code settings, hooks, permissions, or env vars |
 
 To run graphify on the current directory:
