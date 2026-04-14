@@ -16,13 +16,12 @@ function fadeUp(delay: number, duration = 0.55) {
 
 export function Hero() {
   return (
-    <section className="relative bg-ink-shadow min-h-[88svh] lg:min-h-screen flex items-start lg:items-center pt-16 pb-20 lg:py-32">
+    <section className="relative bg-ink-shadow lg:min-h-screen flex items-start lg:items-center pt-16 pb-24 lg:py-32">
       <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid lg:grid-cols-[55fr_45fr] gap-0 lg:gap-0 items-center">
+        <div className="grid lg:grid-cols-[55fr_45fr] items-center">
 
           {/* Content column */}
-          <div className="py-4 lg:py-0">
-            {/* Eyebrow */}
+          <div>
             <motion.p
               {...fadeUp(0)}
               className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-4"
@@ -30,7 +29,6 @@ export function Hero() {
               ENGINEERING STUDIO · PROTOTYPING · FABRICATION
             </motion.p>
 
-            {/* Headline */}
             <motion.h1
               {...fadeUp(0.1)}
               className="font-display font-bold text-[clamp(42px,6vw,72px)] leading-[1.05] tracking-[-0.02em] text-cold-pearl mb-6"
@@ -40,7 +38,6 @@ export function Hero() {
               functional product
             </motion.h1>
 
-            {/* Subline */}
             <motion.p
               {...fadeUp(0.25)}
               className="font-sans text-[clamp(15px,1.1vw,17px)] leading-[1.68] text-lavender-smoke mb-10 max-w-[48ch]"
@@ -50,7 +47,6 @@ export function Hero() {
               small-batch production.
             </motion.p>
 
-            {/* CTAs */}
             <motion.div
               {...fadeUp(0.4)}
               className="flex flex-col sm:flex-row gap-3"
@@ -70,8 +66,10 @@ export function Hero() {
           </div>
 
           {/* Graphic column */}
-          <div className="mt-12 lg:mt-0 lg:pl-16 flex items-center justify-center">
-            <TechnicalGraphic />
+          <div className="mt-16 lg:mt-0 lg:pl-16 flex items-center justify-center">
+            <div className="w-full max-w-[260px] lg:max-w-[440px]">
+              <TechnicalGraphic />
+            </div>
           </div>
 
         </div>
