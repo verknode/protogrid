@@ -45,6 +45,32 @@ No rushing. No premature architecture.
 
 ---
 
+## Reuse Before Custom Build
+
+Do not implement common application infrastructure from scratch.
+
+**Always prefer proven libraries for:**
+- Authentication → use a standard auth library (e.g. NextAuth, Clerk, Lucia)
+- Forms → React Hook Form + Zod
+- Validation → Zod
+- UI components → shadcn/ui first, then Radix UI primitives
+- Tables, dialogs, file uploads, date pickers, editors → established libraries
+- Email flows → Resend, Nodemailer, or similar
+- Storage → existing service SDKs
+- Role-based access → library-level, not hand-rolled
+- Billing → Stripe SDK
+
+**Write custom code only for:**
+- Project-specific business logic
+- Domain-specific workflows (e.g. quote flow, fabrication order steps)
+- Custom layout, brand presentation, and design system details
+- Integrations not covered by existing tools
+
+**Before implementing any complex feature:**
+Check whether it should be assembled from established libraries instead of coded from scratch. If a library handles 80%+ of the requirement, use it.
+
+---
+
 ## Working with UI/UX
 
 - Consistency first: spacing, typography, color, interaction patterns must feel unified.
@@ -222,4 +248,5 @@ If all four are answered clearly — the structure is correct.
 - Stack: Next.js + TS + Tailwind + shadcn/ui + Framer Motion — confirmed
 - Structure: defined (see Site Structure above)
 - Language: Norwegian (primary)
-- Next step: build Hero section
+- Hero section: built (`src/components/hero/`)
+- Next step: build next section or wire up contact form
