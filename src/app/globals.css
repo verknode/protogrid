@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@import "@fontsource/syne/latin-700.css";
+@import "@fontsource/syne/latin-800.css";
+@import "@fontsource/dm-mono/latin-400.css";
+@import "@fontsource/dm-mono/latin-500.css";
+
+:root {
+  --ink-shadow: #1e2028;
+  --iris-dusk: #5c5f7a;
+  --lavender-smoke: #8e90a6;
+  --cold-pearl: #f1f2f4;
+}
+
+@theme inline {
+  --font-display: "Syne", sans-serif;
+  --font-technical: "DM Mono", monospace;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --color-ink-shadow: var(--ink-shadow);
+  --color-iris-dusk: var(--iris-dusk);
+  --color-lavender-smoke: var(--lavender-smoke);
+  --color-cold-pearl: var(--cold-pearl);
+}
+
+body {
+  background: var(--ink-shadow);
+  color: var(--cold-pearl);
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
