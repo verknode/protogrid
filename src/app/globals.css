@@ -23,7 +23,13 @@
 }
 
 body {
-  background: var(--ink-shadow);
+  background-color: var(--ink-shadow);
+  background-image:
+    linear-gradient(rgba(92, 95, 122, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(92, 95, 122, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(92, 95, 122, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(92, 95, 122, 0.04) 1px, transparent 1px);
+  background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
   color: var(--cold-pearl);
   font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
