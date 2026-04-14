@@ -16,12 +16,12 @@ function fadeUp(delay: number, duration = 0.55) {
 
 export function Hero() {
   return (
-    <section className="relative bg-ink-shadow min-h-[88svh] lg:min-h-screen flex items-center pt-28 pb-20 lg:py-32">
+    <section className="relative bg-ink-shadow min-h-[88svh] lg:min-h-screen flex items-start lg:items-center pt-16 pb-20 lg:py-32">
       <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid lg:grid-cols-[55fr_45fr] gap-16 lg:gap-0 items-center">
+        <div className="grid lg:grid-cols-[55fr_45fr] gap-0 lg:gap-0 items-center">
 
           {/* Content column */}
-          <div>
+          <div className="py-4 lg:py-0">
             {/* Eyebrow */}
             <motion.p
               {...fadeUp(0)}
@@ -53,13 +53,13 @@ export function Hero() {
             {/* CTAs */}
             <motion.div
               {...fadeUp(0.4)}
-              className="flex flex-col md:flex-row gap-4"
+              className="flex flex-col sm:flex-row gap-3"
             >
-              <button className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-200 w-full md:w-auto whitespace-nowrap cursor-pointer">
+              <button className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-200 w-full sm:w-auto whitespace-nowrap cursor-pointer">
                 Request a Quote
               </button>
 
-              <button className="group h-12 px-6 border border-iris-dusk text-lavender-smoke text-[13px] font-technical tracking-[0.06em] rounded-sm hover:border-lavender-smoke hover:text-cold-pearl transition-colors duration-200 flex items-center justify-center gap-[6px] w-full md:w-auto whitespace-nowrap cursor-pointer">
+              <button className="group h-12 px-6 border border-iris-dusk text-lavender-smoke text-[13px] font-technical tracking-[0.06em] rounded-sm hover:border-lavender-smoke hover:text-cold-pearl transition-colors duration-200 flex items-center justify-center gap-[6px] w-full sm:w-auto whitespace-nowrap cursor-pointer">
                 See How It Works
                 <ArrowRight
                   size={14}
@@ -70,7 +70,7 @@ export function Hero() {
           </div>
 
           {/* Graphic column */}
-          <div className="pl-8 lg:pl-16 flex items-center justify-center">
+          <div className="mt-12 lg:mt-0 lg:pl-16 flex items-center justify-center">
             <TechnicalGraphic />
           </div>
 
