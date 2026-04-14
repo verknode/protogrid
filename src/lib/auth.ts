@@ -14,7 +14,7 @@ export const auth = betterAuth({
 
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24,     // refresh if >1 day old
+    updateAge: 60 * 60 * 24,
     cookieCache: {
       enabled: true,
       maxAge: 60 * 5,
@@ -30,6 +30,13 @@ export const auth = betterAuth({
       },
     },
   },
+
+  // Allow local dev access from 127.0.0.1 and LAN IPs
+  trustedOrigins: [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    ...(process.env.NEXT_PUBLIC_APP_URL ? [process.env.NEXT_PUBLIC_APP_URL] : []),
+  ],
 
   advanced: {
     defaultCookieAttributes: {

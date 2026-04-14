@@ -1,7 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 
-export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-});
+// No explicit baseURL — uses same origin as the current page.
+// This avoids localhost vs 127.0.0.1 CORS mismatches in local dev.
+export const authClient = createAuthClient();
 
 export const { signIn, signOut, signUp, useSession } = authClient;

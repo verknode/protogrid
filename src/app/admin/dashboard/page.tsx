@@ -1,22 +1,28 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { AlertCircle } from "lucide-react";
+
+export const metadata = { title: "Dashboard — ProtoGrid Admin" };
 
 const stats = [
-  { label: "New", value: "—" },
+  { label: "New",       value: "—" },
   { label: "In Review", value: "—" },
-  { label: "Accepted", value: "—" },
-  { label: "Done", value: "—" },
+  { label: "Accepted",  value: "—" },
+  { label: "Done",      value: "—" },
 ];
 
 export default async function AdminDashboardPage() {
   let session = null;
+  let dbUnavailable = false;
+
   try {
     session = await auth.api.getSession({ headers: await headers() });
   } catch {
-    // DB not connected — middleware cookie check still guards the route
+    dbUnavailable = true;
   }
 
+  // If we have a real session but user is not admin, send them away
   if (session && session.user.role !== "admin") {
     redirect("/account");
   }
@@ -29,6 +35,16 @@ export default async function AdminDashboardPage() {
       <h1 className="font-display font-bold text-[clamp(24px,3vw,40px)] leading-[1.1] tracking-[-0.01em] text-cold-pearl mb-10">
         Dashboard
       </h1>
+
+      {dbUnavailable && (
+        <div className="border border-iris-dusk/40 rounded-sm px-5 py-4 flex items-start gap-3 mb-8">
+          <AlertCircle size={15} className="text-lavender-smoke shrink-0 mt-0.5" />
+          <p className="font-sans text-[13px] leading-[1.6] text-iris-dusk">
+            Database not connected. Set{" "}
+            <code className="font-technical text-lavender-smoke">DATABASE_URL</code> to load live data.
+          </p>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -44,7 +60,7 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* Requests table */}
+      {/* Recent requests */}
       <div className="border border-iris-dusk/25 rounded-sm">
         <div className="px-6 py-4 border-b border-iris-dusk/20 flex items-center justify-between">
           <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke">
@@ -59,7 +75,7 @@ export default async function AdminDashboardPage() {
         </div>
         <div className="px-6 py-12 text-center">
           <p className="font-sans text-[14px] text-lavender-smoke">
-            No requests yet. Connect your database to load data.
+            {dbUnavailable ? "Connect database to load requests." : "No requests yet."}
           </p>
         </div>
       </div>
