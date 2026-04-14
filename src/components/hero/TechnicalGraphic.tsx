@@ -6,11 +6,10 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 function drawPath(delay: number, duration = 0.85) {
   return {
-    initial: { pathLength: 0, opacity: 0 },
-    animate: { pathLength: 1, opacity: 1 },
+    initial: { pathLength: 0 },
+    animate: { pathLength: 1 },
     transition: {
       pathLength: { duration, delay, ease },
-      opacity: { duration: 0.2, delay },
     },
   } as const;
 }
@@ -43,7 +42,7 @@ export function TechnicalGraphic() {
       viewBox="0 0 460 460"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="w-full max-w-[440px] h-auto"
+      className="w-full h-auto"
       aria-hidden="true"
     >
       <defs>
@@ -75,11 +74,9 @@ export function TechnicalGraphic() {
         </pattern>
       </defs>
 
-      {/* Grid background */}
-      <motion.g {...fadeIn(0.2, 0.7)}>
-        <rect width="460" height="460" fill="url(#grid-minor)" opacity="0.18" />
-        <rect width="460" height="460" fill="url(#grid-major)" opacity="0.28" />
-      </motion.g>
+      {/* Grid background — visible immediately, no animation */}
+      <rect width="460" height="460" fill="url(#grid-minor)" opacity="0.18" />
+      <rect width="460" height="460" fill="url(#grid-major)" opacity="0.28" />
 
       {/* Partial frame — top-left corner */}
       <motion.path
@@ -122,7 +119,7 @@ export function TechnicalGraphic() {
         {...drawPath(0.42, 0.95)}
       />
 
-      {/* Inner pocket — dashed, fade only (pathLength conflicts with strokeDasharray) */}
+      {/* Inner pocket — dashed, fade only */}
       <motion.path
         d="M 155 115 H 270 V 230 H 155 Z"
         stroke="#8E90A6"
@@ -150,7 +147,7 @@ export function TechnicalGraphic() {
         />
       </motion.g>
 
-      {/* Center lines through inner pocket */}
+      {/* Center lines */}
       <motion.g {...fadeIn(0.7, 0.5)}>
         <path
           d="M 213 98 V 248"
@@ -184,130 +181,36 @@ export function TechnicalGraphic() {
         />
       ))}
 
-      {/* Crosshair markers at drill holes */}
+      {/* Crosshair markers */}
       {DRILL_HOLES.map(([cx, cy], i) => (
         <motion.g key={`cross-${i}`} {...fadeIn(0.84 + i * 0.04, 0.35)}>
           <line
-            x1={cx - 10}
-            y1={cy}
-            x2={cx + 10}
-            y2={cy}
-            stroke="#8E90A6"
-            strokeWidth="0.6"
-            opacity="0.38"
+            x1={cx - 10} y1={cy} x2={cx + 10} y2={cy}
+            stroke="#8E90A6" strokeWidth="0.6" opacity="0.38"
           />
           <line
-            x1={cx}
-            y1={cy - 10}
-            x2={cx}
-            y2={cy + 10}
-            stroke="#8E90A6"
-            strokeWidth="0.6"
-            opacity="0.38"
+            x1={cx} y1={cy - 10} x2={cx} y2={cy + 10}
+            stroke="#8E90A6" strokeWidth="0.6" opacity="0.38"
           />
         </motion.g>
       ))}
 
       {/* Horizontal dimension line */}
       <motion.g {...fadeIn(0.88, 0.5)}>
-        <line
-          x1={125}
-          y1={307}
-          x2={300}
-          y2={307}
-          stroke="#F1F2F4"
-          strokeWidth="0.6"
-          opacity="0.2"
-        />
-        <line
-          x1={125}
-          y1={300}
-          x2={125}
-          y2={314}
-          stroke="#F1F2F4"
-          strokeWidth="0.6"
-          opacity="0.2"
-        />
-        <line
-          x1={300}
-          y1={300}
-          x2={300}
-          y2={314}
-          stroke="#F1F2F4"
-          strokeWidth="0.6"
-          opacity="0.2"
-        />
-        <line
-          x1={125}
-          y1={285}
-          x2={125}
-          y2={307}
-          stroke="#F1F2F4"
-          strokeWidth="0.4"
-          strokeDasharray="2 2"
-          opacity="0.15"
-        />
-        <line
-          x1={300}
-          y1={285}
-          x2={300}
-          y2={307}
-          stroke="#F1F2F4"
-          strokeWidth="0.4"
-          strokeDasharray="2 2"
-          opacity="0.15"
-        />
+        <line x1={125} y1={307} x2={300} y2={307} stroke="#F1F2F4" strokeWidth="0.6" opacity="0.2" />
+        <line x1={125} y1={300} x2={125} y2={314} stroke="#F1F2F4" strokeWidth="0.6" opacity="0.2" />
+        <line x1={300} y1={300} x2={300} y2={314} stroke="#F1F2F4" strokeWidth="0.6" opacity="0.2" />
+        <line x1={125} y1={285} x2={125} y2={307} stroke="#F1F2F4" strokeWidth="0.4" strokeDasharray="2 2" opacity="0.15" />
+        <line x1={300} y1={285} x2={300} y2={307} stroke="#F1F2F4" strokeWidth="0.4" strokeDasharray="2 2" opacity="0.15" />
       </motion.g>
 
       {/* Vertical dimension line */}
       <motion.g {...fadeIn(0.9, 0.5)}>
-        <line
-          x1={320}
-          y1={75}
-          x2={320}
-          y2={285}
-          stroke="#F1F2F4"
-          strokeWidth="0.6"
-          opacity="0.2"
-        />
-        <line
-          x1={313}
-          y1={75}
-          x2={327}
-          y2={75}
-          stroke="#F1F2F4"
-          strokeWidth="0.6"
-          opacity="0.2"
-        />
-        <line
-          x1={313}
-          y1={285}
-          x2={327}
-          y2={285}
-          stroke="#F1F2F4"
-          strokeWidth="0.6"
-          opacity="0.2"
-        />
-        <line
-          x1={300}
-          y1={75}
-          x2={320}
-          y2={75}
-          stroke="#F1F2F4"
-          strokeWidth="0.4"
-          strokeDasharray="2 2"
-          opacity="0.15"
-        />
-        <line
-          x1={300}
-          y1={285}
-          x2={320}
-          y2={285}
-          stroke="#F1F2F4"
-          strokeWidth="0.4"
-          strokeDasharray="2 2"
-          opacity="0.15"
-        />
+        <line x1={320} y1={75} x2={320} y2={285} stroke="#F1F2F4" strokeWidth="0.6" opacity="0.2" />
+        <line x1={313} y1={75} x2={327} y2={75} stroke="#F1F2F4" strokeWidth="0.6" opacity="0.2" />
+        <line x1={313} y1={285} x2={327} y2={285} stroke="#F1F2F4" strokeWidth="0.6" opacity="0.2" />
+        <line x1={300} y1={75} x2={320} y2={75} stroke="#F1F2F4" strokeWidth="0.4" strokeDasharray="2 2" opacity="0.15" />
+        <line x1={300} y1={285} x2={320} y2={285} stroke="#F1F2F4" strokeWidth="0.4" strokeDasharray="2 2" opacity="0.15" />
       </motion.g>
 
       {/* Alphanumeric labels */}
