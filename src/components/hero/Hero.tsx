@@ -9,7 +9,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 function fadeUp(delay: number, duration = 0.55) {
   return {
     initial: { y: 16 },
-    animate: { opacity: 1, y: 0 },
+    animate: { y: 0 },
     transition: { duration, delay, ease },
   } as const;
 }
