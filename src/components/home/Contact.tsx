@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { submitRequest } from "@/app/actions/submitRequest";
+import { useSession } from "@/lib/auth-client";
+import Link from "next/link";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -35,6 +37,7 @@ const labelClass =
   "block font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke mb-2";
 
 export function Contact() {
+  const { data: session, isPending } = useSession();
   const [sent, setSent] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -90,7 +93,7 @@ export function Contact() {
             </motion.p>
           </div>
 
-          {/* Right: form */}
+          {/* Right: form or auth gate */}
           <motion.div {...fadeIn(0.1)}>
             {sent ? (
               <div className="border border-iris-dusk/25 rounded-sm p-8 text-center">
@@ -100,6 +103,30 @@ export function Contact() {
                 <p className="font-sans text-[14px] text-lavender-smoke">
                   We will review it and get back to you within 1 business day.
                 </p>
+              </div>
+            ) : !isPending && !session ? (
+              <div className="border border-iris-dusk/25 rounded-sm p-8">
+                <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke mb-3">
+                  Account required
+                </p>
+                <p className="font-sans text-[15px] leading-[1.68] text-lavender-smoke mb-6">
+                  Create a free account to send a request and track its status
+                  in your personal dashboard.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href="/register?from=/contact"
+                    className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-200 inline-flex items-center"
+                  >
+                    Create account
+                  </Link>
+                  <Link
+                    href="/login?from=/contact"
+                    className="h-12 px-6 border border-iris-dusk/50 text-lavender-smoke text-[13px] font-technical tracking-[0.06em] rounded-sm hover:border-lavender-smoke hover:text-cold-pearl transition-colors duration-150 inline-flex items-center"
+                  >
+                    Sign in
+                  </Link>
+                </div>
               </div>
             ) : (
               <form
