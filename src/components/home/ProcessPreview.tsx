@@ -24,7 +24,7 @@ const steps = [
 
 export function ProcessPreview() {
   return (
-    <section className="py-20 lg:py-24 border-t border-iris-dusk/20">
+    <section className="py-10 lg:py-20 border-t border-iris-dusk/20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-end justify-between mb-10">
           <div>

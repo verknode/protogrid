@@ -8,7 +8,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 export function HomeCtaBanner() {
   return (
-    <section className="py-20 lg:py-24 border-t border-iris-dusk/20">
+    <section className="py-10 lg:py-20 border-t border-iris-dusk/20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="border border-iris-dusk/30 rounded-sm px-8 py-12 lg:px-16 lg:py-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
           <div>

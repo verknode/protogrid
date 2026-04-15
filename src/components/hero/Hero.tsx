@@ -16,7 +16,7 @@ function fadeUp(delay: number, duration = 0.55) {
 
 export function Hero() {
   return (
-    <section className="relative lg:min-h-screen flex items-center pt-16 pb-24 lg:py-32">
+    <section className="relative lg:min-h-screen flex items-center pt-16 pb-14 lg:py-32">
       <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
         <div className="max-w-[800px]">
           <motion.p

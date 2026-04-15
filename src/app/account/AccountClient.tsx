@@ -33,7 +33,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
   return (
     <>
       {/* Header */}
-      <section className="py-16 lg:py-24 border-b border-iris-dusk/20">
+      <section className="py-8 lg:py-14 border-b border-iris-dusk/20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-3">
             Account
@@ -47,7 +47,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
         </div>
       </section>
 
-      <section className="py-10 lg:py-14 flex-1">
+      <section className="py-6 lg:py-10 flex-1">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-xl space-y-4">
 

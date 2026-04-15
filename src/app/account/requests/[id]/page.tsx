@@ -58,7 +58,7 @@ export default async function AccountRequestPage({
   return (
     <main className="flex flex-col pt-16 min-h-screen">
       {/* Header */}
-      <section className="py-10 lg:py-14 border-b border-iris-dusk/20">
+      <section className="py-6 lg:py-10 border-b border-iris-dusk/20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <Link
             href="/account"
@@ -86,7 +86,7 @@ export default async function AccountRequestPage({
         </div>
       </section>
 
-      <section className="py-10 lg:py-14 flex-1">
+      <section className="py-6 lg:py-10 flex-1">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl space-y-8">
 

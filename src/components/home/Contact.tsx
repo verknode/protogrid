@@ -112,7 +112,7 @@ export function Contact() {
   }
 
   return (
-    <section id="contact" className="py-24 lg:py-32 border-t border-iris-dusk/20">
+    <section id="contact" className="py-12 lg:py-24 border-t border-iris-dusk/20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid lg:grid-cols-[2fr_3fr] gap-16 lg:gap-24">
 
