@@ -87,11 +87,22 @@ model Request {
   message     String        @db.Text
   dimensions  String?
   deadline    String?
-  fileUrl     String?
   status      RequestStatus @default(NEW)
   adminNote   String?       @db.Text
 
-  // Optional link to registered user account
   userId      String?
   user        user?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  files       RequestFile[]
+}
+
+model RequestFile {
+  id        String   @id @default(cuid())
+  requestId String
+  request   Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  name      String
+  url       String
+  key       String
+  size      Int
+  type      String
+  createdAt DateTime @default(now())
 }

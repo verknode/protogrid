@@ -138,9 +138,10 @@ export default async function AdminDashboardPage() {
             </div>
             <div className="divide-y divide-iris-dusk/15">
               {recent.map((req) => (
-                <div
+                <Link
                   key={req.id}
-                  className="px-6 py-4 flex flex-col gap-2 lg:grid lg:grid-cols-[1fr_1fr_120px_100px] lg:gap-6 lg:items-center"
+                  href={`/admin/requests/${req.id}`}
+                  className="px-6 py-4 flex flex-col gap-2 lg:grid lg:grid-cols-[1fr_1fr_120px_100px] lg:gap-6 lg:items-center hover:bg-iris-dusk/5 transition-colors duration-150"
                 >
                   <div>
                     <p className="font-sans text-[13px] text-cold-pearl">{req.name}</p>
@@ -153,7 +154,7 @@ export default async function AdminDashboardPage() {
                   <span className="inline-flex font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk border border-iris-dusk/40 rounded-full px-2 py-0.5 w-fit">
                     {STATUS_LABEL[req.status] ?? req.status}
                   </span>
-                </div>
+                </Link>
               ))}
             </div>
           </>

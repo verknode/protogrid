@@ -14,13 +14,13 @@ export default async function AccountPage() {
     message: string;
     status: string;
     createdAt: Date;
+    files: Array<{ id: string; name: string; url: string }>;
   }> = [];
 
   try {
     session = await auth.api.getSession({ headers: await headers() });
 
     if (session) {
-      // Match by userId OR by email (covers requests submitted before registering)
       requests = await db.request.findMany({
         where: {
           OR: [
@@ -34,6 +34,10 @@ export default async function AccountPage() {
           message: true,
           status: true,
           createdAt: true,
+          files: {
+            select: { id: true, name: true, url: true },
+            orderBy: { createdAt: "asc" },
+          },
         },
       });
     }

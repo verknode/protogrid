@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { Footer } from "@/components/home/Footer";
-import { AlertCircle, LogOut, ChevronRight } from "lucide-react";
+import { AlertCircle, LogOut, ChevronRight, Paperclip } from "lucide-react";
 import Link from "next/link";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -15,7 +15,8 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 type SessionUser = { name: string; email: string; role: string };
-type RequestRow  = { id: string; message: string; status: string; createdAt: Date };
+type FileInfo    = { id: string; name: string; url: string };
+type RequestRow  = { id: string; message: string; status: string; createdAt: Date; files: FileInfo[] };
 type Props       = { user: SessionUser | null; requests: RequestRow[]; dbUnavailable: boolean };
 
 export function AccountClient({ user, requests, dbUnavailable }: Props) {
@@ -75,9 +76,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
                   <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-lavender-smoke mb-0.5">
                     Admin
                   </p>
-                  <p className="font-sans text-[13px] text-cold-pearl">
-                    Open admin panel
-                  </p>
+                  <p className="font-sans text-[13px] text-cold-pearl">Open admin panel</p>
                 </div>
                 <ChevronRight size={14} className="text-iris-dusk group-hover:text-lavender-smoke transition-colors duration-150" />
               </Link>
@@ -86,9 +85,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
             {/* Profile */}
             <div className="border border-iris-dusk/25 rounded-sm">
               <div className="px-5 py-3 border-b border-iris-dusk/15">
-                <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">
-                  Profile
-                </p>
+                <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">Profile</p>
               </div>
               {user ? (
                 <div className="divide-y divide-iris-dusk/10">
@@ -97,20 +94,14 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
                     { label: "Email", value: user.email },
                   ].map(({ label, value }) => (
                     <div key={label} className="px-5 py-3 flex items-center justify-between gap-6">
-                      <p className="font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk shrink-0">
-                        {label}
-                      </p>
-                      <p className="font-sans text-[13px] text-lavender-smoke text-right truncate">
-                        {value}
-                      </p>
+                      <p className="font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk shrink-0">{label}</p>
+                      <p className="font-sans text-[13px] text-lavender-smoke text-right truncate">{value}</p>
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="px-5 py-8">
-                  <p className="font-sans text-[13px] text-lavender-smoke">
-                    Profile unavailable.
-                  </p>
+                  <p className="font-sans text-[13px] text-lavender-smoke">Profile unavailable.</p>
                 </div>
               )}
             </div>
@@ -122,9 +113,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
                   Submitted Requests
                 </p>
                 {requests.length > 0 && (
-                  <span className="font-technical text-[10px] text-iris-dusk">
-                    {requests.length}
-                  </span>
+                  <span className="font-technical text-[10px] text-iris-dusk">{requests.length}</span>
                 )}
               </div>
 
@@ -145,23 +134,36 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
               ) : (
                 <div className="divide-y divide-iris-dusk/10">
                   {requests.map((req) => (
-                    <div key={req.id} className="px-5 py-4 flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-sans text-[13px] text-lavender-smoke line-clamp-2 mb-1">
+                    <Link
+                      key={req.id}
+                      href={`/account/requests/${req.id}`}
+                      className="block px-5 py-4 hover:bg-iris-dusk/5 transition-colors duration-150 group"
+                    >
+                      <div className="flex items-start justify-between gap-4 mb-2">
+                        <p className="font-sans text-[13px] text-lavender-smoke line-clamp-2 flex-1">
                           {req.message}
                         </p>
+                        <span className="shrink-0 font-technical text-[10px] tracking-[0.08em] uppercase text-iris-dusk border border-iris-dusk/35 rounded-full px-2 py-0.5">
+                          {STATUS_LABEL[req.status] ?? req.status}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4">
                         <p className="font-technical text-[10px] tracking-[0.06em] text-iris-dusk">
                           {new Date(req.createdAt).toLocaleDateString("en-GB", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
+                            day: "2-digit", month: "short", year: "numeric",
                           })}
                         </p>
+                        {req.files.length > 0 && (
+                          <span className="flex items-center gap-1 font-technical text-[10px] tracking-[0.04em] text-iris-dusk">
+                            <Paperclip size={10} />
+                            {req.files.length}
+                          </span>
+                        )}
+                        <span className="font-technical text-[10px] text-iris-dusk group-hover:text-lavender-smoke transition-colors duration-150 ml-auto">
+                          View →
+                        </span>
                       </div>
-                      <span className="shrink-0 font-technical text-[10px] tracking-[0.08em] uppercase text-iris-dusk border border-iris-dusk/35 rounded-full px-2 py-0.5 mt-0.5">
-                        {STATUS_LABEL[req.status] ?? req.status}
-                      </span>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               )}
