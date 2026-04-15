@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -47,17 +48,23 @@ export function Hero() {
             {...fadeUp(0.4)}
             className="flex flex-col sm:flex-row gap-3"
           >
-            <button className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-200 w-full sm:w-auto whitespace-nowrap cursor-pointer">
+            <Link
+              href="/contact"
+              className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-200 w-full sm:w-auto whitespace-nowrap flex items-center justify-center"
+            >
               Request a Quote
-            </button>
+            </Link>
 
-            <button className="group h-12 px-6 border border-iris-dusk text-lavender-smoke text-[13px] font-technical tracking-[0.06em] rounded-sm hover:border-lavender-smoke hover:text-cold-pearl transition-colors duration-200 flex items-center justify-center gap-[6px] w-full sm:w-auto whitespace-nowrap cursor-pointer">
+            <Link
+              href="/process"
+              className="group h-12 px-6 border border-iris-dusk text-lavender-smoke text-[13px] font-technical tracking-[0.06em] rounded-sm hover:border-lavender-smoke hover:text-cold-pearl transition-colors duration-200 flex items-center justify-center gap-[6px] w-full sm:w-auto whitespace-nowrap"
+            >
               See How It Works
               <ArrowRight
                 size={14}
                 className="transition-transform duration-200 group-hover:translate-x-[3px]"
               />
-            </button>
+            </Link>
           </motion.div>
         </div>
       </div>
