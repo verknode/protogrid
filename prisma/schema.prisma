@@ -21,6 +21,7 @@ model user {
 
   sessions      session[]
   accounts      account[]
+  requests      Request[]
 }
 
 model session {
@@ -89,4 +90,8 @@ model Request {
   fileUrl     String?
   status      RequestStatus @default(NEW)
   adminNote   String?       @db.Text
+
+  // Optional link to registered user account
+  userId      String?
+  user        user?         @relation(fields: [userId], references: [id], onDelete: SetNull)
 }

@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AccountClient } from "./AccountClient";
@@ -8,25 +9,49 @@ export const metadata = { title: "Account — ProtoGrid" };
 export default async function AccountPage() {
   let session = null;
   let dbUnavailable = false;
+  let requests: Array<{
+    id: string;
+    message: string;
+    status: string;
+    createdAt: Date;
+  }> = [];
 
   try {
     session = await auth.api.getSession({ headers: await headers() });
+
+    if (session) {
+      // Match by userId OR by email (covers requests submitted before registering)
+      requests = await db.request.findMany({
+        where: {
+          OR: [
+            { userId: session.user.id },
+            { email: session.user.email },
+          ],
+        },
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          message: true,
+          status: true,
+          createdAt: true,
+        },
+      });
+    }
   } catch {
-    // DB not reachable. Middleware already confirmed a session cookie exists,
-    // so we know the user is authenticated — just can't load their profile.
     dbUnavailable = true;
   }
 
-  // Only redirect to login if we got a real "no session" response (not a DB error).
-  // If we redirect on DB error, we create an infinite loop:
-  // account → (DB fail) → login → (cookie found) → account → ...
   if (!session && !dbUnavailable) {
     redirect("/login");
   }
 
   return (
     <main className="flex flex-col pt-16">
-      <AccountClient user={session?.user ?? null} dbUnavailable={dbUnavailable} />
+      <AccountClient
+        user={session?.user ?? null}
+        requests={requests}
+        dbUnavailable={dbUnavailable}
+      />
     </main>
   );
 }

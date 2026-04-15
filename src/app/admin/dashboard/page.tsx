@@ -1,31 +1,77 @@
 import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 export const metadata = { title: "Dashboard — ProtoGrid Admin" };
 
-const stats = [
-  { label: "New",       value: "—" },
-  { label: "In Review", value: "—" },
-  { label: "Accepted",  value: "—" },
-  { label: "Done",      value: "—" },
-];
+const STATUS_LABEL: Record<string, string> = {
+  NEW: "New",
+  IN_REVIEW: "In Review",
+  ACCEPTED: "Accepted",
+  REJECTED: "Rejected",
+  DONE: "Done",
+};
 
 export default async function AdminDashboardPage() {
   let session = null;
   let dbUnavailable = false;
+  let stats = { NEW: 0, IN_REVIEW: 0, ACCEPTED: 0, DONE: 0 };
+  let recent: Array<{
+    id: string;
+    name: string;
+    email: string;
+    message: string;
+    status: string;
+    createdAt: Date;
+  }> = [];
 
   try {
     session = await auth.api.getSession({ headers: await headers() });
+
+    const [newCount, inReviewCount, acceptedCount, doneCount, requests] =
+      await Promise.all([
+        db.request.count({ where: { status: "NEW" } }),
+        db.request.count({ where: { status: "IN_REVIEW" } }),
+        db.request.count({ where: { status: "ACCEPTED" } }),
+        db.request.count({ where: { status: "DONE" } }),
+        db.request.findMany({
+          orderBy: { createdAt: "desc" },
+          take: 10,
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            message: true,
+            status: true,
+            createdAt: true,
+          },
+        }),
+      ]);
+
+    stats = {
+      NEW: newCount,
+      IN_REVIEW: inReviewCount,
+      ACCEPTED: acceptedCount,
+      DONE: doneCount,
+    };
+    recent = requests;
   } catch {
     dbUnavailable = true;
   }
 
-  // If we have a real session but user is not admin, send them away
   if (session && session.user.role !== "admin") {
     redirect("/account");
   }
+
+  const statCards = [
+    { label: "New",       value: stats.NEW },
+    { label: "In Review", value: stats.IN_REVIEW },
+    { label: "Accepted",  value: stats.ACCEPTED },
+    { label: "Done",      value: stats.DONE },
+  ];
 
   return (
     <div>
@@ -48,13 +94,13 @@ export default async function AdminDashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        {stats.map(({ label, value }) => (
+        {statCards.map(({ label, value }) => (
           <div key={label} className="border border-iris-dusk/25 rounded-sm p-6">
             <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke mb-3">
               {label}
             </p>
             <p className="font-display font-bold text-[32px] leading-none text-cold-pearl">
-              {value}
+              {dbUnavailable ? "—" : value}
             </p>
           </div>
         ))}
@@ -66,18 +112,39 @@ export default async function AdminDashboardPage() {
           <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke">
             Recent Requests
           </p>
-          <a
+          <Link
             href="/admin/requests"
             className="font-technical text-[11px] tracking-[0.08em] text-iris-dusk hover:text-lavender-smoke transition-colors duration-150"
           >
             View all →
-          </a>
+          </Link>
         </div>
-        <div className="px-6 py-12 text-center">
-          <p className="font-sans text-[14px] text-lavender-smoke">
-            {dbUnavailable ? "Connect database to load requests." : "No requests yet."}
-          </p>
-        </div>
+
+        {recent.length === 0 ? (
+          <div className="px-6 py-12 text-center">
+            <p className="font-sans text-[14px] text-lavender-smoke">
+              {dbUnavailable ? "Connect database to load requests." : "No requests yet."}
+            </p>
+          </div>
+        ) : (
+          <div className="divide-y divide-iris-dusk/15">
+            {recent.map((req) => (
+              <div key={req.id} className="px-6 py-4 grid grid-cols-[1fr_1fr_120px_100px] gap-6 items-center">
+                <div>
+                  <p className="font-sans text-[13px] text-cold-pearl">{req.name}</p>
+                  <p className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">{req.email}</p>
+                </div>
+                <p className="font-sans text-[13px] text-lavender-smoke truncate">{req.message}</p>
+                <p className="font-technical text-[11px] tracking-[0.06em] text-lavender-smoke">
+                  {req.createdAt.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+                </p>
+                <span className="font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk border border-iris-dusk/40 rounded-full px-2 py-0.5 text-center">
+                  {STATUS_LABEL[req.status] ?? req.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

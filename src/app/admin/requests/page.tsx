@@ -1,18 +1,64 @@
 import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 export const metadata = { title: "Requests — ProtoGrid Admin" };
 
-const filters = ["All", "New", "In Review", "Accepted", "Done"];
+const STATUSES = ["NEW", "IN_REVIEW", "ACCEPTED", "REJECTED", "DONE"] as const;
 
-export default async function AdminRequestsPage() {
+const STATUS_LABEL: Record<string, string> = {
+  NEW: "New",
+  IN_REVIEW: "In Review",
+  ACCEPTED: "Accepted",
+  REJECTED: "Rejected",
+  DONE: "Done",
+};
+
+export default async function AdminRequestsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const { status: rawStatus } = await searchParams;
+  const activeStatus =
+    rawStatus && STATUSES.includes(rawStatus as (typeof STATUSES)[number])
+      ? (rawStatus as (typeof STATUSES)[number])
+      : null;
+
   let session = null;
   let dbUnavailable = false;
+  let requests: Array<{
+    id: string;
+    name: string;
+    email: string;
+    message: string;
+    dimensions: string | null;
+    deadline: string | null;
+    status: string;
+    createdAt: Date;
+  }> = [];
 
   try {
     session = await auth.api.getSession({ headers: await headers() });
+
+    requests = await db.request.findMany({
+      where: activeStatus ? { status: activeStatus } : undefined,
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        message: true,
+        dimensions: true,
+        deadline: true,
+        status: true,
+        createdAt: true,
+      },
+    });
   } catch {
     dbUnavailable = true;
   }
@@ -20,6 +66,15 @@ export default async function AdminRequestsPage() {
   if (session && session.user.role !== "admin") {
     redirect("/account");
   }
+
+  const filters = [
+    { label: "All",       href: "/admin/requests",                active: !activeStatus },
+    ...STATUSES.map((s) => ({
+      label:  STATUS_LABEL[s],
+      href:   `/admin/requests?status=${s}`,
+      active: activeStatus === s,
+    })),
+  ];
 
   return (
     <div>
@@ -40,37 +95,87 @@ export default async function AdminRequestsPage() {
         </div>
       )}
 
-      {/* Filters */}
+      {/* Status filters */}
       <div className="flex flex-wrap gap-2 mb-6">
-        {filters.map((f, i) => (
-          <button
-            key={f}
+        {filters.map(({ label, href, active }) => (
+          <Link
+            key={href}
+            href={href}
             className={`h-8 px-3 font-technical text-[11px] tracking-[0.08em] rounded-sm border transition-colors duration-150 ${
-              i === 0
-                ? "border-lavender-smoke/50 text-cold-pearl"
+              active
+                ? "border-lavender-smoke/60 text-cold-pearl"
                 : "border-iris-dusk/25 text-lavender-smoke hover:border-iris-dusk/50 hover:text-cold-pearl"
             }`}
           >
-            {f}
-          </button>
+            {label}
+          </Link>
         ))}
       </div>
 
       {/* Table */}
       <div className="border border-iris-dusk/25 rounded-sm overflow-hidden">
-        <div className="hidden lg:grid grid-cols-[1fr_2fr_120px_100px] gap-6 px-6 py-3 border-b border-iris-dusk/20 bg-iris-dusk/5">
+        {/* Header */}
+        <div className="hidden lg:grid grid-cols-[1fr_2fr_120px_110px] gap-6 px-6 py-3 border-b border-iris-dusk/20 bg-iris-dusk/5">
           {["Sender", "Task", "Date", "Status"].map((h) => (
             <p key={h} className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">
               {h}
             </p>
           ))}
         </div>
-        <div className="px-6 py-12 text-center">
-          <p className="font-sans text-[14px] text-lavender-smoke">
-            {dbUnavailable ? "Connect database to load requests." : "No requests yet."}
-          </p>
-        </div>
+
+        {requests.length === 0 ? (
+          <div className="px-6 py-12 text-center">
+            <p className="font-sans text-[14px] text-lavender-smoke">
+              {dbUnavailable
+                ? "Connect database to load requests."
+                : activeStatus
+                ? `No requests with status "${STATUS_LABEL[activeStatus]}".`
+                : "No requests yet."}
+            </p>
+          </div>
+        ) : (
+          <div className="divide-y divide-iris-dusk/15">
+            {requests.map((req) => (
+              <div
+                key={req.id}
+                className="px-6 py-4 grid grid-cols-1 lg:grid-cols-[1fr_2fr_120px_110px] gap-2 lg:gap-6 lg:items-center hover:bg-iris-dusk/5 transition-colors duration-150"
+              >
+                <div>
+                  <p className="font-sans text-[13px] text-cold-pearl">{req.name}</p>
+                  <p className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">{req.email}</p>
+                </div>
+                <div>
+                  <p className="font-sans text-[13px] text-lavender-smoke line-clamp-2">{req.message}</p>
+                  {(req.dimensions || req.deadline) && (
+                    <p className="font-technical text-[10px] tracking-[0.06em] text-iris-dusk mt-1">
+                      {[req.dimensions && `dim: ${req.dimensions}`, req.deadline && `by: ${req.deadline}`]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                  )}
+                </div>
+                <p className="font-technical text-[11px] tracking-[0.06em] text-lavender-smoke">
+                  {req.createdAt.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </p>
+                <span className="inline-flex font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk border border-iris-dusk/40 rounded-full px-2 py-0.5 w-fit">
+                  {STATUS_LABEL[req.status] ?? req.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {requests.length > 0 && (
+        <p className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk mt-4">
+          {requests.length} request{requests.length !== 1 ? "s" : ""}
+          {activeStatus ? ` with status "${STATUS_LABEL[activeStatus]}"` : " total"}
+        </p>
+      )}
     </div>
   );
 }

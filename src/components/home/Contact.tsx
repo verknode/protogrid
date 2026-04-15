@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { submitRequest } from "@/app/actions/submitRequest";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -35,6 +36,7 @@ const labelClass =
 
 export function Contact() {
   const [sent, setSent] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -42,9 +44,13 @@ export function Contact() {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  async function onSubmit(_data: FormData) {
-    // TODO: wire to /api/contact or a server action when email service is configured
-    await new Promise((r) => setTimeout(r, 600));
+  async function onSubmit(data: FormData) {
+    setServerError(null);
+    const result = await submitRequest(data);
+    if ("error" in result) {
+      setServerError(result.error);
+      return;
+    }
     setSent(true);
   }
 
@@ -181,12 +187,16 @@ export function Contact() {
                   </div>
                 </div>
 
+                {serverError && (
+                  <p className="font-technical text-[11px] text-red-400">{serverError}</p>
+                )}
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 w-full sm:w-auto"
                 >
-                  {isSubmitting ? "Sending..." : "Send request"}
+                  {isSubmitting ? "Sending…" : "Send request"}
                 </button>
               </form>
             )}
