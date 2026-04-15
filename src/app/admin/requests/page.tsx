@@ -170,7 +170,7 @@ export default async function AdminRequestsPage({
       </div>
 
       {/* Table */}
-      <div className="border border-iris-dusk/25 rounded-sm overflow-hidden">
+      <div className="bg-surface border border-iris-dusk/40 rounded-sm overflow-hidden">
         {/* Desktop column headers */}
         <div className="hidden lg:grid grid-cols-[1fr_2fr_80px_80px_120px] gap-4 px-5 py-3 border-b border-iris-dusk/20 bg-iris-dusk/5">
           {["Sender", "Task", "Files", "Date", "Status"].map((h) => (

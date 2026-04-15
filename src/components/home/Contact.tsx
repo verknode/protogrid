@@ -148,7 +148,7 @@ export function Contact() {
           {/* Right: form or auth gate */}
           <motion.div {...fadeIn(0.1)}>
             {sent ? (
-              <div className="border border-iris-dusk/25 rounded-sm p-8">
+              <div className="bg-surface border border-iris-dusk/40 rounded-sm p-8">
                 <p className="font-display font-bold text-[20px] text-cold-pearl mb-2">
                   Request received.
                 </p>
@@ -165,7 +165,7 @@ export function Contact() {
                 )}
               </div>
             ) : !isPending && !session ? (
-              <div className="border border-iris-dusk/25 rounded-sm p-8">
+              <div className="bg-surface border border-iris-dusk/40 rounded-sm p-8">
                 <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke mb-3">
                   Account required
                 </p>

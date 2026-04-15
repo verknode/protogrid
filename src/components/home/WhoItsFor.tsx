@@ -78,7 +78,7 @@ export function WhoItsFor() {
             <motion.div
               key={title}
               {...fadeIn(0.05 * i)}
-              className="border border-iris-dusk/25 rounded-sm p-6 hover:border-iris-dusk/50 transition-colors duration-200"
+              className="bg-surface border border-iris-dusk/40 rounded-sm p-6 hover:border-iris-dusk/50 transition-colors duration-200"
             >
               <div className="flex items-center gap-3 mb-4">
                 <Icon size={15} className="text-iris-dusk shrink-0" />

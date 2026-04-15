@@ -157,7 +157,7 @@ export default async function AccountRequestPage({
             )}
 
             {/* Status info */}
-            <div className="border border-iris-dusk/25 rounded-sm px-5 py-4">
+            <div className="bg-surface border border-iris-dusk/40 rounded-sm px-5 py-4">
               <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk mb-2">
                 Status — {STATUS_LABEL[request.status]}
               </p>

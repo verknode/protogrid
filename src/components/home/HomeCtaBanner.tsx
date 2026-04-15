@@ -10,7 +10,7 @@ export function HomeCtaBanner() {
   return (
     <section className="py-10 lg:py-20 border-t border-iris-dusk/20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="border border-iris-dusk/30 rounded-sm px-8 py-12 lg:px-16 lg:py-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+        <div className="bg-surface border border-iris-dusk/40 rounded-sm px-8 py-12 lg:px-16 lg:py-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
           <div>
             <motion.p
               initial={{ opacity: 0, y: 10 }}

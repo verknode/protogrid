@@ -70,7 +70,7 @@ export function Projects() {
             <motion.div
               key={title}
               {...fadeIn(0.07 * i)}
-              className="border border-iris-dusk/25 rounded-sm p-6 flex flex-col gap-5 hover:border-iris-dusk/50 transition-colors duration-200"
+              className="bg-surface border border-iris-dusk/40 rounded-sm p-6 flex flex-col gap-5 hover:border-iris-dusk/50 transition-colors duration-200"
             >
               <div>
                 <span className="inline-block font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk border border-iris-dusk/40 rounded-full px-2.5 py-0.5 mb-4">

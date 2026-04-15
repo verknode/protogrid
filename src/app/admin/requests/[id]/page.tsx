@@ -77,7 +77,7 @@ export default async function AdminRequestDetailPage({
       <div className="space-y-8">
 
         {/* Task */}
-        <div className="border border-iris-dusk/25 rounded-sm">
+        <div className="bg-surface border border-iris-dusk/40 rounded-sm">
           <div className="px-5 py-3 border-b border-iris-dusk/15">
             <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">Task</p>
           </div>
@@ -106,7 +106,7 @@ export default async function AdminRequestDetailPage({
 
         {/* Files */}
         {request.files.length > 0 && (
-          <div className="border border-iris-dusk/25 rounded-sm">
+          <div className="bg-surface border border-iris-dusk/40 rounded-sm">
             <div className="px-5 py-3 border-b border-iris-dusk/15 flex items-center justify-between">
               <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">Files</p>
               <span className="font-technical text-[10px] text-iris-dusk">{request.files.length}</span>
@@ -139,7 +139,7 @@ export default async function AdminRequestDetailPage({
         )}
 
         {/* Status change */}
-        <div className="border border-iris-dusk/25 rounded-sm">
+        <div className="bg-surface border border-iris-dusk/40 rounded-sm">
           <div className="px-5 py-3 border-b border-iris-dusk/15">
             <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">Change status</p>
           </div>
@@ -149,7 +149,7 @@ export default async function AdminRequestDetailPage({
         </div>
 
         {/* Admin note */}
-        <div className="border border-iris-dusk/25 rounded-sm">
+        <div className="bg-surface border border-iris-dusk/40 rounded-sm">
           <div className="px-5 py-3 border-b border-iris-dusk/15">
             <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">Admin note</p>
           </div>

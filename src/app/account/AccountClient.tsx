@@ -70,7 +70,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
             {isAdmin && (
               <Link
                 href="/admin/dashboard"
-                className="flex items-center justify-between px-5 py-4 border border-iris-dusk/35 rounded-sm hover:border-iris-dusk/60 transition-colors duration-150 group"
+                className="flex items-center justify-between px-5 py-4 bg-surface border border-iris-dusk/45 rounded-sm hover:border-iris-dusk/60 transition-colors duration-150 group"
               >
                 <div>
                   <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-lavender-smoke mb-0.5">
@@ -83,7 +83,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
             )}
 
             {/* Profile */}
-            <div className="border border-iris-dusk/25 rounded-sm">
+            <div className="bg-surface border border-iris-dusk/40 rounded-sm">
               <div className="px-5 py-3 border-b border-iris-dusk/15">
                 <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">Profile</p>
               </div>
@@ -107,7 +107,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
             </div>
 
             {/* Requests */}
-            <div className="border border-iris-dusk/25 rounded-sm">
+            <div className="bg-surface border border-iris-dusk/40 rounded-sm">
               <div className="px-5 py-3 border-b border-iris-dusk/15 flex items-center justify-between">
                 <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">
                   Submitted Requests

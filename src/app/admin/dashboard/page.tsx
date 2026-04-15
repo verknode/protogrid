@@ -95,7 +95,7 @@ export default async function AdminDashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {statCards.map(({ label, value }) => (
-          <div key={label} className="border border-iris-dusk/25 rounded-sm p-6">
+          <div key={label} className="bg-surface border border-iris-dusk/40 rounded-sm p-6">
             <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke mb-3">
               {label}
             </p>
@@ -107,7 +107,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Recent requests */}
-      <div className="border border-iris-dusk/25 rounded-sm">
+      <div className="bg-surface border border-iris-dusk/40 rounded-sm">
         <div className="px-6 py-4 border-b border-iris-dusk/20 flex items-center justify-between">
           <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke">
             Recent Requests

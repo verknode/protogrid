@@ -9,6 +9,7 @@
   --iris-dusk: #5c5f7a;
   --lavender-smoke: #8e90a6;
   --cold-pearl: #f1f2f4;
+  --surface: #252730;
 }
 
 @theme inline {
@@ -20,6 +21,7 @@
   --color-iris-dusk: var(--iris-dusk);
   --color-lavender-smoke: var(--lavender-smoke);
   --color-cold-pearl: var(--cold-pearl);
+  --color-surface: var(--surface);
 }
 
 body {
