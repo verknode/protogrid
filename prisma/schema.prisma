@@ -93,6 +93,7 @@ model Request {
   userId      String?
   user        user?         @relation(fields: [userId], references: [id], onDelete: SetNull)
   files       RequestFile[]
+  messages    Message[]
 }
 
 model RequestFile {
@@ -104,5 +105,15 @@ model RequestFile {
   key       String
   size      Int
   type      String
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  requestId String
+  request   Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  body      String   @db.Text
+  isAdmin   Boolean  @default(false)
+  authorId  String
   createdAt DateTime @default(now())
 }

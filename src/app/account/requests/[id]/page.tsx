@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { Footer } from "@/components/home/Footer";
 import { ArrowLeft, Paperclip, Download } from "lucide-react";
 import Link from "next/link";
+import { MessageThread } from "@/components/admin/MessageThread";
 
 export const metadata = { title: "Request — ProtoGrid" };
 
@@ -49,7 +50,8 @@ export default async function AccountRequestPage({
       ],
     },
     include: {
-      files: { orderBy: { createdAt: "asc" } },
+      files:    { orderBy: { createdAt: "asc" } },
+      messages: { orderBy: { createdAt: "asc" } },
     },
   });
 
@@ -164,6 +166,21 @@ export default async function AccountRequestPage({
               <p className="font-sans text-[13px] leading-[1.6] text-lavender-smoke">
                 {STATUS_DESC[request.status] ?? "Status information unavailable."}
               </p>
+            </div>
+
+            {/* Chat */}
+            <div className="bg-surface border border-iris-dusk/40 rounded-sm">
+              <div className="px-5 py-3 border-b border-iris-dusk/15 flex items-center justify-between">
+                <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">Messages</p>
+                {request.messages.length > 0 && (
+                  <span className="font-technical text-[10px] text-iris-dusk">{request.messages.length}</span>
+                )}
+              </div>
+              <MessageThread
+                requestId={request.id}
+                messages={request.messages}
+                isAdmin={false}
+              />
             </div>
 
           </div>

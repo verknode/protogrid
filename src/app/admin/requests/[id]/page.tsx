@@ -6,6 +6,7 @@ import { ArrowLeft, Paperclip, Download } from "lucide-react";
 import Link from "next/link";
 import { StatusSelector } from "@/components/admin/StatusSelector";
 import { NoteEditor } from "@/components/admin/NoteEditor";
+import { MessageThread } from "@/components/admin/MessageThread";
 
 const STATUS_LABEL: Record<string, string> = {
   NEW:       "New",
@@ -34,8 +35,9 @@ export default async function AdminRequestDetailPage({
   const request = await db.request.findUnique({
     where: { id },
     include: {
-      files: { orderBy: { createdAt: "asc" } },
-      user:  { select: { id: true } },
+      files:    { orderBy: { createdAt: "asc" } },
+      messages: { orderBy: { createdAt: "asc" } },
+      user:     { select: { id: true } },
     },
   });
 
@@ -146,6 +148,21 @@ export default async function AdminRequestDetailPage({
           <div className="px-5 py-4">
             <StatusSelector requestId={request.id} current={request.status} />
           </div>
+        </div>
+
+        {/* Chat */}
+        <div className="bg-surface border border-iris-dusk/40 rounded-sm">
+          <div className="px-5 py-3 border-b border-iris-dusk/15 flex items-center justify-between">
+            <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">Chat with client</p>
+            {request.messages.length > 0 && (
+              <span className="font-technical text-[10px] text-iris-dusk">{request.messages.length}</span>
+            )}
+          </div>
+          <MessageThread
+            requestId={request.id}
+            messages={request.messages}
+            isAdmin={true}
+          />
         </div>
 
         {/* Admin note */}

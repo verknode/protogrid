@@ -39,6 +39,35 @@ export async function updateRequestStatus(
   }
 }
 
+export async function sendMessage(
+  requestId: string,
+  body: string,
+  isAdmin: boolean,
+): Promise<{ success: true } | { error: string }> {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return { error: "Unauthorized" };
+  if (isAdmin && session.user.role !== "admin") return { error: "Unauthorized" };
+
+  const trimmed = body.trim();
+  if (!trimmed) return { error: "Message is empty" };
+
+  try {
+    await db.message.create({
+      data: {
+        requestId,
+        body: trimmed,
+        isAdmin,
+        authorId: session.user.id,
+      },
+    });
+    revalidatePath(`/admin/requests/${requestId}`);
+    revalidatePath(`/account/requests/${requestId}`);
+    return { success: true };
+  } catch {
+    return { error: "Failed to send message" };
+  }
+}
+
 export async function updateAdminNote(
   requestId: string,
   note: string,
