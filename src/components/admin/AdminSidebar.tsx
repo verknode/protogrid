@@ -20,29 +20,75 @@ export function AdminSidebar() {
     router.refresh();
   }
 
-  return (
-    <aside className="w-52 shrink-0 border-r border-iris-dusk/20 flex flex-col py-8 px-4 min-h-screen sticky top-0">
-      {/* Logo */}
-      <Link
-        href="/"
-        className="flex items-center gap-2 font-technical text-[12px] tracking-[0.18em] text-cold-pearl px-2 mb-2 hover:text-white transition-colors duration-150"
-      >
-        PROTOGRID
-      </Link>
-      <p className="font-technical text-[10px] tracking-[0.12em] uppercase text-iris-dusk px-2 mb-8">
-        Admin
-      </p>
+  function isActive(href: string) {
+    return pathname === href || pathname.startsWith(href + "/");
+  }
 
-      {/* Nav */}
-      <nav className="flex-1 space-y-0.5">
-        {navItems.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(href + "/");
-          return (
+  return (
+    <>
+      {/* Mobile top bar */}
+      <header className="lg:hidden shrink-0 border-b border-iris-dusk/20 h-14 flex items-center justify-between px-4">
+        <Link
+          href="/"
+          className="font-technical text-[12px] tracking-[0.18em] text-cold-pearl hover:text-white transition-colors duration-150"
+        >
+          PROTOGRID
+          <span className="ml-2 font-technical text-[10px] tracking-[0.12em] uppercase text-iris-dusk">
+            Admin
+          </span>
+        </Link>
+
+        <nav className="flex items-center gap-1">
+          {navItems.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`flex items-center gap-1.5 h-8 px-3 rounded-sm font-technical text-[11px] tracking-[0.06em] transition-colors duration-150 ${
+                isActive(href)
+                  ? "text-cold-pearl bg-iris-dusk/15"
+                  : "text-lavender-smoke hover:text-cold-pearl hover:bg-iris-dusk/10"
+              }`}
+            >
+              <Icon size={13} />
+              {label}
+            </Link>
+          ))}
+          <Link
+            href="/account"
+            title="My account"
+            className="flex items-center h-8 px-2 rounded-sm text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+          >
+            <ArrowLeft size={14} />
+          </Link>
+          <button
+            onClick={handleSignOut}
+            title="Sign out"
+            className="flex items-center h-8 px-2 rounded-sm text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+          >
+            <LogOut size={14} />
+          </button>
+        </nav>
+      </header>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex w-52 shrink-0 border-r border-iris-dusk/20 flex-col py-8 px-4 min-h-screen sticky top-0">
+        <Link
+          href="/"
+          className="font-technical text-[12px] tracking-[0.18em] text-cold-pearl px-2 mb-2 hover:text-white transition-colors duration-150"
+        >
+          PROTOGRID
+        </Link>
+        <p className="font-technical text-[10px] tracking-[0.12em] uppercase text-iris-dusk px-2 mb-8">
+          Admin
+        </p>
+
+        <nav className="flex-1 space-y-0.5">
+          {navItems.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
               className={`flex items-center gap-3 h-9 px-2 rounded-sm font-technical text-[11px] tracking-[0.06em] transition-colors duration-150 ${
-                active
+                isActive(href)
                   ? "text-cold-pearl bg-iris-dusk/15"
                   : "text-lavender-smoke hover:text-cold-pearl hover:bg-iris-dusk/10"
               }`}
@@ -50,27 +96,26 @@ export function AdminSidebar() {
               <Icon size={14} />
               {label}
             </Link>
-          );
-        })}
-      </nav>
+          ))}
+        </nav>
 
-      {/* Bottom actions */}
-      <div className="space-y-0.5 border-t border-iris-dusk/20 pt-4">
-        <Link
-          href="/account"
-          className="flex items-center gap-3 h-9 px-2 rounded-sm font-technical text-[11px] tracking-[0.06em] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
-        >
-          <ArrowLeft size={14} />
-          My account
-        </Link>
-        <button
-          onClick={handleSignOut}
-          className="flex items-center gap-3 h-9 px-2 rounded-sm font-technical text-[11px] tracking-[0.06em] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150 w-full"
-        >
-          <LogOut size={14} />
-          Sign out
-        </button>
-      </div>
-    </aside>
+        <div className="space-y-0.5 border-t border-iris-dusk/20 pt-4">
+          <Link
+            href="/account"
+            className="flex items-center gap-3 h-9 px-2 rounded-sm font-technical text-[11px] tracking-[0.06em] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+          >
+            <ArrowLeft size={14} />
+            My account
+          </Link>
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-3 h-9 px-2 w-full rounded-sm font-technical text-[11px] tracking-[0.06em] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+          >
+            <LogOut size={14} />
+            Sign out
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }

@@ -127,23 +127,36 @@ export default async function AdminDashboardPage() {
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-iris-dusk/15">
-            {recent.map((req) => (
-              <div key={req.id} className="px-6 py-4 grid grid-cols-[1fr_1fr_120px_100px] gap-6 items-center">
-                <div>
-                  <p className="font-sans text-[13px] text-cold-pearl">{req.name}</p>
-                  <p className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">{req.email}</p>
-                </div>
-                <p className="font-sans text-[13px] text-lavender-smoke truncate">{req.message}</p>
-                <p className="font-technical text-[11px] tracking-[0.06em] text-lavender-smoke">
-                  {req.createdAt.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+          <>
+            {/* Desktop column headers */}
+            <div className="hidden lg:grid grid-cols-[1fr_1fr_120px_100px] gap-6 px-6 py-3 border-b border-iris-dusk/20 bg-iris-dusk/5">
+              {["Sender", "Task", "Date", "Status"].map((h) => (
+                <p key={h} className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">
+                  {h}
                 </p>
-                <span className="font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk border border-iris-dusk/40 rounded-full px-2 py-0.5 text-center">
-                  {STATUS_LABEL[req.status] ?? req.status}
-                </span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            <div className="divide-y divide-iris-dusk/15">
+              {recent.map((req) => (
+                <div
+                  key={req.id}
+                  className="px-6 py-4 flex flex-col gap-2 lg:grid lg:grid-cols-[1fr_1fr_120px_100px] lg:gap-6 lg:items-center"
+                >
+                  <div>
+                    <p className="font-sans text-[13px] text-cold-pearl">{req.name}</p>
+                    <p className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">{req.email}</p>
+                  </div>
+                  <p className="font-sans text-[13px] text-lavender-smoke line-clamp-2">{req.message}</p>
+                  <p className="font-technical text-[11px] tracking-[0.06em] text-lavender-smoke">
+                    {req.createdAt.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+                  </p>
+                  <span className="inline-flex font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk border border-iris-dusk/40 rounded-full px-2 py-0.5 w-fit">
+                    {STATUS_LABEL[req.status] ?? req.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

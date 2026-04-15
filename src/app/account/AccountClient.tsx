@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { Footer } from "@/components/home/Footer";
-import { LogOut, User, Inbox, AlertCircle } from "lucide-react";
+import { AlertCircle, LogOut, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 const STATUS_LABEL: Record<string, string> = {
   NEW:       "New",
@@ -14,19 +15,8 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 type SessionUser = { name: string; email: string; role: string };
-
-type RequestRow = {
-  id: string;
-  message: string;
-  status: string;
-  createdAt: Date;
-};
-
-type Props = {
-  user: SessionUser | null;
-  requests: RequestRow[];
-  dbUnavailable: boolean;
-};
+type RequestRow  = { id: string; message: string; status: string; createdAt: Date };
+type Props       = { user: SessionUser | null; requests: RequestRow[]; dbUnavailable: boolean };
 
 export function AccountClient({ user, requests, dbUnavailable }: Props) {
   const router = useRouter();
@@ -37,143 +27,125 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
     router.refresh();
   }
 
+  const isAdmin = user?.role === "admin";
+
   return (
     <>
       {/* Header */}
-      <section className="py-24 lg:py-32 border-b border-iris-dusk/20">
+      <section className="py-16 lg:py-24 border-b border-iris-dusk/20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <p className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-4">
+          <p className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-3">
             Account
           </p>
-          <h1 className="font-display font-bold text-[clamp(28px,4vw,52px)] leading-[1.08] tracking-[-0.02em] text-cold-pearl mb-2">
+          <h1 className="font-display font-bold text-[clamp(26px,4vw,40px)] leading-[1.08] tracking-[-0.02em] text-cold-pearl mb-1">
             {user?.name ?? "Your account"}
           </h1>
           {user?.email && (
-            <p className="font-sans text-[15px] text-lavender-smoke">{user.email}</p>
+            <p className="font-sans text-[14px] text-lavender-smoke">{user.email}</p>
           )}
         </div>
       </section>
 
-      <section className="py-16 lg:py-20 flex-1">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[260px_1fr] gap-10 lg:gap-16 items-start">
+      <section className="py-10 lg:py-14 flex-1">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="max-w-xl space-y-4">
 
-          {/* Sidebar */}
-          <div className="space-y-0.5">
-            <p className="font-technical text-[10px] tracking-[0.16em] uppercase text-iris-dusk mb-4 px-3">
-              Navigation
-            </p>
-            {[
-              { icon: User,  label: "Profile",     i: 0 },
-              { icon: Inbox, label: "My Requests",  i: 1 },
-            ].map(({ icon: Icon, label, i }) => (
-              <button
-                key={label}
-                className={`flex items-center gap-3 w-full h-10 px-3 rounded-sm font-technical text-[12px] tracking-[0.06em] transition-colors duration-150 ${
-                  i === 0
-                    ? "bg-iris-dusk/15 text-cold-pearl"
-                    : "text-lavender-smoke hover:text-cold-pearl hover:bg-iris-dusk/10"
-                }`}
-              >
-                <Icon size={14} />
-                {label}
-              </button>
-            ))}
-            <div className="pt-4 mt-3 border-t border-iris-dusk/20 space-y-0.5">
-              {user?.role === "admin" && (
-                <a
-                  href="/admin/dashboard"
-                  className="flex items-center gap-3 h-10 px-3 rounded-sm font-technical text-[12px] tracking-[0.06em] text-lavender-smoke hover:text-cold-pearl hover:bg-iris-dusk/10 transition-colors duration-150"
-                >
-                  Admin panel →
-                </a>
-              )}
-              <button
-                onClick={handleSignOut}
-                className="flex items-center gap-3 w-full h-10 px-3 rounded-sm font-technical text-[12px] tracking-[0.06em] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
-              >
-                <LogOut size={14} />
-                Sign out
-              </button>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="space-y-6">
+            {/* DB warning */}
             {dbUnavailable && (
               <div className="border border-iris-dusk/40 rounded-sm px-5 py-4 flex items-start gap-3">
-                <AlertCircle size={15} className="text-lavender-smoke shrink-0 mt-0.5" />
+                <AlertCircle size={14} className="text-lavender-smoke shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-technical text-[11px] tracking-[0.08em] uppercase text-lavender-smoke mb-1">
+                  <p className="font-technical text-[10px] tracking-[0.1em] uppercase text-lavender-smoke mb-1">
                     Database not connected
                   </p>
                   <p className="font-sans text-[13px] leading-[1.6] text-iris-dusk">
-                    Set <code className="font-technical text-lavender-smoke">DATABASE_URL</code> in your{" "}
-                    <code className="font-technical text-lavender-smoke">.env</code> and restart.
+                    Set <code className="font-technical text-lavender-smoke">DATABASE_URL</code> and restart.
                   </p>
                 </div>
               </div>
             )}
 
+            {/* Admin entry point */}
+            {isAdmin && (
+              <Link
+                href="/admin/dashboard"
+                className="flex items-center justify-between px-5 py-4 border border-iris-dusk/35 rounded-sm hover:border-iris-dusk/60 transition-colors duration-150 group"
+              >
+                <div>
+                  <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-lavender-smoke mb-0.5">
+                    Admin
+                  </p>
+                  <p className="font-sans text-[13px] text-cold-pearl">
+                    Open admin panel
+                  </p>
+                </div>
+                <ChevronRight size={14} className="text-iris-dusk group-hover:text-lavender-smoke transition-colors duration-150" />
+              </Link>
+            )}
+
             {/* Profile */}
             <div className="border border-iris-dusk/25 rounded-sm">
-              <div className="px-6 py-4 border-b border-iris-dusk/20">
-                <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke">
+              <div className="px-5 py-3 border-b border-iris-dusk/15">
+                <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">
                   Profile
                 </p>
               </div>
               {user ? (
-                <div className="divide-y divide-iris-dusk/15">
+                <div className="divide-y divide-iris-dusk/10">
                   {[
                     { label: "Name",  value: user.name },
                     { label: "Email", value: user.email },
-                    { label: "Role",  value: user.role },
                   ].map(({ label, value }) => (
-                    <div key={label} className="px-6 py-4 grid grid-cols-[110px_1fr] gap-4">
-                      <p className="font-technical text-[11px] tracking-[0.1em] uppercase text-iris-dusk">
+                    <div key={label} className="px-5 py-3 flex items-center justify-between gap-6">
+                      <p className="font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk shrink-0">
                         {label}
                       </p>
-                      <p className="font-sans text-[14px] text-lavender-smoke">{value}</p>
+                      <p className="font-sans text-[13px] text-lavender-smoke text-right truncate">
+                        {value}
+                      </p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="px-6 py-10 text-center">
-                  <p className="font-sans text-[14px] text-lavender-smoke">
-                    Profile unavailable — database not connected.
+                <div className="px-5 py-8">
+                  <p className="font-sans text-[13px] text-lavender-smoke">
+                    Profile unavailable.
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Submitted requests */}
+            {/* Requests */}
             <div className="border border-iris-dusk/25 rounded-sm">
-              <div className="px-6 py-4 border-b border-iris-dusk/20 flex items-center justify-between">
-                <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke">
+              <div className="px-5 py-3 border-b border-iris-dusk/15 flex items-center justify-between">
+                <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk">
                   Submitted Requests
                 </p>
                 {requests.length > 0 && (
-                  <span className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk">
+                  <span className="font-technical text-[10px] text-iris-dusk">
                     {requests.length}
                   </span>
                 )}
               </div>
 
               {requests.length === 0 ? (
-                <div className="px-6 py-10 text-center">
-                  <p className="font-sans text-[14px] text-lavender-smoke">
+                <div className="px-5 py-8">
+                  <p className="font-sans text-[13px] text-lavender-smoke">
                     {dbUnavailable
                       ? "Connect database to load your requests."
-                      : <>No requests yet.{" "}
-                          <a href="/contact" className="text-cold-pearl hover:text-white transition-colors duration-150">
+                      : (
+                        <>No requests yet.{" "}
+                          <Link href="/contact" className="text-cold-pearl hover:text-white transition-colors duration-150">
                             Send your first task →
-                          </a>
-                        </>}
+                          </Link>
+                        </>
+                      )}
                   </p>
                 </div>
               ) : (
-                <div className="divide-y divide-iris-dusk/15">
+                <div className="divide-y divide-iris-dusk/10">
                   {requests.map((req) => (
-                    <div key={req.id} className="px-6 py-4 flex items-start justify-between gap-4">
+                    <div key={req.id} className="px-5 py-4 flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <p className="font-sans text-[13px] text-lavender-smoke line-clamp-2 mb-1">
                           {req.message}
@@ -186,7 +158,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
                           })}
                         </p>
                       </div>
-                      <span className="shrink-0 font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk border border-iris-dusk/40 rounded-full px-2 py-0.5">
+                      <span className="shrink-0 font-technical text-[10px] tracking-[0.08em] uppercase text-iris-dusk border border-iris-dusk/35 rounded-full px-2 py-0.5 mt-0.5">
                         {STATUS_LABEL[req.status] ?? req.status}
                       </span>
                     </div>
@@ -194,6 +166,16 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
                 </div>
               )}
             </div>
+
+            {/* Sign out */}
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-2 font-technical text-[11px] tracking-[0.08em] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150 py-1"
+            >
+              <LogOut size={13} />
+              Sign out
+            </button>
+
           </div>
         </div>
       </section>
