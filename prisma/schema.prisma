@@ -68,6 +68,19 @@ model verification {
   @@unique([identifier, value])
 }
 
+// ─── Founder content ─────────────────────────────────────────────────────────
+
+model FounderProfile {
+  id          String   @id @default(cuid())
+  name        String   @default("Andrii Ustymenko")
+  title       String   @default("Founder · ProtoGrid")
+  shortBio    String   @db.Text
+  longText    String   @db.Text
+  imageUrl    String?
+  imageKey    String?
+  updatedAt   DateTime @updatedAt
+}
+
 // ─── Legal consent tracking ──────────────────────────────────────────────────
 
 model LegalConsent {

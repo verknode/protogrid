@@ -5,6 +5,14 @@ import { headers } from "next/headers";
 const f = createUploadthing();
 
 export const ourFileRouter = {
+  founderPhoto: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+    .middleware(async () => {
+      const session = await auth.api.getSession({ headers: await headers() });
+      if (!session?.user || session.user.role !== "admin") throw new Error("Unauthorized");
+      return { userId: session.user.id };
+    })
+    .onUploadComplete(async () => ({ ok: true })),
+
   requestAttachment: f({
     image: { maxFileSize: "8MB", maxFileCount: 5 },
     pdf:   { maxFileSize: "16MB", maxFileCount: 3 },
