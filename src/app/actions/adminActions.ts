@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { rateLimit } from "@/lib/ratelimit";
 import {
   notifyAdminNewMessage,
   notifyClientNewMessage,
@@ -66,6 +67,11 @@ export async function sendMessage(
 
   const trimmed = body.trim();
   if (!trimmed) return { error: "Message is empty" };
+
+  // 60 messages per user per hour
+  if (!rateLimit(`message:${session.user.id}`, 60, 3600)) {
+    return { error: "Too many messages. Please wait before sending more." };
+  }
 
   try {
     await db.message.create({

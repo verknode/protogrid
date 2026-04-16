@@ -2,6 +2,15 @@ import nodemailer from "nodemailer";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "protogrid.studio@gmail.com";
 
+function esc(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 function getTransporter() {
   const user = process.env.GMAIL_USER;
   const pass = process.env.GMAIL_APP_PASSWORD;
@@ -68,9 +77,9 @@ export async function sendVerificationEmail(opts: {
   const html = base(`
     <div class="box">
       <h1>Verify your email</h1>
-      <p>Hi ${opts.name}, thanks for creating an account. Click the button below to activate it.</p>
+      <p>Hi ${esc(opts.name)}, thanks for creating an account. Click the button below to activate it.</p>
       <hr class="divider">
-      <a class="btn" href="${opts.url}">Verify email →</a>
+      <a class="btn" href="${esc(opts.url)}">Verify email →</a>
       <p style="margin-top:16px;font-size:12px;color:#5a5b7a">This link expires in 24 hours. If you did not create an account, ignore this email.</p>
     </div>
   `);
@@ -92,12 +101,12 @@ export async function notifyAdminNewRequest(opts: {
     <div class="box">
       <h1>New request received</h1>
       <hr class="divider">
-      ${opts.title ? `<p class="label">Title</p><p class="value">${opts.title}</p>` : ""}
+      ${opts.title ? `<p class="label">Title</p><p class="value">${esc(opts.title)}</p>` : ""}
       <p class="label">From</p>
-      <p class="value">${opts.name} &lt;${opts.email}&gt;</p>
+      <p class="value">${esc(opts.name)} &lt;${esc(opts.email)}&gt;</p>
       <p class="label">Task</p>
-      <p class="value" style="white-space:pre-line">${opts.message}</p>
-      <a class="btn" href="https://protogrid.no/admin/requests/${opts.requestId}">Open request →</a>
+      <p class="value" style="white-space:pre-line">${esc(opts.message)}</p>
+      <a class="btn" href="https://protogrid.no/admin/requests/${esc(opts.requestId)}">Open request →</a>
     </div>
   `);
   await send(ADMIN_EMAIL, subject, html);
@@ -117,11 +126,11 @@ export async function notifyAdminNewMessage(opts: {
       <h1>New message from client</h1>
       <hr class="divider">
       <p class="label">From</p>
-      <p class="value">${opts.name} &lt;${opts.email}&gt;</p>
-      ${opts.title ? `<p class="label">Request</p><p class="value">${opts.title}</p>` : ""}
+      <p class="value">${esc(opts.name)} &lt;${esc(opts.email)}&gt;</p>
+      ${opts.title ? `<p class="label">Request</p><p class="value">${esc(opts.title)}</p>` : ""}
       <p class="label">Message</p>
-      <p class="value" style="white-space:pre-line">${opts.body}</p>
-      <a class="btn" href="https://protogrid.no/admin/requests/${opts.requestId}">View conversation →</a>
+      <p class="value" style="white-space:pre-line">${esc(opts.body)}</p>
+      <a class="btn" href="https://protogrid.no/admin/requests/${esc(opts.requestId)}">View conversation →</a>
     </div>
   `);
   await send(ADMIN_EMAIL, subject, html);
@@ -139,12 +148,12 @@ export async function notifyClientNewMessage(opts: {
   const html = base(`
     <div class="box">
       <h1>You have a new reply</h1>
-      <p>Hi ${opts.clientName}, ProtoGrid has sent you a message regarding your request.</p>
+      <p>Hi ${esc(opts.clientName)}, ProtoGrid has sent you a message regarding your request.</p>
       <hr class="divider">
-      ${opts.title ? `<p class="label">Request</p><p class="value">${opts.title}</p>` : ""}
+      ${opts.title ? `<p class="label">Request</p><p class="value">${esc(opts.title)}</p>` : ""}
       <p class="label">Message</p>
-      <p class="value" style="white-space:pre-line">${opts.body}</p>
-      <a class="btn" href="https://protogrid.no/account/requests/${opts.requestId}">View &amp; reply →</a>
+      <p class="value" style="white-space:pre-line">${esc(opts.body)}</p>
+      <a class="btn" href="https://protogrid.no/account/requests/${esc(opts.requestId)}">View &amp; reply →</a>
     </div>
   `);
   await send(opts.to, subject, html);
@@ -171,13 +180,13 @@ export async function notifyClientStatusChange(opts: {
   const html = base(`
     <div class="box">
       <h1>Request status update</h1>
-      <p>Hi ${opts.clientName}, the status of your request has been updated.</p>
+      <p>Hi ${esc(opts.clientName)}, the status of your request has been updated.</p>
       <hr class="divider">
-      ${opts.title ? `<p class="label">Request</p><p class="value">${opts.title}</p>` : ""}
+      ${opts.title ? `<p class="label">Request</p><p class="value">${esc(opts.title)}</p>` : ""}
       <p class="label">New status</p>
-      <span class="badge">${label}</span>
+      <span class="badge">${esc(label)}</span>
       <br>
-      <a class="btn" href="https://protogrid.no/account/requests/${opts.requestId}">View request →</a>
+      <a class="btn" href="https://protogrid.no/account/requests/${esc(opts.requestId)}">View request →</a>
     </div>
   `);
   await send(opts.to, subject, html);

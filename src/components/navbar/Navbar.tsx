@@ -5,17 +5,19 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { NavAuthButton } from "./NavAuthButton";
+import { LanguageToggle } from "./LanguageToggle";
 import { useSession } from "@/lib/auth-client";
 import { PilotBadge } from "@/components/PilotBadge";
 
-const NAV_LINKS = [
-  { label: "Home",     href: "/" },
-  { label: "Services", href: "/services" },
-  { label: "Process",  href: "/process" },
-  { label: "Projects", href: "/projects" },
-  { label: "About",    href: "/about" },
-  { label: "Contact",  href: "/contact" },
+const NAV_HREFS = [
+  { key: "home",     href: "/" },
+  { key: "services", href: "/services" },
+  { key: "process",  href: "/process" },
+  { key: "projects", href: "/projects" },
+  { key: "about",    href: "/about" },
+  { key: "contact",  href: "/contact" },
 ] as const;
 
 export function Navbar() {
@@ -23,6 +25,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: session } = useSession();
+  const t = useTranslations("nav");
 
   // Admin has its own layout with AdminSidebar — no site Navbar needed
   if (pathname.startsWith("/admin")) return null;
@@ -63,7 +66,7 @@ export function Navbar() {
             className="hidden lg:flex flex-1 items-center justify-center gap-8"
             aria-label="Main navigation"
           >
-            {NAV_LINKS.map(({ label, href }) => (
+            {NAV_HREFS.map(({ key, href }) => (
               <Link
                 key={href}
                 href={href}
@@ -74,19 +77,20 @@ export function Navbar() {
                     : "text-lavender-smoke hover:text-cold-pearl",
                 ].join(" ")}
               >
-                {label}
+                {t(key)}
               </Link>
             ))}
           </nav>
 
-          {/* Desktop right: auth + CTA */}
+          {/* Desktop right: language + auth + CTA */}
           <div className="hidden lg:flex items-center gap-3 shrink-0">
+            <LanguageToggle />
             <NavAuthButton />
             <Link
               href="/contact"
               className="inline-flex items-center h-10 px-5 bg-cold-pearl text-ink-shadow text-[12px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-150 whitespace-nowrap"
             >
-              Request a Quote
+              {t("requestQuote")}
             </Link>
           </div>
 
@@ -95,7 +99,7 @@ export function Navbar() {
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
             className="lg:hidden ml-auto flex items-center justify-center w-8 h-8 text-cold-pearl -mr-1"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
             aria-expanded={menuOpen}
           >
             {menuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
@@ -117,7 +121,7 @@ export function Navbar() {
           >
             <nav aria-label="Mobile navigation" className="max-w-7xl mx-auto px-6">
               {/* Public links */}
-              {NAV_LINKS.map(({ label, href }) => (
+              {NAV_HREFS.map(({ key, href }) => (
                 <Link
                   key={href}
                   href={href}
@@ -128,7 +132,7 @@ export function Navbar() {
                     pathname === href ? "text-cold-pearl" : "text-lavender-smoke hover:text-cold-pearl",
                   ].join(" ")}
                 >
-                  {label}
+                  {t(key)}
                 </Link>
               ))}
 
@@ -139,14 +143,14 @@ export function Navbar() {
                     href="/account"
                     className="flex items-center h-12 font-technical text-[12px] tracking-[0.08em] border-b border-iris-dusk/15 text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
                   >
-                    Account
+                    {t("account")}
                   </Link>
                   {session.user.role === "admin" && (
                     <Link
                       href="/admin/dashboard"
                       className="flex items-center h-12 font-technical text-[12px] tracking-[0.08em] border-b border-iris-dusk/15 text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
                     >
-                      Admin
+                      {t("admin")}
                     </Link>
                   )}
                 </>
@@ -156,20 +160,21 @@ export function Navbar() {
                     href="/login"
                     className="flex items-center h-12 font-technical text-[12px] tracking-[0.08em] border-b border-iris-dusk/15 text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
                   >
-                    Sign in
+                    {t("signIn")}
                   </Link>
                   <Link
                     href="/register"
                     className="flex items-center h-12 font-technical text-[12px] tracking-[0.08em] border-b border-iris-dusk/15 text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
                   >
-                    Register
+                    {t("register")}
                   </Link>
                 </>
               )}
 
-              {/* Early access */}
-              <div className="py-3 border-t border-iris-dusk/15">
+              {/* Language + Early access */}
+              <div className="flex items-center justify-between py-3 border-t border-iris-dusk/15">
                 <PilotBadge variant="line" />
+                <LanguageToggle />
               </div>
 
               {/* Primary CTA */}
@@ -178,7 +183,7 @@ export function Navbar() {
                   href="/contact"
                   className="flex items-center justify-center h-12 w-full bg-cold-pearl text-ink-shadow text-[12px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-150"
                 >
-                  Request a Quote
+                  {t("requestQuote")}
                 </Link>
               </div>
             </nav>

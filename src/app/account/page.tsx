@@ -26,7 +26,7 @@ export default async function AccountPage() {
         where: {
           OR: [
             { userId: session.user.id },
-            { email: session.user.email },
+            ...(session.user.emailVerified ? [{ email: session.user.email, userId: null }] : []),
           ],
         },
         orderBy: { createdAt: "desc" },

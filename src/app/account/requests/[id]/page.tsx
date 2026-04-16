@@ -46,7 +46,7 @@ export default async function AccountRequestPage({
       id,
       OR: [
         { userId: session.user.id },
-        { email: session.user.email },
+        ...(session.user.emailVerified ? [{ email: session.user.email, userId: null }] : []),
       ],
     },
     include: {

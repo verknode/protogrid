@@ -26,8 +26,8 @@ export async function validateTurnstile(token: string | undefined | null, ip?: s
     const data = (await res.json()) as { success: boolean };
     return data.success === true;
   } catch {
-    // Network error — fail open to not block legitimate users
-    console.error("[turnstile] verification fetch failed");
-    return true;
+    // Network error — fail closed to prevent CAPTCHA bypass
+    console.error("[turnstile] verification fetch failed — blocking request");
+    return false;
   }
 }
