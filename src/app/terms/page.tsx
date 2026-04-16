@@ -8,7 +8,7 @@ export const metadata = {
 export default function TermsPage() {
   return (
     <main className="flex flex-col pt-16 min-h-screen">
-      <section className="py-8 lg:py-16 border-b border-iris-dusk/20">
+      <section className="py-12 lg:py-24 border-b border-iris-dusk/20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-4">
             Legal
@@ -22,7 +22,7 @@ export default function TermsPage() {
         </div>
       </section>
 
-      <section className="py-8 lg:py-16 flex-1">
+      <section className="py-12 lg:py-24 flex-1">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-[720px] prose-protogrid space-y-10">
 

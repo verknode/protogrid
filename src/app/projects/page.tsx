@@ -11,7 +11,7 @@ export default function ProjectsPage() {
   return (
     <main className="flex flex-col pt-16">
       {/* Page header */}
-      <section className="py-24 lg:py-32 border-b border-iris-dusk/20">
+      <section className="py-12 lg:py-24 border-b border-iris-dusk/20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-4">
             Projects

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -113,13 +114,16 @@ export function Projects() {
 
         {/* All projects link */}
         <motion.div {...fadeIn(0.2)} className="mt-8 flex justify-center">
-          <button className="group flex items-center gap-2 font-technical text-[12px] tracking-[0.08em] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150">
+          <Link
+            href="/projects"
+            className="group flex items-center gap-2 font-technical text-[12px] tracking-[0.08em] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+          >
             View all projects
             <ArrowRight
               size={13}
               className="transition-transform duration-150 group-hover:translate-x-[3px]"
             />
-          </button>
+          </Link>
         </motion.div>
       </div>
     </section>
