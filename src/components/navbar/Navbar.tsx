@@ -24,6 +24,9 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: session } = useSession();
 
+  // Admin has its own layout with AdminSidebar — no site Navbar needed
+  if (pathname.startsWith("/admin")) return null;
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
