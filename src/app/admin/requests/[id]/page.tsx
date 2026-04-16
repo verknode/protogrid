@@ -56,6 +56,11 @@ export default async function AdminRequestDetailPage({
       {/* Identity + status */}
       <div className="flex items-start justify-between gap-4 flex-wrap mb-8">
         <div>
+          {request.title && (
+            <p className="font-technical text-[10px] tracking-[0.12em] uppercase text-lavender-smoke mb-1">
+              {request.title}
+            </p>
+          )}
           <h1 className="font-display font-bold text-[clamp(20px,2.5vw,28px)] leading-[1.1] text-cold-pearl mb-1">
             {request.name}
           </h1>

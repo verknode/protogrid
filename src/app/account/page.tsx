@@ -11,6 +11,7 @@ export default async function AccountPage() {
   let dbUnavailable = false;
   let requests: Array<{
     id: string;
+    title: string | null;
     message: string;
     status: string;
     createdAt: Date;
@@ -31,6 +32,7 @@ export default async function AccountPage() {
         orderBy: { createdAt: "desc" },
         select: {
           id: true,
+          title: true,
           message: true,
           status: true,
           createdAt: true,

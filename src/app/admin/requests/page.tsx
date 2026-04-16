@@ -36,6 +36,7 @@ export default async function AdminRequestsPage({
   let dbUnavailable = false;
   let requests: Array<{
     id: string;
+    title: string | null;
     name: string;
     email: string;
     message: string;
@@ -53,6 +54,7 @@ export default async function AdminRequestsPage({
         ...(q && q.trim()
           ? {
               OR: [
+                { title:   { contains: q, mode: "insensitive" } },
                 { name:    { contains: q, mode: "insensitive" } },
                 { email:   { contains: q, mode: "insensitive" } },
                 { message: { contains: q, mode: "insensitive" } },
@@ -63,7 +65,7 @@ export default async function AdminRequestsPage({
       orderBy: { createdAt: sort === "oldest" ? "asc" : "desc" },
       take: 100,
       select: {
-        id: true, name: true, email: true, message: true,
+        id: true, title: true, name: true, email: true, message: true,
         dimensions: true, deadline: true, status: true, createdAt: true,
         files: { select: { id: true } },
       },
@@ -203,7 +205,10 @@ export default async function AdminRequestsPage({
                   <p className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">{req.email}</p>
                 </div>
                 <div>
-                  <p className="font-sans text-[13px] text-lavender-smoke line-clamp-2">{req.message}</p>
+                  {req.title && (
+                    <p className="font-sans text-[13px] text-cold-pearl truncate mb-0.5">{req.title}</p>
+                  )}
+                  <p className="font-sans text-[13px] text-lavender-smoke line-clamp-1">{req.message}</p>
                   {(req.dimensions || req.deadline) && (
                     <p className="font-technical text-[10px] tracking-[0.06em] text-iris-dusk mt-0.5">
                       {[req.dimensions && `dim: ${req.dimensions}`, req.deadline && `by: ${req.deadline}`]

@@ -8,7 +8,7 @@ import { z } from "zod";
 import { submitRequest } from "@/app/actions/submitRequest";
 import { useSession } from "@/lib/auth-client";
 import { useUploadThing } from "@/lib/uploadthing-client";
-import { Paperclip, X, Download } from "lucide-react";
+import { Paperclip, X, CheckCircle, Upload } from "lucide-react";
 import Link from "next/link";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -23,8 +23,9 @@ function fadeIn(delay = 0) {
 }
 
 const schema = z.object({
-  name:       z.string().min(2, "Required"),
-  email:      z.string().email("Invalid email"),
+  title:      z.string().min(2, "Add a short project title"),
+  name:       z.string().optional(),
+  email:      z.string().optional(),
   message:    z.string().min(10, "Please describe your task"),
   dimensions: z.string().optional(),
   deadline:   z.string().optional(),
@@ -54,6 +55,7 @@ const labelClass =
 
 export function Contact() {
   const { data: session, isPending } = useSession();
+  const isLoggedIn = !isPending && !!session;
   const [sent, setSent]                   = useState(false);
   const [sentId, setSentId]               = useState<string | null>(null);
   const [serverError, setServerError]     = useState<string | null>(null);
@@ -74,7 +76,12 @@ export function Contact() {
       setUploadError(null);
     },
     onUploadError(err) {
-      setUploadError(err.message ?? "Upload failed. Please try again.");
+      const msg = err.message ?? "Upload failed";
+      // Filter out raw JSON / technical error details
+      const clean = msg.includes("{") || msg.includes("FileSizeMismatch")
+        ? "Upload failed. Check file size and try again."
+        : msg;
+      setUploadError(clean);
     },
   });
 
@@ -82,7 +89,9 @@ export function Contact() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
 
   async function onSubmit(data: FormData) {
     setServerError(null);
@@ -149,20 +158,34 @@ export function Contact() {
           <motion.div {...fadeIn(0.1)}>
             {sent ? (
               <div className="bg-surface border border-iris-dusk/40 rounded-sm p-8">
-                <p className="font-display font-bold text-[20px] text-cold-pearl mb-2">
-                  Request received.
-                </p>
-                <p className="font-sans text-[14px] text-lavender-smoke mb-4">
-                  We will review it and get back to you within 1 business day.
-                </p>
-                {sentId && (
-                  <Link
-                    href={`/account/requests/${sentId}`}
-                    className="font-technical text-[12px] tracking-[0.08em] text-iris-dusk hover:text-lavender-smoke transition-colors duration-150"
+                <div className="flex items-start gap-3 mb-4">
+                  <CheckCircle size={18} className="text-cold-pearl shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-display font-bold text-[20px] text-cold-pearl mb-1">
+                      Request received
+                    </p>
+                    <p className="font-sans text-[14px] text-lavender-smoke">
+                      We will review it and get back to you within 1 business day.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-3 mt-6">
+                  {sentId && (
+                    <Link
+                      href={`/account/requests/${sentId}`}
+                      className="h-10 px-5 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-200 inline-flex items-center"
+                    >
+                      View request
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => { setSent(false); setSentId(null); setUploadedFiles([]); }}
+                    className="h-10 px-5 border border-iris-dusk/40 text-lavender-smoke text-[13px] font-technical tracking-[0.06em] rounded-sm hover:border-iris-dusk/60 hover:text-cold-pearl transition-colors duration-150 inline-flex items-center"
                   >
-                    View in account →
-                  </Link>
-                )}
+                    Submit another
+                  </button>
+                </div>
               </div>
             ) : !isPending && !session ? (
               <div className="bg-surface border border-iris-dusk/40 rounded-sm p-8">
@@ -191,23 +214,52 @@ export function Contact() {
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
 
-                {/* Name + Email */}
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className={labelClass}>Name</label>
-                    <input {...register("name")} type="text" placeholder="Your name" className={inputClass} />
-                    {errors.name && (
-                      <p className="mt-1.5 font-technical text-[11px] text-red-400">{errors.name.message}</p>
-                    )}
+                {/* Logged-in context */}
+                {isLoggedIn && (
+                  <div className="flex items-center gap-3 py-3 px-4 border border-iris-dusk/20 rounded-sm">
+                    <div className="w-8 h-8 rounded-full bg-iris-dusk/20 flex items-center justify-center font-technical text-[11px] text-lavender-smoke uppercase">
+                      {session.user.name?.charAt(0) ?? "?"}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-sans text-[13px] text-cold-pearl truncate">{session.user.name}</p>
+                      <p className="font-technical text-[10px] text-iris-dusk truncate">{session.user.email}</p>
+                    </div>
                   </div>
-                  <div>
-                    <label className={labelClass}>Email</label>
-                    <input {...register("email")} type="email" placeholder="you@example.com" className={inputClass} />
-                    {errors.email && (
-                      <p className="mt-1.5 font-technical text-[11px] text-red-400">{errors.email.message}</p>
-                    )}
-                  </div>
+                )}
+
+                {/* Project title */}
+                <div>
+                  <label className={labelClass}>Project title</label>
+                  <input
+                    {...register("title")}
+                    type="text"
+                    placeholder="e.g. Custom enclosure for sensor board"
+                    className={inputClass}
+                  />
+                  {errors.title && (
+                    <p className="mt-1.5 font-technical text-[11px] text-red-400">{errors.title.message}</p>
+                  )}
                 </div>
+
+                {/* Name + Email (guests only) */}
+                {!isLoggedIn && (
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <div>
+                      <label className={labelClass}>Name</label>
+                      <input {...register("name")} type="text" placeholder="Your name" className={inputClass} />
+                      {errors.name && (
+                        <p className="mt-1.5 font-technical text-[11px] text-red-400">{errors.name.message}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className={labelClass}>Email</label>
+                      <input {...register("email")} type="email" placeholder="you@example.com" className={inputClass} />
+                      {errors.email && (
+                        <p className="mt-1.5 font-technical text-[11px] text-red-400">{errors.email.message}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Task description */}
                 <div>
@@ -230,7 +282,7 @@ export function Contact() {
                       Dimensions{" "}
                       <span className="text-iris-dusk normal-case tracking-normal">optional</span>
                     </label>
-                    <input {...register("dimensions")} type="text" placeholder="e.g. 120 × 80 × 40 mm" className={inputClass} />
+                    <input {...register("dimensions")} type="text" placeholder="e.g. 120 x 80 x 40 mm" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>
@@ -244,48 +296,37 @@ export function Contact() {
                 {/* File attachments */}
                 <div>
                   <label className={labelClass}>
-                    Files{" "}
+                    Attachments{" "}
                     <span className="text-iris-dusk normal-case tracking-normal">optional</span>
                   </label>
-                  <div className="border border-iris-dusk/40 rounded-sm p-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <p className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">
-                        Images, PDF, CAD (.dxf .stl .step…) · Max 32 MB
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={isUploading}
-                        className="flex items-center gap-1.5 h-8 px-3 border border-iris-dusk/40 rounded-sm font-technical text-[11px] tracking-[0.08em] text-lavender-smoke hover:border-iris-dusk/60 hover:text-cold-pearl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 shrink-0"
-                      >
-                        <Paperclip size={12} />
-                        {isUploading ? "Uploading…" : "Attach"}
-                      </button>
-                    </div>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      multiple
-                      accept="image/*,.pdf,.dxf,.dwg,.step,.stp,.stl,.iges,.igs,.3dm,.obj"
-                      onChange={handleFileChange}
-                      className="hidden"
-                    />
-                    {uploadError && (
-                      <p className="mt-3 font-technical text-[11px] text-red-400">{uploadError}</p>
-                    )}
-                    {uploadedFiles.length > 0 && (
-                      <div className="mt-3 space-y-1.5 border-t border-iris-dusk/15 pt-3">
+
+                  {uploadedFiles.length === 0 && !isUploading ? (
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full border border-dashed border-iris-dusk/40 rounded-sm py-6 flex flex-col items-center gap-2 hover:border-iris-dusk/60 transition-colors duration-150 group"
+                    >
+                      <Upload size={18} className="text-iris-dusk group-hover:text-lavender-smoke transition-colors duration-150" />
+                      <span className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk group-hover:text-lavender-smoke transition-colors duration-150">
+                        Click to attach files
+                      </span>
+                      <span className="font-technical text-[10px] text-iris-dusk/60">
+                        PNG, JPG, PDF, STL, STEP, DXF, OBJ — max 32 MB per file
+                      </span>
+                    </button>
+                  ) : (
+                    <div className="border border-iris-dusk/40 rounded-sm">
+                      {/* File list */}
+                      <div className="divide-y divide-iris-dusk/10">
                         {uploadedFiles.map((file) => (
-                          <div key={file.key} className="flex items-center gap-3">
-                            <div className="flex items-center gap-2 min-w-0 flex-1">
-                              <Download size={11} className="text-iris-dusk shrink-0" />
-                              <span className="font-technical text-[11px] tracking-[0.04em] text-lavender-smoke truncate">
-                                {file.name}
-                              </span>
-                              <span className="font-technical text-[10px] text-iris-dusk shrink-0">
-                                {formatBytes(file.size)}
-                              </span>
-                            </div>
+                          <div key={file.key} className="flex items-center gap-3 px-4 py-2.5">
+                            <Paperclip size={11} className="text-iris-dusk shrink-0" />
+                            <span className="font-technical text-[11px] tracking-[0.04em] text-lavender-smoke truncate flex-1 min-w-0">
+                              {file.name}
+                            </span>
+                            <span className="font-technical text-[10px] text-iris-dusk shrink-0">
+                              {formatBytes(file.size)}
+                            </span>
                             <button
                               type="button"
                               onClick={() => removeFile(file.key)}
@@ -295,9 +336,38 @@ export function Contact() {
                             </button>
                           </div>
                         ))}
+                        {isUploading && (
+                          <div className="px-4 py-2.5 flex items-center gap-2">
+                            <div className="w-3 h-3 border border-iris-dusk/60 border-t-lavender-smoke rounded-full animate-spin" />
+                            <span className="font-technical text-[11px] text-iris-dusk">Uploading...</span>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
+                      {/* Add more */}
+                      <div className="px-4 py-2.5 border-t border-iris-dusk/15">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={isUploading}
+                          className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk hover:text-lavender-smoke disabled:opacity-40 transition-colors duration-150"
+                        >
+                          + Add more files
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept=".png,.jpg,.jpeg,.gif,.webp,.svg,.pdf,.dxf,.dwg,.step,.stp,.stl,.iges,.igs,.3dm,.obj"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  {uploadError && (
+                    <p className="mt-2 font-technical text-[11px] text-red-400">{uploadError}</p>
+                  )}
                 </div>
 
                 {serverError && (
@@ -309,7 +379,7 @@ export function Contact() {
                   disabled={isSubmitting || isUploading}
                   className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 w-full sm:w-auto"
                 >
-                  {isUploading ? "Uploading files…" : isSubmitting ? "Sending…" : "Send request"}
+                  {isUploading ? "Uploading files..." : isSubmitting ? "Sending..." : "Send request"}
                 </button>
               </form>
             )}

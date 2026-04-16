@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { Footer } from "@/components/home/Footer";
-import { AlertCircle, LogOut, ChevronRight, Paperclip } from "lucide-react";
+import { AlertCircle, LogOut, ChevronRight, Paperclip, Send } from "lucide-react";
 import Link from "next/link";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -16,7 +16,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 type SessionUser = { name: string; email: string; role: string };
 type FileInfo    = { id: string; name: string; url: string };
-type RequestRow  = { id: string; message: string; status: string; createdAt: Date; files: FileInfo[] };
+type RequestRow  = { id: string; title: string | null; message: string; status: string; createdAt: Date; files: FileInfo[] };
 type Props       = { user: SessionUser | null; requests: RequestRow[]; dbUnavailable: boolean };
 
 export function AccountClient({ user, requests, dbUnavailable }: Props) {
@@ -118,18 +118,30 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
               </div>
 
               {requests.length === 0 ? (
-                <div className="px-5 py-8">
-                  <p className="font-sans text-[13px] text-lavender-smoke">
-                    {dbUnavailable
-                      ? "Connect database to load your requests."
-                      : (
-                        <>No requests yet.{" "}
-                          <Link href="/contact" className="text-cold-pearl hover:text-white transition-colors duration-150">
-                            Send your first task →
-                          </Link>
-                        </>
-                      )}
-                  </p>
+                <div className="px-5 py-10 flex flex-col items-center text-center">
+                  {dbUnavailable ? (
+                    <p className="font-sans text-[13px] text-lavender-smoke">
+                      Connect database to load your requests.
+                    </p>
+                  ) : (
+                    <>
+                      <div className="w-10 h-10 rounded-full border border-iris-dusk/30 flex items-center justify-center mb-4">
+                        <Send size={16} className="text-iris-dusk" />
+                      </div>
+                      <p className="font-display font-semibold text-[16px] text-cold-pearl mb-1.5">
+                        No requests yet
+                      </p>
+                      <p className="font-sans text-[13px] text-lavender-smoke mb-5 max-w-[28ch]">
+                        Send your first task and we will get back to you within 1 business day.
+                      </p>
+                      <Link
+                        href="/contact"
+                        className="h-10 px-5 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-200 inline-flex items-center"
+                      >
+                        Create a request
+                      </Link>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="divide-y divide-iris-dusk/10">
@@ -140,9 +152,16 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
                       className="block px-5 py-4 hover:bg-iris-dusk/5 transition-colors duration-150 group"
                     >
                       <div className="flex items-start justify-between gap-4 mb-2">
-                        <p className="font-sans text-[13px] text-lavender-smoke line-clamp-2 flex-1">
-                          {req.message}
-                        </p>
+                        <div className="flex-1 min-w-0">
+                          {req.title && (
+                            <p className="font-sans text-[13px] text-cold-pearl truncate mb-0.5">
+                              {req.title}
+                            </p>
+                          )}
+                          <p className="font-sans text-[13px] text-lavender-smoke line-clamp-1">
+                            {req.message}
+                          </p>
+                        </div>
                         <span className="shrink-0 font-technical text-[10px] tracking-[0.08em] uppercase text-iris-dusk border border-iris-dusk/35 rounded-full px-2 py-0.5">
                           {STATUS_LABEL[req.status] ?? req.status}
                         </span>

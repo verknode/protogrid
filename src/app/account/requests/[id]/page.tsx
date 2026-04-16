@@ -75,6 +75,9 @@ export default async function AccountRequestPage({
               <p className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-2">
                 Request
               </p>
+              {request.title && (
+                <p className="font-sans text-[15px] text-cold-pearl mb-1">{request.title}</p>
+              )}
               <p className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk">
                 {new Date(request.createdAt).toLocaleDateString("en-GB", {
                   day: "2-digit", month: "short", year: "numeric",

@@ -14,8 +14,9 @@ const fileSchema = z.object({
 });
 
 const schema = z.object({
-  name:       z.string().min(2),
-  email:      z.string().email(),
+  title:      z.string().min(2, "Please add a project title").optional(),
+  name:       z.string().min(2).optional(),
+  email:      z.string().email().optional(),
   message:    z.string().min(10),
   dimensions: z.string().optional(),
   deadline:   z.string().optional(),
@@ -35,22 +36,36 @@ export async function submitRequest(
   }
 
   let userId: string | undefined;
+  let sessionName: string | undefined;
+  let sessionEmail: string | undefined;
+
   try {
     const session = await auth.api.getSession({ headers: await headers() });
-    if (session?.user?.id) userId = session.user.id;
+    if (session?.user) {
+      userId = session.user.id;
+      sessionName = session.user.name;
+      sessionEmail = session.user.email;
+    }
   } catch {
     // submit anonymously
   }
 
+  const { files = [], name, email, ...fields } = parsed.data;
+  const finalName = name || sessionName;
+  const finalEmail = email || sessionEmail;
+
+  if (!finalName || !finalEmail) {
+    return { error: "Name and email are required." };
+  }
+
   try {
-    const { files = [], ...fields } = parsed.data;
     const request = await db.request.create({
       data: {
         ...fields,
+        name: finalName,
+        email: finalEmail,
         ...(userId ? { userId } : {}),
-        ...(files.length > 0
-          ? { files: { create: files } }
-          : {}),
+        ...(files.length > 0 ? { files: { create: files } } : {}),
       },
     });
     return { success: true, id: request.id };

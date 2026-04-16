@@ -21,6 +21,7 @@ export default async function AdminDashboardPage() {
   let stats = { NEW: 0, IN_REVIEW: 0, ACCEPTED: 0, DONE: 0 };
   let recent: Array<{
     id: string;
+    title: string | null;
     name: string;
     email: string;
     message: string;
@@ -42,6 +43,7 @@ export default async function AdminDashboardPage() {
           take: 10,
           select: {
             id: true,
+            title: true,
             name: true,
             email: true,
             message: true,
@@ -147,7 +149,10 @@ export default async function AdminDashboardPage() {
                     <p className="font-sans text-[13px] text-cold-pearl">{req.name}</p>
                     <p className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">{req.email}</p>
                   </div>
-                  <p className="font-sans text-[13px] text-lavender-smoke line-clamp-2">{req.message}</p>
+                  <div>
+                    {req.title && <p className="font-sans text-[13px] text-cold-pearl truncate mb-0.5">{req.title}</p>}
+                    <p className="font-sans text-[13px] text-lavender-smoke line-clamp-1">{req.message}</p>
+                  </div>
                   <p className="font-technical text-[11px] tracking-[0.06em] text-lavender-smoke">
                     {req.createdAt.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
                   </p>
