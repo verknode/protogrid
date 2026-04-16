@@ -26,6 +26,15 @@ export function Hero() {
             ENGINEERING STUDIO · PROTOTYPING · FABRICATION
           </motion.p>
 
+          <motion.div {...fadeUp(0.04)} className="inline-flex items-center gap-2 mb-5">
+            <span className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk border border-iris-dusk/35 rounded-full px-3 py-1">
+              Early Access
+            </span>
+            <span className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">
+              Platform in active development
+            </span>
+          </motion.div>
+
           <motion.h1
             {...fadeUp(0.1)}
             className="font-display font-bold text-[clamp(42px,6vw,72px)] leading-[1.05] tracking-[-0.02em] text-cold-pearl mb-6"

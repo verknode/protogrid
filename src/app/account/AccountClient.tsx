@@ -106,6 +106,11 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
               )}
             </div>
 
+            {/* Early access notice */}
+            <p className="font-technical text-[10px] tracking-[0.08em] text-iris-dusk/60 px-1">
+              EARLY ACCESS · Some platform features are still being refined.
+            </p>
+
             {/* Requests */}
             <div className="bg-surface border border-iris-dusk/40 rounded-sm">
               <div className="px-5 py-3 border-b border-iris-dusk/15 flex items-center justify-between">

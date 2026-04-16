@@ -57,6 +57,11 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Early access notice */}
+        <p className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk/70 mb-6">
+          Early Access · The request flow and client area are being actively refined.
+        </p>
+
         {/* Bottom bar */}
         <div className="border-t border-iris-dusk/20 pt-6 flex flex-col sm:flex-row justify-between gap-3">
           <p className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk">
