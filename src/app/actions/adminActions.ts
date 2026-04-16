@@ -110,6 +110,21 @@ export async function sendMessage(
   }
 }
 
+export async function deleteRequest(
+  requestId: string,
+): Promise<{ success: true } | { error: string }> {
+  await requireAdmin();
+
+  try {
+    await db.request.delete({ where: { id: requestId } });
+    revalidatePath("/admin/requests");
+    revalidatePath("/admin/dashboard");
+    return { success: true };
+  } catch {
+    return { error: "Failed to delete request" };
+  }
+}
+
 export async function updateAdminNote(
   requestId: string,
   note: string,

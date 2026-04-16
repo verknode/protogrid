@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Inbox, User, LogOut, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Inbox, Users, User, LogOut, ArrowLeft } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
 import { PilotBadge } from "@/components/PilotBadge";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/requests",  label: "Requests",  icon: Inbox },
+  { href: "/admin/clients",   label: "Clients",   icon: Users },
   { href: "/admin/founder",   label: "Founder",   icon: User },
 ];
 

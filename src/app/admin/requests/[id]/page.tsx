@@ -7,6 +7,7 @@ import Link from "next/link";
 import { StatusSelector } from "@/components/admin/StatusSelector";
 import { NoteEditor } from "@/components/admin/NoteEditor";
 import { MessageThread } from "@/components/admin/MessageThread";
+import { DeleteRequestButton } from "@/components/admin/DeleteRequestButton";
 
 const STATUS_LABEL: Record<string, string> = {
   NEW:       "New",
@@ -178,6 +179,14 @@ export default async function AdminRequestDetailPage({
           <div className="px-5 py-4">
             <NoteEditor requestId={request.id} initialNote={request.adminNote} />
           </div>
+        </div>
+
+        {/* Danger zone */}
+        <div className="border border-iris-dusk/20 rounded-sm px-5 py-4 flex items-center justify-between gap-4">
+          <p className="font-technical text-[10px] tracking-[0.12em] uppercase text-iris-dusk">
+            Danger zone
+          </p>
+          <DeleteRequestButton requestId={request.id} />
         </div>
 
       </div>
