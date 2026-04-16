@@ -8,10 +8,10 @@
  */
 
 const PILL =
-  "inline-flex items-center font-technical text-[10px] tracking-[0.13em] uppercase text-iris-dusk border border-iris-dusk/35 rounded-full px-2.5 py-0.5";
+  "inline-flex items-center font-technical text-[10px] tracking-[0.13em] uppercase text-red-400 border border-red-400/40 rounded-full px-2.5 py-0.5";
 
 const SUPPORTING =
-  "font-technical text-[11px] tracking-[0.04em] text-iris-dusk";
+  "font-technical text-[11px] tracking-[0.04em] text-red-400/80";
 
 type Variant = "hero" | "row" | "line";
 
@@ -29,7 +29,7 @@ export function PilotBadge({ variant = "row" }: { variant?: Variant }) {
 
   if (variant === "line") {
     return (
-      <span className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk/70">
+      <span className="font-technical text-[11px] tracking-[0.06em] text-red-400/70">
         Early Access · Platform in pilot phase
       </span>
     );
