@@ -3,10 +3,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-
-/** Current versions — bump when legal text changes */
-export const CURRENT_TERMS_VERSION = "1.0";
-export const CURRENT_PRIVACY_VERSION = "1.0";
+import { CURRENT_TERMS_VERSION, CURRENT_PRIVACY_VERSION } from "@/lib/legal-versions";
 
 export async function recordLegalConsent(): Promise<
   { success: true } | { error: string }

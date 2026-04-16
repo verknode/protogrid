@@ -6,7 +6,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signUp, signIn } from "@/lib/auth-client";
-import { recordLegalConsent, CURRENT_TERMS_VERSION, CURRENT_PRIVACY_VERSION } from "@/app/actions/recordConsent";
+import { recordLegalConsent } from "@/app/actions/recordConsent";
+import { CURRENT_TERMS_VERSION } from "@/lib/legal-versions";
 import Link from "next/link";
 
 const schema = z
