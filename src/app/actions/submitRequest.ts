@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { notifyAdminNewRequest } from "@/lib/email";
+import { validateTurnstile } from "@/lib/turnstile";
+import { rateLimit } from "@/lib/ratelimit";
 
 const fileSchema = z.object({
   name: z.string(),
@@ -15,13 +17,14 @@ const fileSchema = z.object({
 });
 
 const schema = z.object({
-  title:      z.string().min(2, "Please add a project title").optional(),
-  name:       z.string().min(2).optional(),
-  email:      z.string().email().optional(),
-  message:    z.string().min(10),
-  dimensions: z.string().optional(),
-  deadline:   z.string().optional(),
-  files:      z.array(fileSchema).optional(),
+  title:          z.string().min(2, "Please add a project title").optional(),
+  name:           z.string().min(2).optional(),
+  email:          z.string().email().optional(),
+  message:        z.string().min(10),
+  dimensions:     z.string().optional(),
+  deadline:       z.string().optional(),
+  files:          z.array(fileSchema).optional(),
+  turnstileToken: z.string().optional(),
 });
 
 export type SubmitRequestResult =
@@ -36,12 +39,25 @@ export async function submitRequest(
     return { error: "Invalid form data. Please check all fields." };
   }
 
+  const hdrs = await headers();
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
+
+  // 5 submissions per IP per hour
+  if (!rateLimit(`submitRequest:${ip}`, 5, 3600)) {
+    return { error: "Too many requests. Please try again later." };
+  }
+
+  const valid = await validateTurnstile(parsed.data.turnstileToken, ip);
+  if (!valid) {
+    return { error: "Security check failed. Please reload and try again." };
+  }
+
   let userId: string | undefined;
   let sessionName: string | undefined;
   let sessionEmail: string | undefined;
 
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await auth.api.getSession({ headers: hdrs });
     if (session?.user) {
       userId = session.user.id;
       sessionName = session.user.name;
@@ -51,7 +67,7 @@ export async function submitRequest(
     // submit anonymously
   }
 
-  const { files = [], name, email, ...fields } = parsed.data;
+  const { files = [], name, email, turnstileToken: _token, ...fields } = parsed.data;
   const finalName = name || sessionName;
   const finalEmail = email || sessionEmail;
 
