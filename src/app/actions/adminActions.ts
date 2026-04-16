@@ -4,6 +4,11 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import {
+  notifyAdminNewMessage,
+  notifyClientNewMessage,
+  notifyClientStatusChange,
+} from "@/lib/email";
 
 const VALID_STATUSES = ["NEW", "IN_REVIEW", "ACCEPTED", "REJECTED", "DONE"] as const;
 type Status = (typeof VALID_STATUSES)[number];
@@ -26,13 +31,24 @@ export async function updateRequestStatus(
   }
 
   try {
-    await db.request.update({
+    const updated = await db.request.update({
       where: { id: requestId },
       data: { status: status as Status },
+      select: { name: true, email: true, title: true },
     });
     revalidatePath(`/admin/requests/${requestId}`);
     revalidatePath("/admin/requests");
     revalidatePath("/admin/dashboard");
+
+    // Email notification — fire-and-forget
+    notifyClientStatusChange({
+      to: updated.email,
+      clientName: updated.name,
+      title: updated.title,
+      status,
+      requestId,
+    });
+
     return { success: true };
   } catch {
     return { error: "Failed to update status" };
@@ -62,6 +78,32 @@ export async function sendMessage(
     });
     revalidatePath(`/admin/requests/${requestId}`);
     revalidatePath(`/account/requests/${requestId}`);
+
+    // Email notification — fire-and-forget
+    const req = await db.request.findUnique({
+      where: { id: requestId },
+      select: { name: true, email: true, title: true },
+    });
+    if (req) {
+      if (isAdmin) {
+        notifyClientNewMessage({
+          to: req.email,
+          clientName: req.name,
+          title: req.title,
+          body: trimmed,
+          requestId,
+        });
+      } else {
+        notifyAdminNewMessage({
+          name: req.name,
+          email: req.email,
+          title: req.title,
+          body: trimmed,
+          requestId,
+        });
+      }
+    }
+
     return { success: true };
   } catch {
     return { error: "Failed to send message" };

@@ -104,8 +104,8 @@ export default function PrivacyPage() {
               </ul>
               <p className="font-sans text-[14px] leading-[1.68] text-lavender-smoke mt-3">
                 To exercise these rights, contact us at{" "}
-                <a href="mailto:hello@protogrid.com" className="text-cold-pearl hover:text-white transition-colors duration-150">
-                  hello@protogrid.com
+                <a href="mailto:protogrid.studio@gmail.com" className="text-cold-pearl hover:text-white transition-colors duration-150">
+                  protogrid.studio@gmail.com
                 </a>.
               </p>
             </div>
@@ -142,8 +142,8 @@ export default function PrivacyPage() {
               <h2 className="font-display font-semibold text-[18px] text-cold-pearl mb-3">10. Contact</h2>
               <p className="font-sans text-[14px] leading-[1.68] text-lavender-smoke">
                 For privacy-related questions or requests, contact us at{" "}
-                <a href="mailto:hello@protogrid.com" className="text-cold-pearl hover:text-white transition-colors duration-150">
-                  hello@protogrid.com
+                <a href="mailto:protogrid.studio@gmail.com" className="text-cold-pearl hover:text-white transition-colors duration-150">
+                  protogrid.studio@gmail.com
                 </a>.
               </p>
             </div>

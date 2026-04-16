@@ -50,10 +50,10 @@ export function Footer() {
               Contact
             </p>
             <a
-              href="mailto:hello@protogrid.com"
+              href="mailto:protogrid.studio@gmail.com"
               className="font-sans text-[14px] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
             >
-              hello@protogrid.com
+              protogrid.studio@gmail.com
             </a>
           </div>
         </div>

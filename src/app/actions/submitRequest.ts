@@ -4,6 +4,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { notifyAdminNewRequest } from "@/lib/email";
 
 const fileSchema = z.object({
   name: z.string(),
@@ -68,6 +69,16 @@ export async function submitRequest(
         ...(files.length > 0 ? { files: { create: files } } : {}),
       },
     });
+
+    // Fire-and-forget — never block the response
+    notifyAdminNewRequest({
+      name: finalName,
+      email: finalEmail,
+      title: fields.title,
+      message: fields.message,
+      requestId: request.id,
+    });
+
     return { success: true, id: request.id };
   } catch {
     return { error: "Could not save your request. Please try again." };
