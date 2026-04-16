@@ -14,7 +14,7 @@ export function Footer() {
   return (
     <footer className="border-t border-iris-dusk/20 py-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-[1fr_auto_auto] gap-10 lg:gap-16 mb-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-[1fr_auto_auto_auto] gap-10 lg:gap-16 mb-16">
           {/* Brand */}
           <div>
             <p className="font-technical text-[13px] tracking-[0.2em] text-cold-pearl mb-3">
@@ -55,6 +55,18 @@ export function Footer() {
             >
               protogrid.studio@gmail.com
             </a>
+          </div>
+
+          {/* Address */}
+          <div>
+            <p className="font-technical text-[11px] tracking-[0.14em] uppercase text-iris-dusk mb-4">
+              Studio
+            </p>
+            <address className="not-italic font-sans text-[14px] leading-[1.65] text-lavender-smoke">
+              Bekkegata 27<br />
+              2317 Hamar<br />
+              Norway
+            </address>
           </div>
         </div>
 
