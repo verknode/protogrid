@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PilotBadge } from "@/components/PilotBadge";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -57,16 +58,14 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Early access notice */}
-        <p className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk/70 mb-6">
-          Early Access · The request flow and client area are being actively refined.
-        </p>
-
         {/* Bottom bar */}
-        <div className="border-t border-iris-dusk/20 pt-6 flex flex-col sm:flex-row justify-between gap-3">
-          <p className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk">
-            © 2025 ProtoGrid. All rights reserved.
-          </p>
+        <div className="border-t border-iris-dusk/20 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex flex-col gap-2">
+            <p className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk">
+              © 2025 ProtoGrid. All rights reserved.
+            </p>
+            <PilotBadge variant="line" />
+          </div>
           <div className="flex items-center gap-4">
             <Link
               href="/terms"

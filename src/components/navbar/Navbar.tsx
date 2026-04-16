@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { NavAuthButton } from "./NavAuthButton";
 import { useSession } from "@/lib/auth-client";
+import { PilotBadge } from "@/components/PilotBadge";
 
 const NAV_LINKS = [
   { label: "Home",     href: "/" },
@@ -163,8 +164,13 @@ export function Navbar() {
                 </>
               )}
 
+              {/* Early access */}
+              <div className="py-3 border-t border-iris-dusk/15">
+                <PilotBadge variant="line" />
+              </div>
+
               {/* Primary CTA */}
-              <div className="py-4">
+              <div className="pb-4">
                 <Link
                   href="/contact"
                   className="flex items-center justify-center h-12 w-full bg-cold-pearl text-ink-shadow text-[12px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-150"

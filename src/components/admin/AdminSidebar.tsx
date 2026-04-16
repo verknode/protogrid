@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Inbox, User, LogOut, ArrowLeft } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
+import { PilotBadge } from "@/components/PilotBadge";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -101,6 +102,9 @@ export function AdminSidebar() {
         </nav>
 
         <div className="space-y-0.5 border-t border-iris-dusk/20 pt-4">
+          <div className="px-2 pb-3">
+            <PilotBadge variant="line" />
+          </div>
           <Link
             href="/account"
             className="flex items-center gap-3 h-9 px-2 rounded-sm font-technical text-[11px] tracking-[0.06em] text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"

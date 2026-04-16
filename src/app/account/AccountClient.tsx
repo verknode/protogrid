@@ -5,6 +5,7 @@ import { signOut } from "@/lib/auth-client";
 import { Footer } from "@/components/home/Footer";
 import { AlertCircle, LogOut, ChevronRight, Paperclip, Send } from "lucide-react";
 import Link from "next/link";
+import { PilotBadge } from "@/components/PilotBadge";
 
 const STATUS_LABEL: Record<string, string> = {
   NEW:       "New",
@@ -107,9 +108,9 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
             </div>
 
             {/* Early access notice */}
-            <p className="font-technical text-[10px] tracking-[0.08em] text-iris-dusk/60 px-1">
-              EARLY ACCESS · Some platform features are still being refined.
-            </p>
+            <div className="px-1">
+              <PilotBadge variant="row" />
+            </div>
 
             {/* Requests */}
             <div className="bg-surface border border-iris-dusk/40 rounded-sm">

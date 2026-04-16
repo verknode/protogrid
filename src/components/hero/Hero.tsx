@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { PilotBadge } from "@/components/PilotBadge";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -26,13 +27,8 @@ export function Hero() {
             ENGINEERING STUDIO · PROTOTYPING · FABRICATION
           </motion.p>
 
-          <motion.div {...fadeUp(0.04)} className="inline-flex items-center gap-2 mb-5">
-            <span className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk border border-iris-dusk/35 rounded-full px-3 py-1">
-              Early Access
-            </span>
-            <span className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">
-              Platform in active development
-            </span>
+          <motion.div {...fadeUp(0.04)} className="mb-5">
+            <PilotBadge variant="hero" />
           </motion.div>
 
           <motion.h1
