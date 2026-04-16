@@ -30,9 +30,10 @@ export function AdminSidebar() {
     <>
       {/* Mobile top bar */}
       <header className="lg:hidden shrink-0 border-b border-iris-dusk/20 h-14 flex items-center justify-between px-4">
+        {/* Wordmark */}
         <Link
           href="/"
-          className="font-technical text-[12px] tracking-[0.18em] text-cold-pearl hover:text-white transition-colors duration-150"
+          className="font-technical text-[12px] tracking-[0.18em] text-cold-pearl hover:text-white transition-colors duration-150 shrink-0"
         >
           PROTOGRID
           <span className="ml-2 font-technical text-[10px] tracking-[0.12em] uppercase text-iris-dusk">
@@ -40,34 +41,41 @@ export function AdminSidebar() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-1">
+        {/* Icon-only nav — fits any phone width */}
+        <nav className="flex items-center gap-0.5">
           {navItems.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-1.5 h-8 px-3 rounded-sm font-technical text-[11px] tracking-[0.06em] transition-colors duration-150 ${
+              title={label}
+              aria-label={label}
+              className={`flex items-center justify-center w-9 h-9 rounded-sm transition-colors duration-150 ${
                 isActive(href)
                   ? "text-cold-pearl bg-iris-dusk/15"
                   : "text-lavender-smoke hover:text-cold-pearl hover:bg-iris-dusk/10"
               }`}
             >
-              <Icon size={13} />
-              {label}
+              <Icon size={16} />
             </Link>
           ))}
+
+          <div className="w-px h-5 bg-iris-dusk/20 mx-1" />
+
           <Link
             href="/account"
             title="My account"
-            className="flex items-center h-8 px-2 rounded-sm text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+            aria-label="My account"
+            className="flex items-center justify-center w-9 h-9 rounded-sm text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
           >
-            <ArrowLeft size={14} />
+            <ArrowLeft size={16} />
           </Link>
           <button
             onClick={handleSignOut}
             title="Sign out"
-            className="flex items-center h-8 px-2 rounded-sm text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
+            aria-label="Sign out"
+            className="flex items-center justify-center w-9 h-9 rounded-sm text-lavender-smoke hover:text-cold-pearl transition-colors duration-150"
           >
-            <LogOut size={14} />
+            <LogOut size={16} />
           </button>
         </nav>
       </header>
