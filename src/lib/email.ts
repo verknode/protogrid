@@ -56,6 +56,27 @@ function base(content: string) {
 </html>`;
 }
 
+// ─── Auth emails ────────────────────────────────────────────────
+
+/** Email verification link sent on signup */
+export async function sendVerificationEmail(opts: {
+  to: string;
+  name: string;
+  url: string;
+}) {
+  const subject = "Verify your ProtoGrid email address";
+  const html = base(`
+    <div class="box">
+      <h1>Verify your email</h1>
+      <p>Hi ${opts.name}, thanks for creating an account. Click the button below to activate it.</p>
+      <hr class="divider">
+      <a class="btn" href="${opts.url}">Verify email →</a>
+      <p style="margin-top:16px;font-size:12px;color:#5a5b7a">This link expires in 24 hours. If you did not create an account, ignore this email.</p>
+    </div>
+  `);
+  await send(opts.to, subject, html);
+}
+
 // ─── Notifications ──────────────────────────────────────────────
 
 /** New request submitted → notify admin */

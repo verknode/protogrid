@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { db } from "./db";
+import { sendVerificationEmail } from "./email";
 
 export const auth = betterAuth({
   database: prismaAdapter(db, {
@@ -11,6 +12,15 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 8,
     maxPasswordLength: 128,
+    requireEmailVerification: !!process.env.GMAIL_USER,
+  },
+
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }: { user: { email: string; name: string }; url: string }) => {
+      await sendVerificationEmail({ to: user.email, name: user.name, url });
+    },
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
   },
 
   ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
