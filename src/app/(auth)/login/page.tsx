@@ -147,6 +147,13 @@ function LoginForm() {
           {isSubmitting ? "Signing in…" : "Sign in"}
         </button>
       </form>
+
+      <p className="font-sans text-[12px] text-iris-dusk mt-6 text-center leading-[1.5]">
+        By signing in, you agree to our{" "}
+        <Link href="/terms" className="text-lavender-smoke hover:text-cold-pearl transition-colors duration-150">Terms</Link>
+        {" "}and{" "}
+        <Link href="/privacy" className="text-lavender-smoke hover:text-cold-pearl transition-colors duration-150">Privacy Policy</Link>.
+      </p>
     </div>
   );
 }

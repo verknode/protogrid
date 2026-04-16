@@ -62,9 +62,20 @@ export function Footer() {
           <p className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk">
             © 2025 ProtoGrid. All rights reserved.
           </p>
-          <p className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk">
-            Engineering studio · Prototyping · Fabrication
-          </p>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/terms"
+              className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk hover:text-lavender-smoke transition-colors duration-150"
+            >
+              Terms
+            </Link>
+            <Link
+              href="/privacy"
+              className="font-technical text-[11px] tracking-[0.06em] text-iris-dusk hover:text-lavender-smoke transition-colors duration-150"
+            >
+              Privacy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

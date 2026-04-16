@@ -22,6 +22,7 @@ model user {
   sessions      session[]
   accounts      account[]
   requests      Request[]
+  legalConsents LegalConsent[]
 }
 
 model session {
@@ -65,6 +66,19 @@ model verification {
   updatedAt  DateTime  @updatedAt
 
   @@unique([identifier, value])
+}
+
+// ─── Legal consent tracking ──────────────────────────────────────────────────
+
+model LegalConsent {
+  id              String   @id @default(cuid())
+  userId          String
+  user            user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  termsVersion    String
+  privacyVersion  String
+  ipAddress       String?
+  userAgent       String?
+  consentedAt     DateTime @default(now())
 }
 
 // ─── ProtoGrid domain models ─────────────────────────────────────────────────

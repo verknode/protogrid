@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signUp, signIn } from "@/lib/auth-client";
+import { recordLegalConsent, CURRENT_TERMS_VERSION, CURRENT_PRIVACY_VERSION } from "@/app/actions/recordConsent";
 import Link from "next/link";
 
 const schema = z
@@ -18,6 +19,9 @@ const schema = z
       .regex(/[A-Z]/, "Must contain an uppercase letter")
       .regex(/[0-9]/, "Must contain a number"),
     confirmPassword: z.string(),
+    legalConsent: z.literal(true, {
+      error: "You must agree to the Terms and Privacy Policy",
+    }),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords do not match",
@@ -65,6 +69,7 @@ export default function RegisterPage() {
       setServerError(result.error.message ?? "Registration failed");
       return;
     }
+    await recordLegalConsent();
     router.push("/account");
     router.refresh();
   }
@@ -167,6 +172,34 @@ export default function RegisterPage() {
           />
           {errors.confirmPassword && (
             <p className="mt-1.5 font-technical text-[11px] text-red-400">{errors.confirmPassword.message}</p>
+          )}
+        </div>
+
+        {/* Legal consent */}
+        <div className="pt-2">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              {...register("legalConsent")}
+              type="checkbox"
+              className="mt-1 h-4 w-4 shrink-0 appearance-none border border-iris-dusk/50 rounded-sm bg-transparent checked:bg-cold-pearl checked:border-cold-pearl transition-colors duration-150 cursor-pointer relative
+                after:content-[''] after:absolute after:inset-0 after:bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path fill=%22%231e2028%22 d=%22M6.5 11.5L3 8l1-1 2.5 2.5 5-5 1 1z%22/></svg>')] after:bg-center after:bg-no-repeat after:opacity-0 checked:after:opacity-100"
+            />
+            <span className="font-sans text-[13px] leading-[1.5] text-lavender-smoke">
+              I agree to the{" "}
+              <Link href="/terms" target="_blank" className="text-cold-pearl hover:text-white transition-colors duration-150">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" target="_blank" className="text-cold-pearl hover:text-white transition-colors duration-150">
+                Privacy Policy
+              </Link>
+              <span className="font-technical text-[10px] text-iris-dusk ml-1.5">
+                v{CURRENT_TERMS_VERSION}
+              </span>
+            </span>
+          </label>
+          {errors.legalConsent && (
+            <p className="mt-1.5 font-technical text-[11px] text-red-400 pl-7">{errors.legalConsent.message}</p>
           )}
         </div>
 
