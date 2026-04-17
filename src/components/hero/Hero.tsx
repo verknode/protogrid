@@ -19,7 +19,20 @@ function fadeUp(delay: number, duration = 0.55) {
 export function Hero() {
   const t = useTranslations("hero");
   return (
-    <section className="relative lg:min-h-screen flex items-center pt-16 pb-14 lg:py-32">
+    <section className="relative overflow-hidden lg:min-h-screen flex items-center pt-16 pb-14 lg:py-32">
+
+      {/* Atmospheric depth */}
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+        <div
+          className="absolute -top-1/4 right-0 w-[800px] h-[700px]"
+          style={{ background: "radial-gradient(ellipse at center, rgba(55,70,195,0.07) 0%, transparent 62%)" }}
+        />
+        <div
+          className="absolute bottom-0 -left-1/4 w-[600px] h-[500px]"
+          style={{ background: "radial-gradient(ellipse at center, rgba(75,50,175,0.05) 0%, transparent 60%)" }}
+        />
+      </div>
+
       <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
         <div className="max-w-[800px]">
           <motion.p
