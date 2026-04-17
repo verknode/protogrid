@@ -83,7 +83,14 @@ function LoginForm() {
         setUnverifiedEmail(data.email);
         return;
       }
-      setServerError(result.error.message ?? "Invalid email or password");
+      const isTooMany =
+        result.error.status === 429 ||
+        result.error.message?.toLowerCase().includes("too many");
+      setServerError(
+        isTooMany
+          ? "Too many login attempts. Please wait 15 minutes."
+          : "Invalid email or password.",
+      );
       return;
     }
     router.push(from.startsWith("/") ? from : "/account");
