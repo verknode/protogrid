@@ -99,6 +99,7 @@ model LegalConsent {
 enum RequestStatus {
   NEW
   IN_REVIEW
+  QUOTED
   ACCEPTED
   REJECTED
   DONE
@@ -115,6 +116,7 @@ model Request {
   message     String        @db.Text
   dimensions  String?
   deadline    String?
+  budget      String?
   status      RequestStatus @default(NEW)
   adminNote   String?       @db.Text
 

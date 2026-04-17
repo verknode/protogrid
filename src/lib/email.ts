@@ -88,12 +88,35 @@ export async function sendVerificationEmail(opts: {
 
 // ─── Notifications ──────────────────────────────────────────────
 
+/** New request submitted → confirm receipt to client */
+export async function notifyClientRequestReceived(opts: {
+  to: string;
+  clientName: string;
+  title?: string | null;
+  requestId: string;
+}) {
+  const subject = `We received your request${opts.title ? `: ${opts.title}` : ""} — ProtoGrid`;
+  const html = base(`
+    <div class="box">
+      <h1>Request received</h1>
+      <p>Hi ${esc(opts.clientName)}, thanks for reaching out. We have received your request and will review it within <strong style="color:#e8e9ed">1 business day</strong>.</p>
+      <hr class="divider">
+      ${opts.title ? `<p class="label">Request</p><p class="value">${esc(opts.title)}</p>` : ""}
+      <p class="label">What happens next</p>
+      <p class="value">We review the details, ask any clarifying questions, and send you a quote. No work starts until you approve it.</p>
+      <a class="btn" href="https://protogrid.no/account/requests/${esc(opts.requestId)}">View your request →</a>
+    </div>
+  `);
+  await send(opts.to, subject, html);
+}
+
 /** New request submitted → notify admin */
 export async function notifyAdminNewRequest(opts: {
   name: string;
   email: string;
   title?: string | null;
   message: string;
+  budget?: string | null;
   requestId: string;
 }) {
   const subject = `New request${opts.title ? `: ${opts.title}` : ""} — ${opts.name}`;
@@ -104,6 +127,7 @@ export async function notifyAdminNewRequest(opts: {
       ${opts.title ? `<p class="label">Title</p><p class="value">${esc(opts.title)}</p>` : ""}
       <p class="label">From</p>
       <p class="value">${esc(opts.name)} &lt;${esc(opts.email)}&gt;</p>
+      ${opts.budget ? `<p class="label">Budget</p><p class="value" style="color:#e8e9ed;font-weight:600">${esc(opts.budget)}</p>` : ""}
       <p class="label">Task</p>
       <p class="value" style="white-space:pre-line">${esc(opts.message)}</p>
       <a class="btn" href="https://protogrid.no/admin/requests/${esc(opts.requestId)}">Open request →</a>

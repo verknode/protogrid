@@ -12,6 +12,7 @@ import { DeleteRequestButton } from "@/components/admin/DeleteRequestButton";
 const STATUS_LABEL: Record<string, string> = {
   NEW:       "New",
   IN_REVIEW: "In Review",
+  QUOTED:    "Quoted",
   ACCEPTED:  "Accepted",
   REJECTED:  "Rejected",
   DONE:      "Done",
@@ -94,8 +95,8 @@ export default async function AdminRequestDetailPage({
               {request.message}
             </p>
           </div>
-          {(request.dimensions || request.deadline) && (
-            <div className="px-5 pb-4 grid sm:grid-cols-2 gap-4 border-t border-iris-dusk/10 pt-4">
+          {(request.dimensions || request.deadline || request.budget) && (
+            <div className="px-5 pb-4 grid sm:grid-cols-3 gap-4 border-t border-iris-dusk/10 pt-4">
               {request.dimensions && (
                 <div>
                   <p className="font-technical text-[10px] tracking-[0.12em] uppercase text-iris-dusk mb-1">Dimensions</p>
@@ -106,6 +107,12 @@ export default async function AdminRequestDetailPage({
                 <div>
                   <p className="font-technical text-[10px] tracking-[0.12em] uppercase text-iris-dusk mb-1">Deadline</p>
                   <p className="font-sans text-[13px] text-lavender-smoke">{request.deadline}</p>
+                </div>
+              )}
+              {request.budget && (
+                <div>
+                  <p className="font-technical text-[10px] tracking-[0.12em] uppercase text-iris-dusk mb-1">Budget</p>
+                  <p className="font-sans text-[13px] text-cold-pearl font-medium">{request.budget}</p>
                 </div>
               )}
             </div>

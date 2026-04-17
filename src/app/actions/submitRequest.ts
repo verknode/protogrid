@@ -4,7 +4,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { notifyAdminNewRequest } from "@/lib/email";
+import { notifyAdminNewRequest, notifyClientRequestReceived } from "@/lib/email";
 import { validateTurnstile } from "@/lib/turnstile";
 import { rateLimit } from "@/lib/ratelimit";
 
@@ -23,6 +23,7 @@ const schema = z.object({
   message:        z.string().min(10),
   dimensions:     z.string().optional(),
   deadline:       z.string().optional(),
+  budget:         z.string().optional(),
   files:          z.array(fileSchema).optional(),
   turnstileToken: z.string().optional(),
 });
@@ -92,6 +93,13 @@ export async function submitRequest(
       email: finalEmail,
       title: fields.title,
       message: fields.message,
+      budget: fields.budget,
+      requestId: request.id,
+    });
+    notifyClientRequestReceived({
+      to: finalEmail,
+      clientName: finalName,
+      title: fields.title,
       requestId: request.id,
     });
 

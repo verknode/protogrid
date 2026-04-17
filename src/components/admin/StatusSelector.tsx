@@ -3,10 +3,11 @@
 import { useTransition } from "react";
 import { updateRequestStatus } from "@/app/actions/adminActions";
 
-const STATUSES = ["NEW", "IN_REVIEW", "ACCEPTED", "REJECTED", "DONE"] as const;
+const STATUSES = ["NEW", "IN_REVIEW", "QUOTED", "ACCEPTED", "REJECTED", "DONE"] as const;
 const LABELS: Record<string, string> = {
   NEW:       "New",
   IN_REVIEW: "In Review",
+  QUOTED:    "Quoted",
   ACCEPTED:  "Accepted",
   REJECTED:  "Rejected",
   DONE:      "Done",

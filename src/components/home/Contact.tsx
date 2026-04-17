@@ -30,6 +30,7 @@ const schema = z.object({
   message:    z.string().min(10, "Please describe your task"),
   dimensions: z.string().optional(),
   deadline:   z.string().optional(),
+  budget:     z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -293,6 +294,13 @@ export function Contact() {
                       <span className="text-iris-dusk normal-case tracking-normal">optional</span>
                     </label>
                     <input {...register("deadline")} type="text" placeholder="e.g. end of May, no rush" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>
+                      Approximate budget{" "}
+                      <span className="text-iris-dusk normal-case tracking-normal">optional</span>
+                    </label>
+                    <input {...register("budget")} type="text" placeholder="e.g. 2 000–5 000 kr, or open" className={inputClass} />
                   </div>
                 </div>
 
