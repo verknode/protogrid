@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { signOut } from "@/lib/auth-client";
+import { deleteAccount } from "@/app/actions/deleteAccount";
 import { Footer } from "@/components/home/Footer";
-import { AlertCircle, LogOut, ChevronRight, Paperclip, Send } from "lucide-react";
+import { AlertCircle, LogOut, ChevronRight, Paperclip, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { PilotBadge } from "@/components/PilotBadge";
 
@@ -22,11 +24,38 @@ type Props       = { user: SessionUser | null; requests: RequestRow[]; dbUnavail
 
 export function AccountClient({ user, requests, dbUnavailable }: Props) {
   const router = useRouter();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteError, setDeleteError]     = useState<string | null>(null);
+  const [isPending, startTransition]      = useTransition();
 
   async function handleSignOut() {
     await signOut();
     router.push("/");
     router.refresh();
+  }
+
+  function handleDeleteClick() {
+    setDeleteError(null);
+    setConfirmDelete(true);
+  }
+
+  function handleDeleteCancel() {
+    setConfirmDelete(false);
+    setDeleteError(null);
+  }
+
+  function handleDeleteConfirm() {
+    startTransition(async () => {
+      const result = await deleteAccount();
+      if (result.error) {
+        setDeleteError(result.error);
+        setConfirmDelete(false);
+        return;
+      }
+      await signOut();
+      router.push("/");
+      router.refresh();
+    });
   }
 
   const isAdmin = user?.role === "admin";
@@ -202,6 +231,51 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
               <LogOut size={13} />
               Sign out
             </button>
+
+            {/* Delete account */}
+            {user && !confirmDelete && (
+              <div className="pt-4 border-t border-iris-dusk/15">
+                {deleteError && (
+                  <p className="font-technical text-[11px] text-red-400 mb-3">{deleteError}</p>
+                )}
+                <button
+                  onClick={handleDeleteClick}
+                  className="flex items-center gap-2 font-technical text-[11px] tracking-[0.08em] text-iris-dusk hover:text-red-400 transition-colors duration-150 py-1"
+                >
+                  <Trash2 size={13} />
+                  Delete account
+                </button>
+              </div>
+            )}
+
+            {confirmDelete && (
+              <div className="pt-4 border-t border-iris-dusk/15">
+                <div className="bg-surface border border-red-400/25 rounded-sm px-5 py-4">
+                  <p className="font-technical text-[10px] tracking-[0.12em] uppercase text-red-400 mb-2">
+                    Permanent action
+                  </p>
+                  <p className="font-sans text-[13px] leading-[1.6] text-lavender-smoke mb-4">
+                    Your account and all personal data will be deleted immediately. Submitted requests stay on file for operational purposes.
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={handleDeleteConfirm}
+                      disabled={isPending}
+                      className="h-9 px-4 bg-red-400/10 border border-red-400/40 text-red-400 font-technical text-[11px] tracking-[0.08em] rounded-sm hover:bg-red-400/20 transition-colors duration-150 disabled:opacity-50"
+                    >
+                      {isPending ? "Deleting…" : "Yes, delete my account"}
+                    </button>
+                    <button
+                      onClick={handleDeleteCancel}
+                      disabled={isPending}
+                      className="font-technical text-[11px] tracking-[0.08em] text-iris-dusk hover:text-lavender-smoke transition-colors duration-150"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
           </div>
         </div>
