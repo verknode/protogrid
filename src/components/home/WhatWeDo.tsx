@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Wrench, Layers, RefreshCw, Package } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -14,72 +15,56 @@ function fadeIn(delay = 0) {
   } as const;
 }
 
-const services = [
-  {
-    icon: Wrench,
-    title: "Custom Parts",
-    body: "You have a design file or a part that needs to exist. We mill, cut, or fabricate it to spec — one-off or repeat.",
-  },
-  {
-    icon: Layers,
-    title: "Rapid Prototyping",
-    body: "Turn a sketch or concept into a working physical prototype, fast. Test before you commit to tooling or production cost.",
-  },
-  {
-    icon: RefreshCw,
-    title: "Part Redesign",
-    body: "Broken original, no drawing, outdated component. We reverse-engineer from the physical sample and improve where needed.",
-  },
-  {
-    icon: Package,
-    title: "Small-Batch Production",
-    body: "5 to 200 units with no factory minimums. Consistent quality across the run, delivered as a single shipment.",
-  },
-];
+const SERVICE_ICONS = [
+  { key: "customParts",      icon: Wrench },
+  { key: "rapidPrototyping", icon: Layers },
+  { key: "partRedesign",     icon: RefreshCw },
+  { key: "smallBatch",       icon: Package },
+] as const;
 
 export function WhatWeDo() {
+  const t = useTranslations("whatwedo");
+
   return (
     <section className="py-12 lg:py-24 border-t border-iris-dusk/20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Header */}
         <motion.p
           {...fadeIn(0)}
           className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-4"
         >
-          Services
+          {t("eyebrow")}
         </motion.p>
         <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-end mb-16">
           <motion.h2
             {...fadeIn(0.08)}
             className="font-display font-bold text-[clamp(24px,3vw,40px)] leading-[1.1] tracking-[-0.01em] text-cold-pearl"
           >
-            What we do
+            {t("heading")}
           </motion.h2>
           <motion.p
             {...fadeIn(0.14)}
             className="font-sans text-[15px] leading-[1.65] text-lavender-smoke max-w-[48ch] lg:text-right"
           >
-            Four core capabilities. One team from first cut to final delivery.
+            {t("subtext")}
           </motion.p>
         </div>
 
-        {/* Cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-iris-dusk/20">
-          {services.map(({ icon: Icon, title, body }, i) => (
+          {SERVICE_ICONS.map(({ key, icon: Icon }, i) => (
             <motion.div
-              key={title}
+              key={key}
               {...fadeIn(0.06 * i)}
-              className="bg-ink-shadow p-6 flex flex-col gap-5 hover:bg-iris-dusk/5 transition-colors duration-200"
+              className="bg-surface p-6 flex flex-col gap-5 hover:bg-iris-dusk/10 transition-colors duration-200"
             >
               <div className="w-9 h-9 border border-iris-dusk/40 rounded-sm flex items-center justify-center shrink-0">
                 <Icon size={16} className="text-lavender-smoke" />
               </div>
               <div>
                 <p className="font-display font-bold text-[17px] text-cold-pearl mb-2">
-                  {title}
+                  {t(`${key}.title`)}
                 </p>
                 <p className="font-sans text-[14px] leading-[1.65] text-lavender-smoke">
-                  {body}
+                  {t(`${key}.body`)}
                 </p>
               </div>
             </motion.div>

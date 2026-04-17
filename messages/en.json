@@ -31,6 +31,125 @@
     "partRedesign":     { "title": "Part Redesign",       "line": "Reverse-engineer and improve broken parts." },
     "smallBatch":       { "title": "Small-Batch",         "line": "5–200 units, no factory minimums." }
   },
+  "whatwedo": {
+    "eyebrow": "Services",
+    "heading": "What we do",
+    "subtext": "Four core capabilities. One team from first cut to final delivery.",
+    "customParts":      { "title": "Custom Parts",           "body": "You have a design file or a part that needs to exist. We mill, cut, or fabricate it to spec — one-off or repeat." },
+    "rapidPrototyping": { "title": "Rapid Prototyping",       "body": "Turn a sketch or concept into a working physical prototype, fast. Test before you commit to tooling or production cost." },
+    "partRedesign":     { "title": "Part Redesign",            "body": "Broken original, no drawing, outdated component. We reverse-engineer from the physical sample and improve where needed." },
+    "smallBatch":       { "title": "Small-Batch Production",   "body": "5 to 200 units with no factory minimums. Consistent quality across the run, delivered as a single shipment." }
+  },
+  "processSteps": {
+    "eyebrow": "How it works",
+    "heading": "Five steps from task to result",
+    "s01": { "title": "Send your task",  "body": "Describe what you need. A sketch, photo, broken part, or a plain text description — whatever you have is a valid starting point." },
+    "s02": { "title": "We review",       "body": "We analyze the request, ask clarifying questions if needed, and send back a clear scope and quote within 1 business day." },
+    "s03": { "title": "Prototype",       "body": "We build the first version. You receive the actual object — see it, test it, fit it — before committing to a production run." },
+    "s04": { "title": "Production",      "body": "Prototype approved. We run the full order — single unit or small batch — with the same setup and quality." },
+    "s05": { "title": "Delivery",        "body": "Finished parts shipped or available for local pickup. Documentation included when needed." }
+  },
+  "why": {
+    "eyebrow": "Why ProtoGrid",
+    "heading1": "No fluff.",
+    "heading2": "Just reasons.",
+    "r1": { "title": "Physical results, not consultancy",  "body": "We build the thing. Not a report about the thing, not a recommendation. A real object you can hold." },
+    "r2": { "title": "No CAD file required",               "body": "A sketch, a broken part, or a written description is enough to start. We figure out the rest." },
+    "r3": { "title": "No factory minimums",                "body": "One unit or two hundred — same process, same care, no MOQ pressure." },
+    "r4": { "title": "Fast iteration",                     "body": "A working prototype in days, not weeks. Catch problems before production, not during it." },
+    "r5": { "title": "One point of contact",               "body": "The person who quotes the job is the person who builds it. No handoffs, no translation errors." },
+    "r6": { "title": "Transparent scope",                  "body": "You get a clear breakdown before we touch anything. The final invoice matches the quote." }
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "heading": "Common questions",
+    "subtext": "Anything not covered here — just ask in the contact form below.",
+    "q1": { "q": "Do I need a CAD file to place an order?",           "a": "No. A sketch, photo, or written description is enough to get started. We will ask for what we need after reviewing your request." },
+    "q2": { "q": "What is the minimum order quantity?",                "a": "One. We accept single-unit requests as readily as batch orders. There are no minimums." },
+    "q3": { "q": "How long does a typical order take?",                "a": "Simple parts: 2–5 working days. Prototypes with design iteration: 1–2 weeks. We give you a clear timeline in the quote, before any work starts." },
+    "q4": { "q": "What materials do you work with?",                   "a": "Primarily aluminum, steel, and brass for machined and cut parts. If you have specific material requirements — hardness, grade, finish — mention it in your request." },
+    "q5": { "q": "Can you work from a broken part with no drawing?",   "a": "Yes. Ship or deliver the physical sample and we will measure, photograph, and reverse-engineer it into a working replacement." },
+    "q6": { "q": "What file formats do you accept?",                   "a": ".STEP, .DXF, .STL, .IGES, and .F3D are all supported. PDFs with clear dimensions also work. If you have something else, send it anyway — we will let you know if we need a conversion." },
+    "q7": { "q": "Do you ship internationally?",                       "a": "Currently local and national delivery only. Contact us with your location and we will confirm whether we can cover it." },
+    "q8": { "q": "What happens after I submit a request?",             "a": "You get a reply within 1 business day. We will confirm scope, ask any open questions, and send a quote. No work starts until you approve it." }
+  },
+  "projectsList": {
+    "eyebrow": "Projects",
+    "heading": "Recent work",
+    "label": "Task · Solution · Result",
+    "linkAll": "View all projects",
+    "taskLabel":     "Task",
+    "solutionLabel": "Solution",
+    "resultLabel":   "Result",
+    "p1": {
+      "tag":      "Part Redesign",
+      "title":    "Gearbox housing — no drawing available",
+      "task":     "Original housing cracked. No technical drawing existed — only the damaged part.",
+      "solution": "Reverse-engineered from physical sample, redesigned with 40% thicker walls at the failure point.",
+      "result":   "6 units produced. All installed and running without issue."
+    },
+    "p2": {
+      "tag":      "Prototyping",
+      "title":    "Electronics enclosure for dev board",
+      "task":     "Product designer needed a testable housing for a custom PCB before committing to injection moulding.",
+      "solution": "CNC-machined aluminum enclosure from the provided CAD file. Threaded inserts, removable lid.",
+      "result":   "Prototype delivered in 4 days. Design signed off for tooling."
+    },
+    "p3": {
+      "tag":      "Small-Batch",
+      "title":    "Custom mounting brackets — qty 30",
+      "task":     "45° angled brackets for a workshop shelving system. Off-the-shelf options didn't fit the load spec.",
+      "solution": "Plasma-cut 4mm steel, deburred, bent to angle, powder-coated matte black.",
+      "result":   "Full batch in 5 working days. Installed and load-tested by client."
+    }
+  },
+  "capabilities": {
+    "eyebrow": "Capabilities",
+    "heading": "What we work with",
+    "inputsTitle":  "What you can send us",
+    "outputsTitle": "What we can deliver",
+    "inputs":  [
+      ".STEP, .DXF, .STL, .IGES, .F3D files",
+      "PDF drawings with dimensions",
+      "Sketches — hand-drawn or digital",
+      "Photos of broken or reference parts",
+      "Physical samples shipped to us",
+      "Written description with measurements"
+    ],
+    "outputs": [
+      "CNC-milled aluminum, steel, brass parts",
+      "Plasma- and laser-cut flat components",
+      "Enclosures, housings, brackets",
+      "Threaded, tapped, and press-fit assemblies",
+      "Prototype assemblies with hardware",
+      "Small-batch runs — 1 to 200 units"
+    ]
+  },
+  "pageHeaders": {
+    "services": {
+      "eyebrow": "Services",
+      "heading": "Four ways we can help",
+      "body":    "Custom fabrication, prototyping, part redesign, and small-batch production — handled end to end by one team."
+    },
+    "process": {
+      "eyebrow": "Process",
+      "heading": "From task to delivered parts",
+      "body":    "No black box. Every order follows the same five steps — transparent scope, clear timeline, no surprises at invoice."
+    },
+    "projects": {
+      "eyebrow": "Projects",
+      "heading": "Real work. Real results.",
+      "body":    "Every case below is a real task we received, worked through, and delivered. Task, solution, result — nothing more."
+    },
+    "about": {
+      "eyebrow": "About",
+      "heading": "Engineering studio. No fluff."
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "heading": "Send your task"
+    }
+  },
   "process": {
     "eyebrow": "Process",
     "heading": "How it works",

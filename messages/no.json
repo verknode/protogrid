@@ -26,10 +26,129 @@
     "eyebrow": "Tjenester",
     "heading": "Hva vi gjør",
     "linkAll": "Alle tjenester",
-    "customParts":      { "title": "Egendefinerte deler",    "line": "Produsert etter spec — enkeltdeler eller løpende." },
+    "customParts":      { "title": "Tilpassede deler",       "line": "Produsert etter spec — enkelt eller gjentakende." },
     "rapidPrototyping": { "title": "Rask prototyping",        "line": "Fra skisse til fysisk prototype, raskt." },
-    "partRedesign":     { "title": "Redesign av deler",       "line": "Reversingeniering og forbedring av defekte deler." },
-    "smallBatch":       { "title": "Småserieproduksjon",      "line": "5–200 enheter, ingen minimumsbestilling." }
+    "partRedesign":     { "title": "Redesign av deler",        "line": "Reversingeniering og forbedring av defekte deler." },
+    "smallBatch":       { "title": "Småserieproduksjon",       "line": "5–200 enheter, ingen minimumsbestilling." }
+  },
+  "whatwedo": {
+    "eyebrow": "Tjenester",
+    "heading": "Hva vi gjør",
+    "subtext": "Fire kjernekompetanser. Ett team fra første snitt til endelig levering.",
+    "customParts":      { "title": "Tilpassede deler",       "body": "Du har en designfil eller en del som må produseres. Vi freser, skjærer eller fabrikerer etter spec — enkeltproduksjon eller gjentakende." },
+    "rapidPrototyping": { "title": "Rask prototyping",        "body": "Gjør en skisse eller et konsept til en fungerende fysisk prototype, raskt. Test det ut før du investerer i verktøy eller produksjonskostnader." },
+    "partRedesign":     { "title": "Redesign av deler",        "body": "Ødelagt original, ingen tegning, utdatert komponent. Vi reversingeniørarbeider fra den fysiske delen og forbedrer der det trengs." },
+    "smallBatch":       { "title": "Småserieproduksjon",       "body": "5 til 200 enheter uten minimumsbestilling. Konsistent kvalitet gjennom hele serien, levert som én forsendelse." }
+  },
+  "processSteps": {
+    "eyebrow": "Slik fungerer det",
+    "heading": "Fem steg fra oppgave til resultat",
+    "s01": { "title": "Send oppgaven din",  "body": "Beskriv hva du trenger. En skisse, et bilde, en ødelagt del eller en enkel tekstbeskrivelse — hva du enn har er et gyldig utgangspunkt." },
+    "s02": { "title": "Vi vurderer",        "body": "Vi analyserer forespørselen, stiller avklarende spørsmål om nødvendig, og sender tilbake et tydelig omfang og tilbud innen 1 virkedag." },
+    "s03": { "title": "Prototyping",        "body": "Vi bygger den første versjonen. Du mottar det faktiske objektet — se det, test det, monter det — før du forplikter deg til en produksjonskjøring." },
+    "s04": { "title": "Produksjon",         "body": "Prototype godkjent. Vi kjører hele bestillingen — enkel enhet eller småserie — med samme oppsett og kvalitet." },
+    "s05": { "title": "Levering",           "body": "Ferdige deler sendes eller kan hentes lokalt. Dokumentasjon inkludert ved behov." }
+  },
+  "why": {
+    "eyebrow": "Hvorfor ProtoGrid",
+    "heading1": "Ingen fluff.",
+    "heading2": "Bare grunner.",
+    "r1": { "title": "Fysiske resultater, ikke rådgivning",  "body": "Vi bygger tingen. Ikke en rapport om tingen, ikke en anbefaling. Et ekte objekt du kan holde i hendene." },
+    "r2": { "title": "Ingen CAD-fil nødvendig",               "body": "En skisse, en ødelagt del eller en skriftlig beskrivelse er nok for å starte. Vi ordner resten." },
+    "r3": { "title": "Ingen minimumsbestilling",              "body": "Én enhet eller to hundre — samme prosess, samme omhu, uten MOQ-press." },
+    "r4": { "title": "Rask iterasjon",                        "body": "En fungerende prototype på dager, ikke uker. Fang problemer før produksjon, ikke under den." },
+    "r5": { "title": "Én kontaktperson",                      "body": "Personen som gir tilbudet er den som bygger det. Ingen overlevering, ingen kommunikasjonsfeil." },
+    "r6": { "title": "Tydelig omfang",                        "body": "Du får en klar spesifikasjon før vi rører noe. Sluttfakturaen samsvarer med tilbudet." }
+  },
+  "faq": {
+    "eyebrow": "Vanlige spørsmål",
+    "heading": "Vanlige spørsmål",
+    "subtext": "Noe som ikke dekkes her — bare spør i kontaktskjemaet nedenfor.",
+    "q1": { "q": "Trenger jeg en CAD-fil for å bestille?",              "a": "Nei. En skisse, et bilde eller en skriftlig beskrivelse er nok for å komme i gang. Vi spør om det vi trenger etter å ha gjennomgått forespørselen din." },
+    "q2": { "q": "Hva er minste bestillingsmengde?",                     "a": "Én enhet. Vi aksepterer enkeltbestillinger like gjerne som seriebestillinger. Det er ingen minimumsmengde." },
+    "q3": { "q": "Hvor lang tid tar en typisk bestilling?",              "a": "Enkle deler: 2–5 virkedager. Prototyper med designiterasjon: 1–2 uker. Vi gir deg en tydelig tidslinje i tilbudet, før arbeidet starter." },
+    "q4": { "q": "Hvilke materialer jobber dere med?",                   "a": "Primært aluminium, stål og messing for maskinerte og skårne deler. Har du spesifikke materialkrav — hardhet, kvalitet, overflate — nevn det i forespørselen." },
+    "q5": { "q": "Kan dere jobbe ut fra en ødelagt del uten tegning?",   "a": "Ja. Send eller lever den fysiske delen, så måler, fotograferer og reversingeniørarbeider vi den til en fungerende erstatning." },
+    "q6": { "q": "Hvilke filformater aksepterer dere?",                  "a": ".STEP, .DXF, .STL, .IGES og .F3D støttes alle. PDF-er med tydelige mål fungerer også. Har du noe annet, send det likevel — vi gir beskjed om vi trenger en konvertering." },
+    "q7": { "q": "Sender dere internasjonalt?",                          "a": "For øyeblikket kun lokal og nasjonal levering. Kontakt oss med din lokasjon, så bekrefter vi om vi kan dekke det." },
+    "q8": { "q": "Hva skjer etter at jeg sender en forespørsel?",        "a": "Du får svar innen 1 virkedag. Vi bekrefter omfanget, stiller eventuelle åpne spørsmål og sender et tilbud. Ingen arbeid starter før du godkjenner det." }
+  },
+  "projectsList": {
+    "eyebrow": "Prosjekter",
+    "heading": "Nylig arbeid",
+    "label": "Oppgave · Løsning · Resultat",
+    "linkAll": "Se alle prosjekter",
+    "taskLabel":     "Oppgave",
+    "solutionLabel": "Løsning",
+    "resultLabel":   "Resultat",
+    "p1": {
+      "tag":      "Redesign av deler",
+      "title":    "Girkassekappe — ingen tegning tilgjengelig",
+      "task":     "Original kappe sprakk. Ingen teknisk tegning fantes — bare den skadede delen.",
+      "solution": "Reversingeniørarbeid fra fysisk prøve, redesignet med 40% tykkere vegger ved bruddpunktet.",
+      "result":   "6 enheter produsert. Alle montert og i drift uten problemer."
+    },
+    "p2": {
+      "tag":      "Prototyping",
+      "title":    "Elektronikkhus for utviklingskort",
+      "task":     "Produktdesigner trengte et testbart hus for et tilpasset kretskort før investering i sprøytestøping.",
+      "solution": "CNC-fresetaluminium-hus fra levert CAD-fil. Gjengede innsatser, avtakbart lokk.",
+      "result":   "Prototype levert på 4 dager. Design godkjent for verktøylaging."
+    },
+    "p3": {
+      "tag":      "Småserie",
+      "title":    "Tilpassede festebraketter — 30 stk",
+      "task":     "45° vinklede braketter for et hyllesystem i verksted. Standardalternativer passet ikke lastspesifikasjonen.",
+      "solution": "Plasmaklippet 4mm stål, avgratet, bøyd til vinkel, pulverlakkert matt svart.",
+      "result":   "Hele serien på 5 virkedager. Montert og lasttestet av kunden."
+    }
+  },
+  "capabilities": {
+    "eyebrow": "Kapasiteter",
+    "heading": "Hva vi jobber med",
+    "inputsTitle":  "Hva du kan sende oss",
+    "outputsTitle": "Hva vi kan levere",
+    "inputs":  [
+      ".STEP, .DXF, .STL, .IGES, .F3D filer",
+      "PDF-tegninger med mål",
+      "Skisser — håndtegnede eller digitale",
+      "Bilder av ødelagte eller referansedeler",
+      "Fysiske prøver sendt til oss",
+      "Skriftlig beskrivelse med mål"
+    ],
+    "outputs": [
+      "CNC-fresede deler i aluminium, stål, messing",
+      "Plasma- og laserskårne flate komponenter",
+      "Hus, kapper og braketter",
+      "Gjenget, tappet og presspassede enheter",
+      "Prototype-enheter med maskinvare",
+      "Småserier — 1 til 200 enheter"
+    ]
+  },
+  "pageHeaders": {
+    "services": {
+      "eyebrow": "Tjenester",
+      "heading": "Fire måter vi kan hjelpe",
+      "body":    "Tilpasset fabrikasjon, prototyping, redesign av deler og småserieproduksjon — håndtert fra start til slutt av ett team."
+    },
+    "process": {
+      "eyebrow": "Prosess",
+      "heading": "Fra oppgave til leverte deler",
+      "body":    "Ingen svart boks. Hver bestilling følger de samme fem stegene — tydelig omfang, klar tidslinje, ingen overraskelser på fakturaen."
+    },
+    "projects": {
+      "eyebrow": "Prosjekter",
+      "heading": "Ekte arbeid. Ekte resultater.",
+      "body":    "Hvert tilfelle nedenfor er en ekte oppgave vi mottok, jobbet gjennom og leverte. Oppgave, løsning, resultat — ikke noe mer."
+    },
+    "about": {
+      "eyebrow": "Om oss",
+      "heading": "Ingeniørstudio. Ingen fluff."
+    },
+    "contact": {
+      "eyebrow": "Kontakt",
+      "heading": "Send oppgaven din"
+    }
   },
   "process": {
     "eyebrow": "Prosessen",
@@ -47,14 +166,14 @@
     "linkAll": "Alle prosjekter",
     "gearbox": {
       "tag":    "Redesign av deler",
-      "title":  "Girkassekapsel — ingen tegning tilgjengelig",
-      "task":   "Original kapsel sprakk. Ingen teknisk tegning eksisterte.",
-      "result": "6 enheter produsert og installert."
+      "title":  "Girkassekappe — ingen tegning tilgjengelig",
+      "task":   "Original kappe sprakk. Ingen teknisk tegning eksisterte.",
+      "result": "6 enheter produsert og montert."
     },
     "enclosure": {
       "tag":    "Prototyping",
-      "title":  "Elektronikkkapsel for utviklingskort",
-      "task":   "Testbart hus for et egendefinert kretskort, før investering i verktøy.",
+      "title":  "Elektronikkhus for utviklingskort",
+      "task":   "Testbart hus for tilpasset kretskort, før verktøyinvestering.",
       "result": "Prototype på 4 dager. Design godkjent."
     }
   },
