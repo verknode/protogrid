@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { signOut } from "@/lib/auth-client";
 import { deleteAccount } from "@/app/actions/deleteAccount";
-import { Footer } from "@/components/home/Footer";
 import { AlertCircle, LogOut, ChevronRight, Paperclip, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { PilotBadge } from "@/components/PilotBadge";
@@ -281,7 +280,6 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
         </div>
       </section>
 
-      <Footer />
     </>
   );
 }

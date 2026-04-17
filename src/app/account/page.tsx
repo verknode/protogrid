@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AccountClient } from "./AccountClient";
+import { Footer } from "@/components/home/Footer";
 
 export const metadata = { title: "Account — ProtoGrid" };
 
@@ -58,6 +59,7 @@ export default async function AccountPage() {
         requests={requests}
         dbUnavailable={dbUnavailable}
       />
+      <Footer />
     </main>
   );
 }
