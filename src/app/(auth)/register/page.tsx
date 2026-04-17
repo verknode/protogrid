@@ -82,16 +82,22 @@ export default function RegisterPage() {
       }
     }
 
-    const result = await signUp.email({
-      name: data.name,
-      email: data.email,
-      password: data.password,
-    });
+    let result;
+    try {
+      result = await signUp.email({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
+    } catch {
+      setServerError("Network error. Please try again.");
+      return;
+    }
     if (result.error) {
       setServerError(result.error.message ?? "Registration failed");
       return;
     }
-    await recordLegalConsent();
+    recordLegalConsent().catch(() => {});
     router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
     router.refresh();
   }
