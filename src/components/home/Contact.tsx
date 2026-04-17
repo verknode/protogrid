@@ -8,6 +8,7 @@ import { z } from "zod";
 import { submitRequest } from "@/app/actions/submitRequest";
 import { useSession } from "@/lib/auth-client";
 import { useUploadThing } from "@/lib/uploadthing-client";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { Paperclip, X, CheckCircle, Upload } from "lucide-react";
 import Link from "next/link";
 
@@ -61,6 +62,7 @@ export function Contact() {
   const [serverError, setServerError]     = useState<string | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFileInfo[]>([]);
   const [uploadError, setUploadError]     = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { startUpload, isUploading } = useUploadThing("requestAttachment", {
@@ -99,7 +101,8 @@ export function Contact() {
       setServerError("Please wait for file upload to complete.");
       return;
     }
-    const result = await submitRequest({ ...data, files: uploadedFiles });
+    const result = await submitRequest({ ...data, files: uploadedFiles, turnstileToken: turnstileToken ?? undefined });
+    setTurnstileToken(null);
     if ("error" in result) {
       setServerError(result.error);
       return;
@@ -374,9 +377,15 @@ export function Contact() {
                   <p className="font-technical text-[11px] text-red-400">{serverError}</p>
                 )}
 
+                <TurnstileWidget
+                  onSuccess={setTurnstileToken}
+                  onExpire={() => setTurnstileToken(null)}
+                  onError={() => setTurnstileToken(null)}
+                />
+
                 <button
                   type="submit"
-                  disabled={isSubmitting || isUploading}
+                  disabled={isSubmitting || isUploading || (!!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)}
                   className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 w-full sm:w-auto"
                 >
                   {isUploading ? "Uploading files..." : isSubmitting ? "Sending..." : "Send request"}

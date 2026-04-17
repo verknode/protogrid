@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "home": "Hjem",
+    "services": "Tjenester",
+    "process": "Prosessen",
+    "projects": "Prosjekter",
+    "about": "Om oss",
+    "contact": "Kontakt",
+    "requestQuote": "Be om tilbud",
+    "signIn": "Logg inn",
+    "register": "Registrer deg",
+    "account": "Konto",
+    "admin": "Admin",
+    "openMenu": "Åpne meny",
+    "closeMenu": "Lukk meny"
+  },
+  "hero": {
+    "eyebrow": "Ingeniørstudio · Prototyping · Produksjon",
+    "heading1": "Fra idé til",
+    "heading2": "fungerende produkt",
+    "body": "ProtoGrid hjelper deg å gjøre ideer, skisser, ødelagte deler og spesifikke krav om til prototyper, funksjonelle komponenter og småserieproduksjon.",
+    "ctaPrimary": "Be om tilbud",
+    "ctaSecondary": "Se hvordan det fungerer"
+  },
+  "services": {
+    "eyebrow": "Tjenester",
+    "heading": "Hva vi gjør",
+    "linkAll": "Alle tjenester",
+    "customParts":      { "title": "Egendefinerte deler",    "line": "Produsert etter spec — enkeltdeler eller løpende." },
+    "rapidPrototyping": { "title": "Rask prototyping",        "line": "Fra skisse til fysisk prototype, raskt." },
+    "partRedesign":     { "title": "Redesign av deler",       "line": "Reversingeniering og forbedring av defekte deler." },
+    "smallBatch":       { "title": "Småserieproduksjon",      "line": "5–200 enheter, ingen minimumsbestilling." }
+  },
+  "process": {
+    "eyebrow": "Prosessen",
+    "heading": "Slik fungerer det",
+    "linkFull": "Hele prosessen",
+    "s01": "Send oppgave",
+    "s02": "Gjennomgang og tilbud",
+    "s03": "Prototype",
+    "s04": "Produksjon",
+    "s05": "Levering"
+  },
+  "projects": {
+    "eyebrow": "Prosjekter",
+    "heading": "Nylig arbeid",
+    "linkAll": "Alle prosjekter",
+    "gearbox": {
+      "tag":    "Redesign av deler",
+      "title":  "Girkassekapsel — ingen tegning tilgjengelig",
+      "task":   "Original kapsel sprakk. Ingen teknisk tegning eksisterte.",
+      "result": "6 enheter produsert og installert."
+    },
+    "enclosure": {
+      "tag":    "Prototyping",
+      "title":  "Elektronikkkapsel for utviklingskort",
+      "task":   "Testbart hus for et egendefinert kretskort, før investering i verktøy.",
+      "result": "Prototype på 4 dager. Design godkjent."
+    }
+  },
+  "cta": {
+    "eyebrow": "Klar til å begynne?",
+    "heading1": "Send oppgaven din.",
+    "heading2": "Vi tar det derfra.",
+    "button": "Be om tilbud"
+  },
+  "footer": {
+    "tagline": "Ingeniør- og produksjonsstudio. Fra idé til fungerende produkt.",
+    "pages": "Sider",
+    "contact": "Kontakt",
+    "studio": "Studio",
+    "terms": "Vilkår",
+    "privacy": "Personvern",
+    "copyright": "© 2025 ProtoGrid. Alle rettigheter forbeholdt."
+  }
+}

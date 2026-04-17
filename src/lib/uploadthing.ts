@@ -20,8 +20,7 @@ export const ourFileRouter = {
   })
     .middleware(async () => {
       const session = await auth.api.getSession({ headers: await headers() });
-      if (!session?.user) throw new Error("Unauthorized");
-      return { userId: session.user.id };
+      return { userId: session?.user?.id ?? null };
     })
     .onUploadComplete(async ({ file }) => {
       // Return value becomes serverData on the client, but we don't need it

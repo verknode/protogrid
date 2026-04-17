@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { signIn } from "@/lib/auth-client";
+import { signIn, authClient } from "@/lib/auth-client";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import Link from "next/link";
 
 const schema = z.object({
@@ -38,6 +39,9 @@ function LoginForm() {
   const from = searchParams.get("from") ?? "/account";
   const [serverError, setServerError] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+  const [resendStatus, setResendStatus] = useState<"idle" | "sending" | "sent">("idle");
 
   const {
     register,
@@ -47,16 +51,50 @@ function LoginForm() {
 
   async function onSubmit(data: FormData) {
     setServerError(null);
+    setUnverifiedEmail(null);
+
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) {
+      if (!turnstileToken) {
+        setServerError("Please complete the security check.");
+        return;
+      }
+      const res = await fetch("/api/validate-turnstile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+      const json = (await res.json()) as { success: boolean; error?: string };
+      setTurnstileToken(null);
+      if (!json.success) {
+        setServerError(json.error ?? "Security check failed. Please try again.");
+        return;
+      }
+    }
+
     const result = await signIn.email({
       email: data.email,
       password: data.password,
     });
     if (result.error) {
+      const isUnverified =
+        result.error.code === "EMAIL_NOT_VERIFIED" ||
+        (result.error.message?.toLowerCase().includes("not verified") ?? false);
+      if (isUnverified) {
+        setUnverifiedEmail(data.email);
+        return;
+      }
       setServerError(result.error.message ?? "Invalid email or password");
       return;
     }
     router.push(from.startsWith("/") ? from : "/account");
     router.refresh();
+  }
+
+  async function handleResendVerification() {
+    if (!unverifiedEmail) return;
+    setResendStatus("sending");
+    await authClient.sendVerificationEmail({ email: unverifiedEmail, callbackURL: "/account" });
+    setResendStatus("sent");
   }
 
   async function handleGoogle() {
@@ -139,9 +177,33 @@ function LoginForm() {
           <p className="font-technical text-[11px] text-red-400 pt-1">{serverError}</p>
         )}
 
+        {unverifiedEmail && (
+          <div className="border border-iris-dusk/30 rounded-sm p-4">
+            <p className="font-technical text-[11px] text-lavender-smoke mb-3">
+              Email not verified. Check your inbox or resend the link.
+            </p>
+            <button
+              type="button"
+              onClick={handleResendVerification}
+              disabled={resendStatus !== "idle"}
+              className="font-technical text-[11px] tracking-[0.06em] text-cold-pearl hover:text-white disabled:opacity-50 transition-colors duration-150"
+            >
+              {resendStatus === "sending" ? "Sending…" : resendStatus === "sent" ? "Email sent" : "Resend verification email"}
+            </button>
+          </div>
+        )}
+
+        <div className="pt-1">
+          <TurnstileWidget
+            onSuccess={setTurnstileToken}
+            onExpire={() => setTurnstileToken(null)}
+            onError={() => setTurnstileToken(null)}
+          />
+        </div>
+
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (!!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)}
           className="w-full h-12 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 mt-2"
         >
           {isSubmitting ? "Signing in…" : "Sign in"}

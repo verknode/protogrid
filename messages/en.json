@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "process": "Process",
+    "projects": "Projects",
+    "about": "About",
+    "contact": "Contact",
+    "requestQuote": "Request a Quote",
+    "signIn": "Sign in",
+    "register": "Register",
+    "account": "Account",
+    "admin": "Admin",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "hero": {
+    "eyebrow": "Engineering Studio · Prototyping · Fabrication",
+    "heading1": "From concept to",
+    "heading2": "functional product",
+    "body": "ProtoGrid helps turn ideas, sketches, broken parts, and custom requirements into prototypes, functional components, and small-batch production.",
+    "ctaPrimary": "Request a Quote",
+    "ctaSecondary": "See How It Works"
+  },
+  "services": {
+    "eyebrow": "Services",
+    "heading": "What we do",
+    "linkAll": "All services",
+    "customParts":      { "title": "Custom Parts",      "line": "Fabricated to spec — one-off or repeat." },
+    "rapidPrototyping": { "title": "Rapid Prototyping",  "line": "Sketch to physical prototype, fast." },
+    "partRedesign":     { "title": "Part Redesign",       "line": "Reverse-engineer and improve broken parts." },
+    "smallBatch":       { "title": "Small-Batch",         "line": "5–200 units, no factory minimums." }
+  },
+  "process": {
+    "eyebrow": "Process",
+    "heading": "How it works",
+    "linkFull": "Full process",
+    "s01": "Send task",
+    "s02": "Review & quote",
+    "s03": "Prototype",
+    "s04": "Production",
+    "s05": "Delivery"
+  },
+  "projects": {
+    "eyebrow": "Projects",
+    "heading": "Recent work",
+    "linkAll": "All projects",
+    "gearbox": {
+      "tag":    "Part Redesign",
+      "title":  "Gearbox housing — no drawing available",
+      "task":   "Original housing cracked. No technical drawing existed.",
+      "result": "6 units produced and installed."
+    },
+    "enclosure": {
+      "tag":    "Prototyping",
+      "title":  "Electronics enclosure for dev board",
+      "task":   "Testable housing for a custom PCB, before tooling investment.",
+      "result": "Prototype in 4 days. Design signed off."
+    }
+  },
+  "cta": {
+    "eyebrow": "Ready to start?",
+    "heading1": "Send your task.",
+    "heading2": "We take it from there.",
+    "button": "Request a Quote"
+  },
+  "footer": {
+    "tagline": "Engineering & fabrication studio. From concept to functional product.",
+    "pages": "Pages",
+    "contact": "Contact",
+    "studio": "Studio",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "copyright": "© 2025 ProtoGrid. All rights reserved."
+  }
+}

@@ -8,6 +8,7 @@ import { z } from "zod";
 import { signUp, signIn } from "@/lib/auth-client";
 import { recordLegalConsent } from "@/app/actions/recordConsent";
 import { CURRENT_TERMS_VERSION } from "@/lib/legal-versions";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import Link from "next/link";
 
 const schema = z
@@ -52,6 +53,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const {
     register,
@@ -61,6 +63,25 @@ export default function RegisterPage() {
 
   async function onSubmit(data: FormData) {
     setServerError(null);
+
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) {
+      if (!turnstileToken) {
+        setServerError("Please complete the security check.");
+        return;
+      }
+      const res = await fetch("/api/validate-turnstile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+      const json = (await res.json()) as { success: boolean; error?: string };
+      setTurnstileToken(null);
+      if (!json.success) {
+        setServerError(json.error ?? "Security check failed. Please try again.");
+        return;
+      }
+    }
+
     const result = await signUp.email({
       name: data.name,
       email: data.email,
@@ -71,7 +92,7 @@ export default function RegisterPage() {
       return;
     }
     await recordLegalConsent();
-    router.push("/account");
+    router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
     router.refresh();
   }
 
@@ -208,9 +229,17 @@ export default function RegisterPage() {
           <p className="font-technical text-[11px] text-red-400 pt-1">{serverError}</p>
         )}
 
+        <div className="pt-1">
+          <TurnstileWidget
+            onSuccess={setTurnstileToken}
+            onExpire={() => setTurnstileToken(null)}
+            onError={() => setTurnstileToken(null)}
+          />
+        </div>
+
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (!!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)}
           className="w-full h-12 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 mt-2"
         >
           {isSubmitting ? "Creating account…" : "Create account"}
