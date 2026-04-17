@@ -52,6 +52,10 @@ export default async function AccountPage() {
     redirect("/login");
   }
 
+  if (session && !session.user.emailVerified) {
+    redirect(`/verify-email?email=${encodeURIComponent(session.user.email)}`);
+  }
+
   return (
     <main className="flex flex-col pt-16">
       <AccountClient

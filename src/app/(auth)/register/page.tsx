@@ -99,7 +99,6 @@ export default function RegisterPage() {
     }
     recordLegalConsent().catch(() => {});
     router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
-    router.refresh();
   }
 
   async function handleGoogle() {
