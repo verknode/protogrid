@@ -23,7 +23,10 @@ function getTransporter() {
 
 async function send(to: string, subject: string, html: string) {
   const transporter = getTransporter();
-  if (!transporter) return; // silently skip if not configured
+  if (!transporter) {
+    console.warn("[email] skipped — GMAIL_USER or GMAIL_APP_PASSWORD not set. to:", to, "subject:", subject);
+    return;
+  }
   try {
     await transporter.sendMail({
       from: `"ProtoGrid" <${process.env.GMAIL_USER}>`,
@@ -31,8 +34,9 @@ async function send(to: string, subject: string, html: string) {
       subject,
       html,
     });
+    console.log("[email] sent to:", to, "subject:", subject);
   } catch (err) {
-    console.error("[email]", err);
+    console.error("[email] failed to:", to, err);
   }
 }
 
