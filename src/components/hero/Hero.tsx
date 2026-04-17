@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { PilotBadge } from "@/components/PilotBadge";
+import { TechnicalGraphic } from "./TechnicalGraphic";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -34,56 +35,83 @@ export function Hero() {
       </div>
 
       <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="max-w-[800px]">
-          <motion.p
-            {...fadeUp(0)}
-            className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-4"
-          >
-            {t("eyebrow")}
-          </motion.p>
+        <div className="grid lg:grid-cols-[1fr_440px] xl:grid-cols-[1fr_520px] items-center gap-12 lg:gap-8 xl:gap-16">
 
-          <motion.div {...fadeUp(0.04)} className="mb-5">
-            <PilotBadge variant="hero" />
-          </motion.div>
+          {/* Text column */}
+          <div>
+            <motion.p
+              {...fadeUp(0)}
+              className="font-technical text-[11px] tracking-[0.18em] uppercase text-lavender-smoke mb-4"
+            >
+              {t("eyebrow")}
+            </motion.p>
 
-          <motion.h1
-            {...fadeUp(0.1)}
-            className="font-display font-bold text-[clamp(42px,6vw,72px)] leading-[1.05] tracking-[-0.02em] text-cold-pearl mb-6"
-          >
-            {t("heading1")}
-            <br />
-            {t("heading2")}
-          </motion.h1>
+            <motion.div {...fadeUp(0.04)} className="mb-5">
+              <PilotBadge variant="hero" />
+            </motion.div>
 
-          <motion.p
-            {...fadeUp(0.25)}
-            className="font-sans text-[clamp(15px,1.1vw,17px)] leading-[1.68] text-lavender-smoke mb-10 max-w-[48ch]"
-          >
-            {t("body")}
-          </motion.p>
+            <motion.h1
+              {...fadeUp(0.1)}
+              className="font-display font-bold text-[clamp(46px,6.5vw,88px)] leading-[1.02] tracking-[-0.025em] text-cold-pearl mb-6"
+            >
+              {t("heading1")}
+              <br />
+              {t("heading2")}
+            </motion.h1>
 
+            <motion.p
+              {...fadeUp(0.25)}
+              className="font-sans text-[clamp(15px,1.1vw,17px)] leading-[1.68] text-lavender-smoke mb-10 max-w-[44ch]"
+            >
+              {t("body")}
+            </motion.p>
+
+            <motion.div
+              {...fadeUp(0.4)}
+              className="flex flex-col sm:flex-row gap-3"
+            >
+              <Link
+                href="/contact"
+                className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-200 w-full sm:w-auto whitespace-nowrap flex items-center justify-center"
+              >
+                {t("ctaPrimary")}
+              </Link>
+
+              <Link
+                href="/process"
+                className="group h-12 px-6 border border-iris-dusk text-lavender-smoke text-[13px] font-technical tracking-[0.06em] rounded-sm hover:border-lavender-smoke hover:text-cold-pearl transition-colors duration-200 flex items-center justify-center gap-[6px] w-full sm:w-auto whitespace-nowrap"
+              >
+                {t("ctaSecondary")}
+                <ArrowRight
+                  size={14}
+                  className="transition-transform duration-200 group-hover:translate-x-[3px]"
+                />
+              </Link>
+            </motion.div>
+
+            {/* Context strip */}
+            <motion.div
+              {...fadeUp(0.52)}
+              className="flex flex-wrap items-center gap-x-5 gap-y-1.5 mt-10 pt-8 border-t border-iris-dusk/20"
+            >
+              {["Hamar · Norway", "CNC Fabrication", "Custom → Batch"].map((item) => (
+                <span key={item} className="font-technical text-[10px] tracking-[0.12em] uppercase text-iris-dusk">
+                  {item}
+                </span>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Graphic column — desktop only */}
           <motion.div
-            {...fadeUp(0.4)}
-            className="flex flex-col sm:flex-row gap-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, delay: 0.15, ease }}
+            className="hidden lg:block"
           >
-            <Link
-              href="/contact"
-              className="h-12 px-6 bg-cold-pearl text-ink-shadow text-[13px] font-technical tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-200 w-full sm:w-auto whitespace-nowrap flex items-center justify-center"
-            >
-              {t("ctaPrimary")}
-            </Link>
-
-            <Link
-              href="/process"
-              className="group h-12 px-6 border border-iris-dusk text-lavender-smoke text-[13px] font-technical tracking-[0.06em] rounded-sm hover:border-lavender-smoke hover:text-cold-pearl transition-colors duration-200 flex items-center justify-center gap-[6px] w-full sm:w-auto whitespace-nowrap"
-            >
-              {t("ctaSecondary")}
-              <ArrowRight
-                size={14}
-                className="transition-transform duration-200 group-hover:translate-x-[3px]"
-              />
-            </Link>
+            <TechnicalGraphic />
           </motion.div>
+
         </div>
       </div>
     </section>

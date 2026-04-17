@@ -48,8 +48,8 @@ export function ServicesPreview() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-iris-dusk/20">
           {SERVICE_ICONS.map(({ key, icon: Icon }, i) => (
             <motion.div key={key} {...fadeIn(0.05 * i)} className="bg-surface p-5 flex flex-col gap-4 hover:bg-iris-dusk/10 transition-colors duration-150">
-              <div className="w-8 h-8 border border-iris-dusk/40 rounded-sm flex items-center justify-center shrink-0">
-                <Icon size={14} className="text-lavender-smoke" />
+              <div className="w-8 h-8 bg-accent/10 border border-accent/25 rounded-sm flex items-center justify-center shrink-0">
+                <Icon size={14} className="text-accent" />
               </div>
               <div>
                 <p className="font-display font-bold text-[15px] text-cold-pearl mb-1">{t(`${key}.title`)}</p>

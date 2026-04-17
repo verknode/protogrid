@@ -41,9 +41,21 @@ export function ProcessPreview() {
 
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-px bg-iris-dusk/20">
           {STEPS.map((n, i) => (
-            <motion.div key={n} {...fadeIn(0.06 * i)} className="bg-surface px-4 py-4 sm:py-5 flex sm:flex-col items-center sm:items-start gap-4 sm:gap-2">
-              <span className="font-technical text-[10px] tracking-[0.14em] text-iris-dusk shrink-0">{n}</span>
-              <p className="font-technical text-[12px] tracking-[0.04em] text-cold-pearl leading-[1.3]">{t(`s${n}`)}</p>
+            <motion.div
+              key={n}
+              {...fadeIn(0.06 * i)}
+              className="bg-surface px-5 py-7 sm:py-9 flex sm:flex-col items-center sm:items-start gap-4 sm:gap-3 relative overflow-hidden"
+            >
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-4 -right-1 font-technical leading-none select-none pointer-events-none text-[80px] text-iris-dusk/[0.07]"
+              >
+                {n}
+              </span>
+              <span className="font-technical text-[11px] tracking-[0.1em] text-accent shrink-0">/{n}</span>
+              <p className="font-technical text-[12px] tracking-[0.04em] text-cold-pearl leading-[1.45] relative z-10">
+                {t(`s${n}`)}
+              </p>
             </motion.div>
           ))}
         </div>

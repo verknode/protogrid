@@ -10,6 +10,7 @@
   --lavender-smoke: #8e90a6;
   --cold-pearl: #f1f2f4;
   --surface: #2a2d38;
+  --accent: #c8852a;
 }
 
 @theme inline {
@@ -22,6 +23,7 @@
   --color-lavender-smoke: var(--lavender-smoke);
   --color-cold-pearl: var(--cold-pearl);
   --color-surface: var(--surface);
+  --color-accent: var(--accent);
 }
 
 body {
