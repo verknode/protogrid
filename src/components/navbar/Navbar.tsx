@@ -94,16 +94,19 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile toggle */}
-          <button
-            type="button"
-            onClick={() => setMenuOpen((v) => !v)}
-            className="lg:hidden ml-auto flex items-center justify-center w-8 h-8 text-cold-pearl -mr-1"
-            aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
-            aria-expanded={menuOpen}
-          >
-            {menuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
-          </button>
+          {/* Mobile: language toggle + hamburger */}
+          <div className="lg:hidden ml-auto flex items-center gap-3">
+            <LanguageToggle />
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              className="flex items-center justify-center w-8 h-8 text-cold-pearl -mr-1"
+              aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
+            </button>
+          </div>
 
         </div>
       </div>
@@ -171,10 +174,9 @@ export function Navbar() {
                 </>
               )}
 
-              {/* Language + Early access */}
-              <div className="flex items-center justify-between py-3 border-t border-iris-dusk/15">
+              {/* Early access */}
+              <div className="py-3 border-t border-iris-dusk/15">
                 <PilotBadge variant="line" />
-                <LanguageToggle />
               </div>
 
               {/* Primary CTA */}
