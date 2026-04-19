@@ -51,7 +51,7 @@ export function Navbar() {
       ].join(" ")}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center h-[72px]">
+        <div className="flex items-center h-16">
 
           {/* Wordmark */}
           <Link
