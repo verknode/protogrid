@@ -74,7 +74,7 @@ export function MessageThread({ requestId, messages, isAdmin }: Props) {
                 {msg.body}
               </div>
               <span className="font-technical text-[10px] text-iris-dusk px-0.5">
-                {msg.isAdmin ? "ProtoGrid" : "You"} ·{" "}
+                {msg.isAdmin ? "ProtoGrid" : isAdmin ? "Client" : "You"} ·{" "}
                 {new Date(msg.createdAt).toLocaleTimeString("en-GB", {
                   hour: "2-digit",
                   minute: "2-digit",

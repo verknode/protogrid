@@ -7,12 +7,13 @@ import Link from "next/link";
 
 export const metadata = { title: "Requests — ProtoGrid Admin" };
 
-const STATUSES = ["NEW", "IN_REVIEW", "ACCEPTED", "REJECTED", "DONE"] as const;
+const STATUSES = ["NEW", "IN_REVIEW", "QUOTED", "ACCEPTED", "REJECTED", "DONE"] as const;
 type Status = (typeof STATUSES)[number];
 
 const STATUS_LABEL: Record<string, string> = {
   NEW:       "New",
   IN_REVIEW: "In Review",
+  QUOTED:    "Quoted",
   ACCEPTED:  "Accepted",
   REJECTED:  "Rejected",
   DONE:      "Done",

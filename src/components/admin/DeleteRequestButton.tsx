@@ -7,29 +7,39 @@ import { deleteRequest } from "@/app/actions/adminActions";
 
 export function DeleteRequestButton({ requestId }: { requestId: string }) {
   const [confirm, setConfirm] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   function handleDelete() {
+    setError(null);
     startTransition(async () => {
       const result = await deleteRequest(requestId);
       if ("success" in result) {
         router.push("/admin/requests");
         router.refresh();
+      } else {
+        setError(result.error);
+        setConfirm(false);
       }
     });
   }
 
   if (!confirm) {
     return (
-      <button
-        type="button"
-        onClick={() => setConfirm(true)}
-        className="flex items-center gap-2 font-technical text-[11px] tracking-[0.08em] text-iris-dusk hover:text-red-400 transition-colors duration-150"
-      >
-        <Trash2 size={13} />
-        Delete request
-      </button>
+      <div className="flex flex-col items-end gap-1.5">
+        {error && (
+          <p className="font-technical text-[11px] text-red-400">{error}</p>
+        )}
+        <button
+          type="button"
+          onClick={() => setConfirm(true)}
+          className="flex items-center gap-2 font-technical text-[11px] tracking-[0.08em] text-iris-dusk hover:text-red-400 transition-colors duration-150"
+        >
+          <Trash2 size={13} />
+          Delete request
+        </button>
+      </div>
     );
   }
 

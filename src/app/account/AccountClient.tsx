@@ -194,7 +194,7 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
 
       <section className="py-6 lg:py-10 flex-1">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="max-w-xl space-y-4">
+          <div className="max-w-2xl space-y-4">
 
             {/* ── Requests tab ── */}
             {tab === "requests" && (

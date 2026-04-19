@@ -12,6 +12,7 @@ export const metadata = { title: "Request — ProtoGrid" };
 const STATUS_LABEL: Record<string, string> = {
   NEW:       "New",
   IN_REVIEW: "In Review",
+  QUOTED:    "Quoted",
   ACCEPTED:  "Accepted",
   REJECTED:  "Rejected",
   DONE:      "Done",
@@ -20,6 +21,7 @@ const STATUS_LABEL: Record<string, string> = {
 const STATUS_DESC: Record<string, string> = {
   NEW:       "Your request has been received. We'll review it soon.",
   IN_REVIEW: "We're reviewing your request and will get back to you shortly.",
+  QUOTED:    "We've sent you a quote. Check the messages below and let us know how you'd like to proceed.",
   ACCEPTED:  "Your request has been accepted. We'll be in touch about next steps.",
   REJECTED:  "We weren't able to take on this request. Contact us to discuss alternatives.",
   DONE:      "This request has been completed.",
@@ -106,8 +108,8 @@ export default async function AccountRequestPage({
             </div>
 
             {/* Details */}
-            {(request.dimensions || request.deadline) && (
-              <div className="grid sm:grid-cols-2 gap-6 border-t border-iris-dusk/15 pt-6">
+            {(request.dimensions || request.deadline || request.budget) && (
+              <div className="grid sm:grid-cols-3 gap-6 border-t border-iris-dusk/15 pt-6">
                 {request.dimensions && (
                   <div>
                     <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk mb-1">
@@ -122,6 +124,14 @@ export default async function AccountRequestPage({
                       Deadline
                     </p>
                     <p className="font-sans text-[14px] text-lavender-smoke">{request.deadline}</p>
+                  </div>
+                )}
+                {request.budget && (
+                  <div>
+                    <p className="font-technical text-[10px] tracking-[0.14em] uppercase text-iris-dusk mb-1">
+                      Budget
+                    </p>
+                    <p className="font-sans text-[14px] text-cold-pearl font-medium">{request.budget}</p>
                   </div>
                 )}
               </div>

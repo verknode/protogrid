@@ -11,7 +11,7 @@ import {
   notifyClientStatusChange,
 } from "@/lib/email";
 
-const VALID_STATUSES = ["NEW", "IN_REVIEW", "ACCEPTED", "REJECTED", "DONE"] as const;
+const VALID_STATUSES = ["NEW", "IN_REVIEW", "QUOTED", "ACCEPTED", "REJECTED", "DONE"] as const;
 type Status = (typeof VALID_STATUSES)[number];
 
 async function requireAdmin() {
