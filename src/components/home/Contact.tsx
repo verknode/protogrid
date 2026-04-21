@@ -91,6 +91,7 @@ export function Contact() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -98,6 +99,18 @@ export function Contact() {
 
   async function onSubmit(data: FormData) {
     setServerError(null);
+    if (!isLoggedIn) {
+      let hasGuestError = false;
+      if (!data.name?.trim()) {
+        setError("name", { message: "Name is required" });
+        hasGuestError = true;
+      }
+      if (!data.email?.trim()) {
+        setError("email", { message: "Email is required" });
+        hasGuestError = true;
+      }
+      if (hasGuestError) return;
+    }
     if (isUploading) {
       setServerError("Please wait for file upload to complete.");
       return;

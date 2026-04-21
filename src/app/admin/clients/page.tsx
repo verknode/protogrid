@@ -55,7 +55,7 @@ export default async function AdminClientsPage() {
           email:    g.email,
           name:     rows[0]?.name ?? g.email,
           total:    g._count.id,
-          lastDate: g._max.createdAt as Date,
+          lastDate: (g._max.createdAt ?? new Date()) as Date,
           statuses,
         };
       })

@@ -8,7 +8,12 @@ export async function validateTurnstile(token: string | undefined | null, ip?: s
   const secret = process.env.TURNSTILE_SECRET_KEY;
 
   // Dev/unconfigured: skip validation
-  if (!secret) return true;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn("[turnstile] TURNSTILE_SECRET_KEY not set in production — skipping CAPTCHA validation");
+    }
+    return true;
+  }
 
   if (!token) return false;
 
