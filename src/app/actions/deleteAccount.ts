@@ -9,7 +9,11 @@ export async function deleteAccount(): Promise<{ error?: string }> {
   if (!session?.user) return { error: "Not authenticated." };
   if (session.user.role === "admin") return { error: "Admin accounts cannot be self-deleted." };
 
-  await db.user.delete({ where: { id: session.user.id } });
+  try {
+    await db.user.delete({ where: { id: session.user.id } });
+  } catch {
+    return { error: "Failed to delete account. Please try again." };
+  }
 
   return {};
 }

@@ -197,6 +197,7 @@ export async function notifyClientStatusChange(opts: {
 }) {
   const STATUS_LABEL: Record<string, string> = {
     IN_REVIEW: "In Review — we are looking at your request",
+    QUOTED:    "Quoted — check the message thread for your quote",
     ACCEPTED:  "Accepted — work is starting",
     REJECTED:  "Rejected — see the message thread for details",
     DONE:      "Done — your order is complete",

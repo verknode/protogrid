@@ -68,6 +68,21 @@ export async function sendMessage(
   const trimmed = body.trim();
   if (!trimmed) return { error: "Message is empty" };
 
+  // Non-admin: verify the request belongs to this user
+  if (!isAdmin) {
+    const owns = await db.request.findFirst({
+      where: {
+        id: requestId,
+        OR: [
+          { userId: session.user.id },
+          { email: session.user.email, userId: null },
+        ],
+      },
+      select: { id: true },
+    });
+    if (!owns) return { error: "Request not found" };
+  }
+
   // 60 messages per user per hour
   if (!rateLimit(`message:${session.user.id}`, 60, 3600)) {
     return { error: "Too many messages. Please wait before sending more." };
