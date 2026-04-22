@@ -16,9 +16,11 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function AdminDashboardPage() {
-  let session = null;
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session || session.user.role !== "admin") redirect("/account");
+
   let dbUnavailable = false;
-  let stats = { NEW: 0, IN_REVIEW: 0, ACCEPTED: 0, DONE: 0 };
+  let stats = { NEW: 0, IN_REVIEW: 0, QUOTED: 0, ACCEPTED: 0, DONE: 0 };
   let recent: Array<{
     id: string;
     title: string | null;
@@ -30,12 +32,11 @@ export default async function AdminDashboardPage() {
   }> = [];
 
   try {
-    session = await auth.api.getSession({ headers: await headers() });
-
-    const [newCount, inReviewCount, acceptedCount, doneCount, requests] =
+    const [newCount, inReviewCount, quotedCount, acceptedCount, doneCount, requests] =
       await Promise.all([
         db.request.count({ where: { status: "NEW" } }),
         db.request.count({ where: { status: "IN_REVIEW" } }),
+        db.request.count({ where: { status: "QUOTED" } }),
         db.request.count({ where: { status: "ACCEPTED" } }),
         db.request.count({ where: { status: "DONE" } }),
         db.request.findMany({
@@ -56,6 +57,7 @@ export default async function AdminDashboardPage() {
     stats = {
       NEW: newCount,
       IN_REVIEW: inReviewCount,
+      QUOTED: quotedCount,
       ACCEPTED: acceptedCount,
       DONE: doneCount,
     };
@@ -64,13 +66,10 @@ export default async function AdminDashboardPage() {
     dbUnavailable = true;
   }
 
-  if (session && session.user.role !== "admin") {
-    redirect("/account");
-  }
-
   const statCards = [
     { label: "New",       value: stats.NEW },
     { label: "In Review", value: stats.IN_REVIEW },
+    { label: "Quoted",    value: stats.QUOTED },
     { label: "Accepted",  value: stats.ACCEPTED },
     { label: "Done",      value: stats.DONE },
   ];
@@ -95,7 +94,7 @@ export default async function AdminDashboardPage() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
         {statCards.map(({ label, value }) => (
           <div key={label} className="bg-surface border border-iris-dusk/40 rounded-sm p-6">
             <p className="font-technical text-[11px] tracking-[0.12em] uppercase text-lavender-smoke mb-3">
