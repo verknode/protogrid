@@ -23,10 +23,11 @@ export default async function AccountPage() {
     status: string;
     createdAt: Date;
     files: Array<{ id: string; name: string; url: string }>;
+    messageCount: number;
   }> = [];
 
   try {
-    requests = await db.request.findMany({
+    const raw = await db.request.findMany({
       where: {
         OR: [
           { userId: session.user.id },
@@ -44,8 +45,10 @@ export default async function AccountPage() {
           select: { id: true, name: true, url: true },
           orderBy: { createdAt: "asc" },
         },
+        _count: { select: { messages: true } },
       },
     });
+    requests = raw.map((r) => ({ ...r, messageCount: r._count.messages }));
   } catch {
     dbUnavailable = true;
   }

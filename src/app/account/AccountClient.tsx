@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { signOut } from "@/lib/auth-client";
+import { signOut, authClient } from "@/lib/auth-client";
 import { deleteAccount } from "@/app/actions/deleteAccount";
-import { AlertCircle, LogOut, ChevronRight, Paperclip, Send, Trash2, CheckCircle2 } from "lucide-react";
+import { AlertCircle, LogOut, ChevronRight, Paperclip, Send, Trash2, CheckCircle2, MessageSquare, Pencil } from "lucide-react";
 import Link from "next/link";
 import { PilotBadge } from "@/components/PilotBadge";
 
@@ -19,7 +19,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 type SessionUser = { name: string; email: string; role: string };
 type FileInfo    = { id: string; name: string; url: string };
-type RequestRow  = { id: string; title: string | null; message: string; status: string; createdAt: Date; files: FileInfo[] };
+type RequestRow  = { id: string; title: string | null; message: string; status: string; createdAt: Date; files: FileInfo[]; messageCount: number };
 type Props       = { user: SessionUser | null; requests: RequestRow[]; dbUnavailable: boolean };
 
 const inputClass =
@@ -125,6 +125,82 @@ function PasswordSettings() {
           {isPending ? "Saving…" : "Update password"}
         </button>
       </form>
+    </div>
+  );
+}
+
+// ─── Name edit form ─────────────────────────────────────────────
+
+function NameSettings({ initialName }: { initialName: string }) {
+  const router = useRouter();
+  const [editing,   setEditing]   = useState(false);
+  const [name,      setName]      = useState(initialName);
+  const [error,     setError]     = useState<string | null>(null);
+  const [success,   setSuccess]   = useState(false);
+  const [isPending, start]        = useTransition();
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSuccess(false);
+    const trimmed = name.trim();
+    if (!trimmed) { setError("Name cannot be empty."); return; }
+    if (trimmed === initialName) { setEditing(false); return; }
+
+    start(async () => {
+      const res = await authClient.updateUser({ name: trimmed });
+      if (res.error) {
+        setError(res.error.message ?? "Failed to update name.");
+        return;
+      }
+      setSuccess(true);
+      setEditing(false);
+      router.refresh();
+    });
+  }
+
+  return (
+    <div className="px-5 py-3 flex items-center justify-between gap-6 border-b border-iris-dusk/10">
+      <p className="font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk shrink-0">Name</p>
+      {editing ? (
+        <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-1 justify-end">
+          <input
+            value={name}
+            onChange={e => setName(e.target.value)}
+            autoFocus
+            className="h-8 px-3 bg-transparent border border-iris-dusk/40 rounded-sm text-[13px] text-cold-pearl focus:outline-none focus:border-lavender-smoke transition-colors duration-150 w-full max-w-[200px]"
+          />
+          <button
+            type="submit"
+            disabled={isPending}
+            className="h-8 px-3 bg-cold-pearl text-ink-shadow font-technical text-[11px] tracking-[0.06em] rounded-sm hover:bg-[#D8D9DC] transition-colors duration-150 disabled:opacity-50 shrink-0"
+          >
+            {isPending ? "…" : "Save"}
+          </button>
+          <button
+            type="button"
+            onClick={() => { setEditing(false); setName(initialName); setError(null); }}
+            className="font-technical text-[11px] text-iris-dusk hover:text-lavender-smoke transition-colors duration-150 shrink-0"
+          >
+            Cancel
+          </button>
+          {error && <p className="font-technical text-[10px] text-red-400 shrink-0">{error}</p>}
+        </form>
+      ) : (
+        <div className="flex items-center gap-2 justify-end">
+          <p className="font-sans text-[13px] text-lavender-smoke">
+            {success ? name : initialName}
+          </p>
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            className="text-iris-dusk hover:text-lavender-smoke transition-colors duration-150"
+            title="Edit name"
+          >
+            <Pencil size={11} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -289,6 +365,12 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
                                 {req.files.length}
                               </span>
                             )}
+                            {req.messageCount > 0 && (
+                              <span className="flex items-center gap-1 font-technical text-[10px] tracking-[0.04em] text-lavender-smoke">
+                                <MessageSquare size={10} />
+                                {req.messageCount}
+                              </span>
+                            )}
                             <span className="font-technical text-[10px] text-iris-dusk group-hover:text-lavender-smoke transition-colors duration-150 ml-auto">
                               View →
                             </span>
@@ -311,15 +393,11 @@ export function AccountClient({ user, requests, dbUnavailable }: Props) {
                   </div>
                   {user ? (
                     <div className="divide-y divide-iris-dusk/10">
-                      {[
-                        { label: "Name",  value: user.name },
-                        { label: "Email", value: user.email },
-                      ].map(({ label, value }) => (
-                        <div key={label} className="px-5 py-3 flex items-center justify-between gap-6">
-                          <p className="font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk shrink-0">{label}</p>
-                          <p className="font-sans text-[13px] text-lavender-smoke text-right truncate">{value}</p>
-                        </div>
-                      ))}
+                      <NameSettings initialName={user.name} />
+                      <div className="px-5 py-3 flex items-center justify-between gap-6">
+                        <p className="font-technical text-[10px] tracking-[0.1em] uppercase text-iris-dusk shrink-0">Email</p>
+                        <p className="font-sans text-[13px] text-lavender-smoke text-right truncate">{user.email}</p>
+                      </div>
                     </div>
                   ) : (
                     <div className="px-5 py-8">
