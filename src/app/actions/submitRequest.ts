@@ -35,6 +35,16 @@ export type SubmitRequestResult =
 export async function submitRequest(
   data: unknown,
 ): Promise<SubmitRequestResult> {
+  // Normalise empty strings to undefined for optional fields so Zod
+  // optional() works correctly when logged-in users submit without
+  // name/email inputs rendered (RHF sends "" for unrendered fields).
+  if (data && typeof data === "object") {
+    const d = data as Record<string, unknown>;
+    if (typeof d.name  === "string" && !d.name.trim())  d.name  = undefined;
+    if (typeof d.email === "string" && !d.email.trim()) d.email = undefined;
+    if (typeof d.title === "string" && !d.title.trim()) d.title = undefined;
+  }
+
   const parsed = schema.safeParse(data);
   if (!parsed.success) {
     return { error: "Invalid form data. Please check all fields." };
