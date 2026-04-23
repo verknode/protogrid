@@ -26,7 +26,7 @@ export function StatusSelector({ requestId, current }: Props) {
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       {STATUSES.map((s) => (
         <button
           key={s}
@@ -41,9 +41,9 @@ export function StatusSelector({ requestId, current }: Props) {
           {LABELS[s]}
         </button>
       ))}
-      {isPending && (
-        <span className="font-technical text-[11px] text-iris-dusk self-center">Saving…</span>
-      )}
+      <span className={`font-technical text-[11px] text-iris-dusk w-14 ${isPending ? "opacity-100" : "opacity-0"}`}>
+        Saving…
+      </span>
     </div>
   );
 }

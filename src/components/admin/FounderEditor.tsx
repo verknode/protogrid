@@ -114,7 +114,9 @@ export function FounderEditor({ initial }: { initial: Profile | null }) {
             if (files.length) startUpload(files);
           }}
         />
-        {uploadError && <p className="mt-2 font-technical text-[11px] text-red-400">{uploadError}</p>}
+        <div className="min-h-[16px] mt-2">
+          {uploadError && <p className="font-technical text-[11px] text-red-400">{uploadError}</p>}
+        </div>
       </div>
 
       {/* Name */}

@@ -203,7 +203,7 @@ export default async function AdminRequestsPage({
               >
                 <div>
                   <p className="font-sans text-[13px] text-cold-pearl">{req.name}</p>
-                  <p className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk">{req.email}</p>
+                  <p className="font-technical text-[11px] tracking-[0.04em] text-iris-dusk truncate">{req.email}</p>
                 </div>
                 <div>
                   {req.title && (

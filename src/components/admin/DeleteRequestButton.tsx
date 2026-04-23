@@ -44,7 +44,7 @@ export function DeleteRequestButton({ requestId }: { requestId: string }) {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3">
       <span className="font-technical text-[11px] tracking-[0.06em] text-lavender-smoke">
         Are you sure?
       </span>

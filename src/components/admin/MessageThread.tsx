@@ -51,7 +51,7 @@ export function MessageThread({ requestId, messages, isAdmin }: Props) {
   return (
     <div className="flex flex-col gap-0">
       {/* Message list */}
-      <div className="min-h-[120px] max-h-[400px] overflow-y-auto px-5 py-4 space-y-3">
+      <div className="min-h-[120px] max-h-[300px] sm:max-h-[400px] overflow-y-auto px-5 py-4 space-y-3">
         {messages.length === 0 && (
           <p className="font-sans text-[13px] text-iris-dusk text-center py-6">
             No messages yet. Start the conversation.
@@ -65,7 +65,7 @@ export function MessageThread({ requestId, messages, isAdmin }: Props) {
               className={`flex flex-col gap-0.5 ${mine ? "items-end" : "items-start"}`}
             >
               <div
-                className={`max-w-[80%] px-3.5 py-2.5 rounded-sm text-[13px] leading-[1.55] font-sans ${
+                className={`max-w-[80%] px-3.5 py-2.5 rounded-sm text-[13px] leading-[1.55] font-sans break-words ${
                   mine
                     ? "bg-iris-dusk/25 text-cold-pearl"
                     : "bg-iris-dusk/10 text-lavender-smoke"

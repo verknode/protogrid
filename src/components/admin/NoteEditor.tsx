@@ -33,9 +33,11 @@ export function NoteEditor({ requestId, initialNote }: Props) {
         placeholder="Internal notes — not visible to client"
         className="w-full px-4 py-3 bg-transparent border border-iris-dusk/40 rounded-sm text-[13px] text-cold-pearl placeholder:text-lavender-smoke/50 focus:outline-none focus:border-lavender-smoke transition-colors duration-150 resize-none"
       />
-      {error && (
-        <p className="font-technical text-[11px] text-red-400">{error}</p>
-      )}
+      <div className="min-h-[16px]">
+        {error && (
+          <p className="font-technical text-[11px] text-red-400">{error}</p>
+        )}
+      </div>
       <button
         onClick={handleSave}
         disabled={isPending}
