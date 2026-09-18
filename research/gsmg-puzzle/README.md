@@ -4,9 +4,15 @@ Self-contained research notes, data and tooling from one working session on the
 [GSMG.IO 5 BTC puzzle](https://github.com/puzzlehunt/gsmgio-5btc-puzzle).
 Unrelated to the ProtoGrid product; kept here only so the work survives.
 
-**Outcome: the puzzle was not solved, and nothing found here is new to the
-community.** What this directory does contribute is independent verification,
-reproducible tooling, and one refuted public claim.
+**Outcome: the puzzle was not solved.** What this directory contributes is
+independent verification, reproducible tooling, one refuted public claim, and two
+structural observations that do not appear in the two community repositories
+checked (sections 7 and 8).
+
+The most complete public research is
+[floflo777/open-crypto-puzzles](https://github.com/floflo777/open-crypto-puzzles/tree/main/1-big-prizes/gsmg-io-5btc-puzzle),
+which maintains a tested-and-negative log and a ranked list of open leads. Read it
+before repeating anything here.
 
 ---
 
@@ -89,33 +95,40 @@ Ruled out against both blobs, nothing surviving:
 All padding survivors failed the printability filter, which is the expected
 false-positive rate for random plaintext and not evidence of a near miss.
 
-## 5. Dead end worth recording
+## 5. The two `a`–`i` blocks need different treatment
 
-The two undecoded letter blocks in SalPhaseIon (`data/seg0.txt`, 91 chars;
-`data/seg2.txt`, 570 chars, alphabet `a`–`i`) resist the method that solves the
-neighbouring blocks. `seg4` and `seg6` decode by mapping `a`–`i`,`o` to 1–9,0,
-reading the result as a decimal integer, converting to hex and reading ASCII —
-giving `lastwordsbeforearchichoice` and `thispassword`. That fails here, and the
-total absence of a zero digit across 661 characters rules the big-integer
-reading out on its own.
+SalPhaseIon carries two letter blocks over the alphabet `a`–`i`: `data/seg0.txt`
+at 91 characters and `data/seg2.txt` at 570. Neither yields to the method that
+solves the neighbouring blocks, where `seg4` and `seg6` map `a`–`i`,`o` to 1–9,0,
+read as a decimal integer, convert to hex and read as ASCII, giving
+`lastwordsbeforearchichoice` and `thispassword`. The total absence of a zero digit
+across all 661 characters rules that big-integer reading out on its own.
 
-Tried and rejected: base-9 and bijective base-9 integers, digit pairs and
-triples in base 9 and base 10 across all offsets, cumulative sums mod 26, and —
-following the embedded `matrixsumlist` label literally — row and column sums for
-every factorisation of both blocks, under both `a=0` and `a=1`.
+**`seg2` is the Bifid segment** and is solved: see section 8. `seg0` is still open.
 
-One observation that may be worth more than the failures: the two blocks have
-**very different statistics**. `seg0` has an index of coincidence of 0.151
-against 0.111 for uniform, so it looks like a per-character encoding of
-structured data. `seg2` sits at 0.118, near uniform, which is what a
-big-integer encoding or key material looks like, not text. They may well need
-different treatment rather than one shared decoding.
+Tried and rejected on `seg0`: base-9 and bijective base-9 integers, digit pairs and
+triples in base 9 and base 10 across all offsets, cumulative sums mod 26, a
+dictionary-scored a1z26 parse, and — following the embedded `matrixsumlist` label
+literally — row and column sums for every factorisation, under both `a=0` and `a=1`.
+
+The statistics say the two blocks are different objects. `seg0` has an index of
+coincidence of 0.151 against 0.111 for uniform, so it looks like a per-character
+encoding of structured data. `seg2` sits at 0.118, near uniform, which is what
+Bifid ciphertext looks like and is consistent with section 8.
+
+One structural check worth having: the page's 1075 single-character tokens are fully
+accounted for by this transcription, at 91 + 104 + 570 + 3 separators + 63 + 29 + 35,
+then 128 base64 characters with a 40-character run between them, then 12. Nothing on
+the page is unread.
 
 ## 6. Tools
 
 | File | Purpose |
 |---|---|
 | `tools/decode_beaufort.py` | Recovers the Beaufort block from the crib |
+| `tools/decode_vic.py` | Straddling checkerboard over the 149 digits |
+| `tools/bifid_step.py` | Bifid step, stream split, dropped letters, 2-bit channel |
+| `tools/btc.py` | secp256k1 and P2PKH address oracle |
 | `tools/crack.c` | Tests candidate phrases from stdin |
 | `tools/crack2.c` | Enumerates all substrings of a corpus |
 | `tools/crack3.c` | Enumerates XOR subsets of token hashes |
@@ -126,3 +139,89 @@ Throughput is roughly 750k candidates per second per core.
 Each tool self-validates against the solved phase 3.2 blob before use; a run
 that cannot rediscover `jacquefrescogiveitjustonesecondheisenbergsuncertaintyprinciple`
 is misconfigured.
+
+---
+
+## 7. Lead 6 executed: the 29 dropped letters are a binary string
+
+The upstream leads file lists this as never done, cost "minutes": the reduction
+from the 285-letter stream to the 256-symbol object drops 29 letters, and nobody
+had read them as an object in their own right.
+
+They are **exclusively `I` and `O`**, in extraction order:
+
+```
+OOIIOOOIIOOIOIIOIOOOOIOIIOIOI
+```
+
+That is a 29-bit binary string, not a discard. The two readings give:
+
+| Mapping | Integer | Hex |
+|---|---|---|
+| `I`=1, `O`=0 | 103993525 | `632d0b5` |
+| `O`=1, `I`=0 | 432877386 | `19cd2f4a` |
+
+`I` and `O` are removed precisely because they are the Base58-ambiguous letters,
+and they are also the two letters that read as `1` and `0`. Whether that is design
+or coincidence is open, but the object is binary, and 29 bits is too short to be a
+key on its own. Their positions are in `data/dropped29.txt` and printed by
+`tools/bifid_step.py`.
+
+## 8. The even-position stream is a 2-bit channel
+
+`tools/bifid_step.py` reproduces the Bifid step from scratch: a 5x5 square keyed
+`DBIFHCEG`, period equal to the full 570 characters, output starting `BTCSEED`.
+The segment's alphabet is only `A`–`I` because the key places exactly those nine
+letters in the square's first two rows.
+
+Splitting the output by parity is known. What does not appear upstream is what the
+even half is made of. Its alphabet is **exactly four letters, `{B, C, D, E}`**, and
+in the keyed square those four are precisely the top-left 2x2 corner:
+
+```
+D B I F H        D = (0,0)    B = (0,1)
+C E G A K        C = (1,0)    E = (1,1)
+...
+```
+
+So every even-position symbol is a coordinate pair with both coordinates in
+`{0, 1}`. The even stream is a clean 2 bits per symbol channel, and the square
+itself supplies the mapping. Upstream tests the even stream as *text*, hashing its
+substrings; it is not read as base 4 anywhere in the tested log.
+
+Removing the same 29 positions the odd stream drops leaves **exactly 256 symbols,
+or 512 bits** — the right shape for the two keys that "the private keys belong to
+half and better half" announces.
+
+That shape is suggestive but unconfirmed. The channel is high entropy, with an
+index of coincidence of 0.2537 against 0.25 for uniform, so it is not text, and it
+does not decode to ASCII under any of the 24 letter-to-value assignments crossed
+with both bit directions and all eight bit offsets.
+
+## 9. What was tested against the new objects, all negative
+
+A Bitcoin oracle (`tools/btc.py`, pure-Python secp256k1) was certified end to end
+before use: it re-derives two planted addresses from their published preimages,
+`sha256("causality")` and the phase 3.2 passphrase.
+
+Tested against the prize address, the halving address and the unmessaged third-door
+address, nothing matching:
+
+- 1,584 candidate private keys from the 512-bit channel, over all 24 letter-value
+  assignments, both bit directions, both halves, their XOR, sum and difference, the
+  whole value modulo the curve order, and each candidate's double, half and
+  plus-or-minus-one neighbours.
+- Hashes of the 256-symbol object, the even stream, the odd stream, the full Bifid
+  output and the 29-bit object, in four casing and reversal forms.
+
+Also checked and absent: any exact `2x`, `x/2` or off-by-one relation *between* the
+two 256-bit halves. Had the channel really been a key and its double, that relation
+would hold identically, so its absence is evidence against the simplest reading of
+"half and better half".
+
+A further 6.0M AES password candidates were eliminated on both blobs using a corpus
+extended with the straddling-checkerboard plaintext, which
+`tools/decode_vic.py` reproduces from the 149 digits:
+
+> IN CASE YOU MANAGE TO CRACK THIS THE PRIVATE KEYS BELONG TO HALF AND BETTER HALF
+> AND THEY ALSO NEED FUNDS TO LIVE
