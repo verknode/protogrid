@@ -289,3 +289,70 @@ data, so the QR can be closed as a channel.
 - **Bifid-object substrings as blob passwords.** Upstream tested substrings of the
   Bifid output and its two streams as address-key preimages, not as AES passwords.
   That gap is now closed: 5,424,880 candidates per blob, nothing surviving.
+
+---
+
+## 13. The 256-symbol object is not what the main search families assume
+
+Upstream's largest search families all treat the 256-symbol object as a homogeneous
+thing to reduce to a 32-byte key, and roughly 335 million candidates have been spent
+that way with no match. Two measurements say why that is unlikely to work.
+`tools/object_stats.py` re-derives both.
+
+**It is neither a key encoding nor English.** For 256-character samples the index of
+coincidence separates cleanly: English with `i`, `j`, `o` removed sits around 0.075
+with a 5th percentile near 0.069, and uniform random over the 23-letter alphabet sits
+at 0.0435 with a 95th percentile of 0.0455. The object measures **0.0563**, outside
+both. A raw encoding of a random private key would be uniform, and a monoalphabetic
+substitution of English would be much peakier. The object is neither.
+
+That is confirmed independently by a calibrated substitution solver, which recovers
+real English at this length: a 256-character English passage under a random
+substitution is solved back to a readable plaintext at -4.99 per quadgram. The
+puzzle's objects reach only:
+
+| Object | Best score per quadgram |
+|---|---|
+| English control at n=256 | -4.99, readable |
+| `object256` | -6.55 |
+| the 192 non-quarter symbols | -6.57 |
+| `odd285` | -6.80 |
+| `bifid570` | -5.84 |
+
+**It is not homogeneous either.** Splitting the object by position, the symbols at
+indices congruent to 0 mod 4 form a 64-symbol stream with an index of coincidence of
+**0.1047**, while the other three quarters are statistically indistinguishable from
+uniform. No shuffle of the object's own letters reached that value in 20,000 trials,
+and correcting for the whole scan of periods 2 to 6 leaves p near 0.002 to 0.003.
+The test shuffles the object's own letters rather than comparing against uniform, so
+the result is about arrangement, not about the overall letter skew.
+
+The quarter is concentrated in the keyed square's rows 2 and 3 and its column 2,
+which is to say on `N` and `S`. Against the other three quarters that is a
+chi-square of 20.1 on rows and 21.8 on columns, at 4 degrees of freedom where the
+1% critical value is 13.3.
+
+The structure appears only after `I` and `O` are removed. In the 285-letter stream
+before the reduction there is no period-4 signal at all, so the removal does not
+merely filter the stream, it aligns it. That is independent evidence that the
+community's reduction step is the intended one.
+
+What the quarter is **not**: readable text. Solved as a substitution it reaches
+-4.89, which looks good until it is compared against its own shuffles, which reach
+-4.79 to -5.32. At 64 characters with 18 distinct symbols the solver overfits, and
+the quarter sits inside its own null.
+
+## 14. Rejected this pass
+
+- **BIP39.** The Bifid output opens with the literal word `BTCSEED`, so the 2-bit
+  channel was swept for mnemonics: every symbol-aligned 264-bit window over all 24
+  letter-value assignments and both bit directions. 47 windows pass the 8-bit
+  checksum, which is what chance predicts. None matches a target address, as raw
+  entropy or through `m/44'/0'/0'/0/0`, `m/0` or `m/0'/0'/0'`.
+- **One bit per symbol.** Taking a single bit from each of the 256 even-channel
+  symbols gives exactly 256 bits, which is the natural shape of a 32-byte key. All
+  14 non-constant letter-to-bit maps, crossed with seven reading orders over a 16x16
+  arrangement and both directions, are negative.
+- **Base-23 numbers.** The quarter, the remaining 192 symbols and the whole object,
+  read as base-23 integers under four alphabet orderings and both directions, taken
+  modulo the curve order and as high and low 256-bit slices: negative.
