@@ -7,8 +7,9 @@ Unrelated to the ProtoGrid product; kept here only so the work survives.
 **Outcome: the puzzle was not solved.** What this directory contributes is
 independent verification, reproducible tooling, one refuted public claim, two
 structural observations absent from the community repositories checked (sections 7
-and 8), and a close-out of the phase-0 image and its QR code as hiding places
-(sections 10 and 11).
+and 8), a close-out of the phase-0 image and its QR code as hiding places (sections
+10 and 11), and a statistical case that the object the largest search families
+target is not the kind of object they assume (section 13).
 
 The most complete public research is
 [floflo777/open-crypto-puzzles](https://github.com/floflo777/open-crypto-puzzles/tree/main/1-big-prizes/gsmg-io-5btc-puzzle),
@@ -132,6 +133,7 @@ the page is unread.
 | `tools/btc.py` | secp256k1 and P2PKH address oracle |
 | `tools/analyse_image.py` | Grid, block canvas, colour roles, sub-cell channel |
 | `tools/verify_qr.py` | QR modules, segments and Reed-Solomon parity |
+| `tools/object_stats.py` | Index of coincidence baselines and the period-4 test |
 | `tools/crack.c` | Tests candidate phrases from stdin |
 | `tools/crack2.c` | Enumerates all substrings of a corpus |
 | `tools/crack3.c` | Enumerates XOR subsets of token hashes |
