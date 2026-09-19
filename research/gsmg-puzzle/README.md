@@ -636,3 +636,59 @@ That is unusual. In a puzzle whose final answer is missing, an explicitly posed
 sub-riddle that no stage ever consumed is a candidate for where the missing answer
 comes from. It is recorded here as an open question, not a result: nothing tested
 so far connects it to either blob.
+
+---
+
+## 20. The author's tool, and its whole menu swept
+
+Upstream's lead 4 says an authenticated statement from the author claims the same
+software built every phase, and that the cipher conventions point at one specific
+public tool whose Bifid uses a period equal to the full message length and whose
+cipher list is short. The tool is not named there. This section identifies a
+candidate and then spends it.
+
+**`secretpy` matches.** Its Bifid defaults to a period of the full message length,
+its default alphabet merges `i`/`j`, which is exactly the square the puzzle uses, and
+its menu of 35 ciphers contains every cipher the puzzle is confirmed to use: Bifid,
+Beaufort and Vic, the straddling checkerboard. Decrypting the 570-letter segment with
+`secretpy` under the recovered square reproduces our own output **byte for byte**,
+including the `btcseed` opening.
+
+That is corroboration, not proof: a period defaulting to full length is a convention
+several implementations share. But it is the first public name attached to that lead,
+and if it is right the remaining cipher space is these 35, not the space of all
+published ciphers.
+
+**So the menu was spent.** Every cipher in it was applied to every unsolved object,
+under both the standard English square and the puzzle's own recovered square:
+
+| Axis | Values |
+|---|---|
+| Ciphers | 33 instantiable of the 35 |
+| Objects | `object256`, `odd285`, `even285`, `bifid570`, `seg0`, `seg0` remainder, `seg2` |
+| Keys | 18 puzzle words, the integers 0 to 25, and no key |
+| Alphabets | English square, recovered `DBIFHCEG` square |
+
+Scored with the quadgram model that recovers real English at -5.0 to -6.0 per
+quadgram and puts random text near -8.7, **nothing reached -6.2**. Not one
+combination produces anything language-like.
+
+Two readings, and the second is the useful one. Either the tool identification is
+wrong, or the next step is not "another cipher from the menu applied to these objects
+with a puzzle word as the key". Given the Bifid match, the second is more likely, and
+it argues that what is missing is an input nobody has yet, rather than a
+transformation nobody has yet tried.
+
+## 21. The phase-2 riddle line, bounded and spent
+
+Section 19 flagged the unconsumed line `# X 2 S H 4 Y 0 Q B 15 #`. It was then
+parameterised and swept: `S` fixed at 32 and `B` at ±16, `H` at ±42, `Q` over the
+fish-cipher readings and their block sizes, and `X` and `Y` over 0 to 50 plus a few
+symbolic values, concatenated in the line's own order. With the literal forms of the
+line itself that is 146,074 candidates, tested under four password derivations
+against both blobs.
+
+Padding survivors came in at 550 to 600 per run, which is the 1-in-256 rate chance
+predicts, and not one exceeded 60 printable characters of 78. The line is spent under
+this parameterisation. It stays interesting only because `X`, `Y`, `H` and `Q` are
+still genuinely unresolved, not because any reading of them has been made to work.
