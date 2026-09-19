@@ -9,7 +9,9 @@ independent verification, reproducible tooling, one refuted public claim, two
 structural observations absent from the community repositories checked (sections 7
 and 8), a close-out of the phase-0 image and its QR code as hiding places (sections
 10 and 11), and a statistical case that the object the largest search families
-target is not the kind of object they assume (section 13).
+target is not the kind of object they assume (section 13). The strongest single
+result is section 16: the 91-letter block nobody had explained is the key to the
+cipher next to it.
 
 The most complete public research is
 [floflo777/open-crypto-puzzles](https://github.com/floflo777/open-crypto-puzzles/tree/main/1-big-prizes/gsmg-io-5btc-puzzle),
@@ -106,7 +108,9 @@ read as a decimal integer, convert to hex and read as ASCII, giving
 `lastwordsbeforearchichoice` and `thispassword`. The total absence of a zero digit
 across all 661 characters rules that big-integer reading out on its own.
 
-**`seg2` is the Bifid segment** and is solved: see section 8. `seg0` is still open.
+**`seg2` is the Bifid segment** and is solved: see section 8. **`seg0` is the key to it:
+see section 16.** The attempts below treat `seg0` as an encoded message, which
+section 16 shows is the wrong kind of object; they are kept as a record.
 
 Tried and rejected on `seg0`: base-9 and bijective base-9 integers, digit pairs and
 triples in base 9 and base 10 across all offsets, cumulative sums mod 26, a
@@ -134,6 +138,7 @@ the page is unread.
 | `tools/analyse_image.py` | Grid, block canvas, colour roles, sub-cell channel |
 | `tools/verify_qr.py` | QR modules, segments and Reed-Solomon parity |
 | `tools/object_stats.py` | Index of coincidence baselines and the period-4 test |
+| `tools/seg0_key.py` | Shows seg0 spells the keyed square's reading order |
 | `tools/crack.c` | Tests candidate phrases from stdin |
 | `tools/crack2.c` | Enumerates all substrings of a corpus |
 | `tools/crack3.c` | Enumerates XOR subsets of token hashes |
@@ -440,3 +445,56 @@ the interleaved order the Bifid step produces, are a new pair of objects and wer
 not previously tested. The 570 row bits give no ASCII, and 1,100 candidate keys drawn
 from both, as 256-bit windows in both directions, whole values modulo the curve
 order, inverted, hashed, and as base-5 windows, match no target address.
+
+---
+
+## 16. `seg0` is the key to `seg2`
+
+This is the strongest result in this directory, and it answers a question no public
+write-up addresses: what the 91-letter block is for.
+
+`seg0` sits immediately before the `matrixsumlist` marker on the SalPhaseIon page,
+over the alphabet `a`–`i`. Section 5 left it open. The keyed square that decrypts the
+neighbouring 570-letter block is built from `DBIFHCEG`, and its first nine cells in
+reading order are `D B I F H / C E G A`, which is **exactly `seg0`'s nine-letter
+alphabet**. That ordering is spelled out by `seg0`'s opening, with filler letters
+in between:
+
+```
+D B b I b F b H C c b E G b i h A
+^ ^   ^   ^   ^ ^     ^ ^       ^
+```
+
+The eight-letter key alone completes at index 12, skipping `b b b c b`. The full
+nine-cell order completes at index 16, skipping `b b b c b b i h`. Read row by row,
+the first eight letters carry the square's whole top row, `D B I F H`, in column
+order with `b` as the only filler.
+
+`tools/seg0_key.py` reproduces it and runs both significance tests.
+
+| Test | Result |
+|---|---|
+| `DBIFHCEG` completes at index | 12 |
+| `DBIFHCEGA` completes at index | 16 |
+| Shuffle p for `DBIFHCEG` (200,000 shuffles of seg0's own letters) | 0.000005 |
+| Shuffle p for `DBIFHCEGA` | 0 of 200,000 |
+| Orderings of `A`–`I` completing by index 16 | 18 of 362,880, or 0.005% |
+
+The second test is the one that matters, because it removes the worry that the
+result is an artefact of seg0 simply opening with a run of row-0 letters. Of every
+possible ordering of the nine letters, only 18 complete that early. The square's
+order was fixed independently, by whoever first decrypted the 570-letter block, so
+its landing in that set of 18 is a one-in-twenty-thousand event.
+
+Two consequences:
+
+1. **`seg0` is key material, not a separate payload.** The page publishes the cipher
+   key beside the ciphertext it unlocks. Every attempt in section 5 to read `seg0`
+   as an encoded message was aimed at the wrong kind of object.
+2. **The community's `DBIFHCEG` is corroborated by the page itself.** Until now that
+   key rested on the decryption working. The page independently spells it.
+
+The effect is confined to the opening. The remaining 74 letters show nothing
+comparable: their earliest-completing ordering needs 36 more letters, and nothing
+recognisable appears among the leaders. Whether the filler letters carry anything of
+their own is open.
