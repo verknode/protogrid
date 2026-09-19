@@ -692,3 +692,44 @@ Padding survivors came in at 550 to 600 per run, which is the 1-in-256 rate chan
 predicts, and not one exceeded 60 printable characters of 78. The line is spent under
 this parameterisation. It stays interesting only because `X`, `Y`, `H` and `Q` are
 still genuinely unresolved, not because any reading of them has been made to work.
+
+---
+
+## 22. A verified correction to the community README
+
+The creator left a checksum on chain. One of the planted addresses carries the
+`OP_RETURN` message **"GSMG.io: You are here because 227 chars were correct"**, and
+its private key is the SHA-256 of the phase 3 answer. So the answer is exactly 227
+characters and can be checked byte-for-byte offline.
+
+Reconstructing it from the community README's parts list gives **229**. The error is
+in part 6. The README states it twice and the two copies disagree:
+
+| Where | Length | Decodes to |
+|---|---|---|
+| Parts list, "6part is 0x736B616E6162…" | 140 | `skanab rof tuoliab…` |
+| Its own quote of line 1616 of `main.cpp` | 138 | `sknab rof tuoliab…` |
+
+The parts-list copy carries an extra `61`, turning the reversed `banks` into
+`skanab`. The line-1616 quote is correct and equals the byte-reversed genesis
+coinbase exactly.
+
+With the correct hex, everything lines up at once:
+
+- the answer is **exactly 227 characters**, matching the on-chain checksum;
+- its SHA-256 is `1a57c572…2ec30d5`, the phase 3 password the README itself states;
+- it re-derives the planted address `1M5ypvDbp124ZtKPbg3GJg1JqNs1x7TPoN` exactly.
+
+Anyone rebuilding the answer from the parts list gets a 229-character string and a
+hash that is wrong in every bit. The correct string is in `data/ans227.txt` and
+`tools/verify_stages.py` rebuilds and checks it.
+
+**The whole pipeline is now certified against the creator's own oracle.** All eight
+planted addresses with published preimages re-derive: the flower sentence, causality,
+the 227-character answer, the phase 3.2 passphrase, the 149 digits, the hashed prize
+address, and the image URL in raw and bit-reversed form. The ninth, funded
+2020-04-07 with no message, remains without a preimage.
+
+**Negative, as usual.** The verified answer, its lowercase and reversed forms, its
+digest, and every substring of all of them: 537,856 candidates per blob, nothing
+surviving. The typo'd variant was swept alongside it for completeness.
