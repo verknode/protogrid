@@ -172,7 +172,13 @@ or coincidence is open, but the object is binary, and 29 bits is too short to be
 key on its own. Their positions are in `data/dropped29.txt` and printed by
 `tools/bifid_step.py`.
 
-## 8. The even-position stream is a 2-bit channel
+## 8. The even-position stream is a 2-bit channel (mechanical, see section 15)
+
+> **Correction.** This section originally read the four-letter alphabet as a channel
+> the creator planted. Section 15 shows it is forced by the cipher: it carries no
+> information beyond `seg2`'s own row bits. The measurements below stand; the
+> interpretation does not.
+
 
 `tools/bifid_step.py` reproduces the Bifid step from scratch: a 5x5 square keyed
 `DBIFHCEG`, period equal to the full 570 characters, output starting `BTCSEED`.
@@ -358,3 +364,79 @@ the quarter sits inside its own null.
 - **Base-23 numbers.** The quarter, the remaining 192 symbols and the whole object,
   read as base-23 integers under four alphabet orderings and both directions, taken
   modulo the curve order and as high and low 256-bit slices: negative.
+
+---
+
+## 15. What the Bifid step actually does, and a correction
+
+Writing the decryption out coordinate by coordinate explains the stream split
+completely, and corrects section 8.
+
+With period equal to the full length, plaintext letter `i` takes its row from
+position `i` of the flattened coordinate sequence and its column from position
+`n + i`. Working that through gives, for every `j`, exactly:
+
+```
+even[j] = square[ row(ct[j]) ][ row(ct[285+j]) ]
+odd [j] = square[ col(ct[j]) ][ col(ct[285+j]) ]
+```
+
+Both hold for all 285 positions, checked directly. So the Bifid step is not adding
+anything: it splits `seg2` into its **row bits** and its **column values**, pairing
+each position with the one 285 later.
+
+The consequence is that **the four-letter even stream is forced, not planted.**
+Every ciphertext letter is one of `A`–`I`, and in the keyed square those nine
+letters occupy only rows 0 and 1. So both coordinates of an even-position letter
+are bits, and the letter must be one of the four in the top-left corner. Section 8
+read this as a deliberate 2-bit channel. It is a mechanical consequence of the
+ciphertext alphabet, and the bits it carries are just `seg2`'s own row bits
+reordered.
+
+That also means the 256-symbol object is a repackaging of `seg2`'s **column**
+coordinates, so searching the object is searching `seg2`'s columns in a different
+costume.
+
+### The period-4 result, on a much stronger null
+
+Section 13 tested the period-4 anomaly against shuffles of the object's own letters.
+The better null runs the **whole pipeline** on shuffled `seg2`: Bifid, parity split,
+`I`/`O` removal. That matters, because removing symbols by value can induce
+structure by itself.
+
+It survives. Under 4,000 pipeline runs on shuffled `seg2`, the period-4 offset-0
+stream has mean index of coincidence 0.055; the real value is 0.1047, a z-score of
+6.49. Correcting across the **whole family actually examined**, 4 objects crossed
+with periods 2 to 6, which is 80 streams, by a max-T permutation procedure:
+
+| Quantity | Value |
+|---|---|
+| Strongest stream | `object256`, period 4, offset 0 |
+| Observed max z | 6.49 |
+| Null 95th / 99th percentile | 4.83 / 6.20 |
+| **Family-wise p** | **0.0073** |
+
+So the honest figure is about 0.007, not the 0.002 that section 13 quotes from the
+weaker null. Solid, but one finding at p 0.007 after a wide search.
+
+### Where it does not come from
+
+- **`seg2` itself has no periodic structure.** Its letters, row bits and column
+  values all scan clean over periods 2 to 12, with scan-corrected p values of 0.63,
+  0.59 and 0.82.
+- **The two halves of `seg2` are independent.** The pairing is `j` with `j+285`, so
+  an association there would explain everything. There is none: chi-square 57.0 on
+  64 degrees of freedom, permutation p 0.735. Other lags look the same.
+- **The object landing on exactly 256 is only mildly suggestive.** Over 3,000
+  shuffles of `seg2` the reduced length ranges from 232 to 267 with mean 251, and
+  hits exactly 256 in 4.9% of runs, against 8.3% for the mode. The case for 256
+  being designed rests on it being a round number over a Base58-safe alphabet, not
+  on it being improbable.
+
+### Also negative
+
+The row bits and the column values, taken in `seg2`'s **natural** order rather than
+the interleaved order the Bifid step produces, are a new pair of objects and were
+not previously tested. The 570 row bits give no ASCII, and 1,100 candidate keys drawn
+from both, as 256-bit windows in both directions, whole values modulo the curve
+order, inverted, hashed, and as base-5 windows, match no target address.
