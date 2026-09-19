@@ -498,3 +498,56 @@ The effect is confined to the opening. The remaining 74 letters show nothing
 comparable: their earliest-completing ordering needs 36 more letters, and nothing
 recognisable appears among the leaders. Whether the filler letters carry anything of
 their own is open.
+
+---
+
+## 17. Correcting the period-4 significance, and a refuted idea
+
+### The period-4 result is marginal, not established
+
+Section 15 quotes family-wise p 0.0073 for the period-4 anomaly, computed over 4
+objects crossed with periods 2 to 6, which is 80 streams. Widening the family to
+periods 2 to 12, which is 308 streams and is no less defensible a choice, moves it:
+
+| Family | Streams | Family-wise p |
+|---|---|---|
+| Periods 2 to 6 | 80 | 0.0073 |
+| Periods 2 to 12 | 308 | 0.0495 |
+
+The effect itself is unchanged: `object256` positions congruent to 0 mod 4 have an
+index of coincidence of 0.1047 against a pipeline-null mean of 0.055, a z of 6.4.
+What moves is the correction, and it moves by a factor of seven on a choice that was
+never pre-registered. The nested streams at periods 8 and 12 offset 0 are the same
+effect seen again, not independent support.
+
+**Treat the period-4 structure as suggestive at best.** There is no mechanism behind
+it: `seg2` is aperiodic, its halves are independent, and nothing in the pipeline
+predicts a period. A single marginal statistic after a wide search is what a fluke
+looks like. This is the honest reading, and it supersedes the figure in sections 13
+and 15.
+
+By contrast the `seg0` result in section 16 does not have this weakness. Its target
+was fixed externally, by whoever first decrypted the 570-letter block, and the test
+counts how many of all 362,880 orderings do as well. Nothing there depends on which
+family of tests is drawn.
+
+### Refuted: the even stream as a Base58 case bit
+
+An attractive idea, because it would explain two things at once. The object's
+23-letter alphabet is Base58-valid but all uppercase, and upstream rejects the
+literal Base58 reading on exactly that ground: an all-uppercase Base58 string is
+astronomically unlikely to be an encoding of 32 bytes. Meanwhile the even stream
+supplies two spare bits at every position. If one of them were the case bit, the
+object would become a mixed-case Base58 string and the objection would vanish.
+
+It fails on a single clean test. Lowercase `l` is not a Base58 character, so a
+correct case rule must leave every `L` uppercase. The object has 18 of them, and:
+
+- all six rules derived from the even symbol's coordinates (row, column, their XOR,
+  each in both polarities) lowercase between 5 and 13 of the 18;
+- none of the 15 non-empty subsets of `{D, B, C, E}` avoids lowercasing an `L`;
+- the `L` positions pair with all four even symbols, at 9, 4, 3 and 2.
+
+So the even stream cannot be a case bit. Separately, 13,080 windows of the cased
+strings of lengths 51, 52, 34, 33 and 25, in both directions, were tested as
+Base58Check payloads; the four-byte checksum passed on none.
