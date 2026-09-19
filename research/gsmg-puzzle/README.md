@@ -551,3 +551,39 @@ correct case rule must leave every `L` uppercase. The object has 18 of them, and
 So the even stream cannot be a case bit. Separately, 13,080 windows of the cased
 strings of lengths 51, 52, 34, 33 and 25, in both directions, were tested as
 Base58Check payloads; the four-byte checksum passed on none.
+
+---
+
+## 18. Further dead ends
+
+Kept so nobody spends the time again.
+
+**Seven intertwined passwords.** The Beaufort text says the answer requires selecting
+"from over twenty three ciphers, sixteen encryptions and or seven intertwined
+passwords", and the SalPhaseIon page decodes to exactly seven English runs:
+`matrixsumlist`, `lastwordsbeforearchichoice`, `thispassword`, `shabef`,
+`ourfirsthintisyourlastcommand`, `enter`, `anstoo`. Earlier sweeps only covered
+concatenations of up to four tokens. Every ordering of every subset up to all seven
+was tested, both concatenated and **interleaved** character by character, which is
+the reading "intertwined" invites: 38,620 candidates under four password
+derivations against both blobs. Every padding survivor fails printability.
+
+**The salts are not derived.** In OpenSSL the salt is random, but a puzzle author
+could choose it, and nobody appears to have checked. The test runs on the *solved*
+phase 3.2 blob, where the password is known: its salt `eefc4c5befc1656a` appears
+nowhere in the MD5, SHA-1, SHA-256 or SHA-512 digest of its own password, in either
+raw or hex form. So the salts carry nothing, and the same applies to the two open
+blobs.
+
+**The page titles are not anagrams.** `SalPhaseIon` and `Cosmic Duality` are the only
+page content not otherwise analysed. An exact anagram search over a 40,000-word list
+splits `salphaseion` 14,400 ways and `cosmicduality` 1,602 ways. At that density the
+space cannot carry signal, so any "meaningful" split is selection, not discovery. The
+name is far more likely a plain pun on salt, phase and ion, which matches the
+`Salted__` header the page's blob carries.
+
+**The `seg0` subsequence scheme does not repeat in `seg2`.** This is the control for
+section 16, and it comes out the right way. The square's reading order completes in
+`seg2` only at index 76, with shuffle p 0.44, ranking 176,571st of the 362,880
+orderings. The encoding is specific to the block that carries the key, exactly as it
+should be if `seg0` is key material and `seg2` is ciphertext.
