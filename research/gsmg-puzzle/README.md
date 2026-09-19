@@ -145,6 +145,13 @@ the page is unread.
 | `tools/crack.c` | Tests candidate phrases from stdin |
 | `tools/crack2.c` | Enumerates all substrings of a corpus |
 | `tools/crack3.c` | Enumerates XOR subsets of token hashes |
+| `tools/oracle.py` | PKCS#7 padding filter and full decrypt for both 80-byte locks |
+| `tools/brain.c` | Candidate to private key to P2PKH, against the planted addresses |
+| `tools/matsum.py` | Row and column sums of the 16x16 object |
+| `tools/gen_yinyang.py` | Matrix sums as text indices, first pass |
+| `tools/wide.py`, `tools/wide2.py` | The same route at full breadth (section 23) |
+| `tools/drop29.py` | Every reading of the 29 dropped letters (section 24) |
+| `tools/gen_family.py`, `tools/gen_family2.py` | Yellow/Blue, primes, zeroed out (section 25) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -733,3 +740,134 @@ address, and the image URL in raw and bit-reversed form. The ninth, funded
 **Negative, as usual.** The verified answer, its lowercase and reversed forms, its
 digest, and every substring of all of them: 537,856 candidates per blob, nothing
 surviving. The typo'd variant was swept alongside it for completeness.
+
+## 23. The matrix-sum / yin-yang indexing route, and a sum that does not reproduce
+
+A reader proposed a chain worth testing end to end: Yellow carries the number 9 and
+Blue carries 15, those are the alphabet positions of `I` and `O`, `I` and `O` are the
+two letters removed to reach the 256-symbol object, exactly 29 letters are removed and
+29 is prime, 256 is 16x16, so take the 16 row sums and 16 column sums of that matrix
+and use the resulting 32 numbers not as a key directly but as *indices into the
+Architect's text*, split into two YIN and YANG halves.
+
+Three parts of that chain check out against the extraction certified in section 4
+(the one whose counter-clockwise spiral reads `gsmg.io/theseedisplanted`):
+
+- Yellow = 9 = `I` and Blue = 15 = `O`, and `I`/`O` are exactly the dropped pair;
+- exactly 29 letters are dropped, all of them `I` or `O`, and 29 is prime;
+- the object's alphabet is 23 letters, missing `I`, `J` and `O`.
+
+One part does not. The proposal reports the 14x14 grid's row sums as
+`6 10 8 7 6 6 5 4 9 9 7 8 7 9` and its column sums as
+`8 10 8 10 8 7 3 6 7 5 9 6 6 8`, both totalling 101, and reads that prime as
+confirmation. On `data/grid_sym.txt` the sums are
+
+```
+rows: 6 10 8 7 6 6 5 5 9 9 7 8 7 9    total 102
+cols: 8 10 8 10 8 7 4 6 7 5 9 6 6 8   total 102
+```
+
+The two lists differ from the proposal in exactly one place each — row 7 (5 against 4)
+and column 6 (4 against 3) — which is one single cell, at row 7 column 6. That cell is
+`K` (black, 1) in the certified grid; row 7 reads `BKKWwWKWWWKWYW`. Setting it to 0 is
+what produces 101. **102 is not prime**, so on this extraction the primality
+observation does not hold. Worth noting: row 7 is also the row holding the
+RGB(254,254,254) near-white cell at column 4 (section 6), so it is a plausible place
+for two transcriptions to diverge — but a divergence is what it is, not a signal.
+
+### The indexing route itself, run out
+
+The step the proposal called unexhausted was run at breadth. Row and column sums of
+the 16x16 object were computed under twelve letter-to-number schemes (A1Z26 in both
+origins, 23-letter rank in both origins, Bifid-square reading index, square row and
+column coordinates, the two-digit row/column pair, the first 23 primes, raw ASCII, and
+reversed rank), over six matrix layouts (row-major, column-major, boustrophedon,
+spiral, and the two reversed readings). The 32 resulting numbers were used as indices
+into eighteen texts — the recovered Beaufort monologue in three casings and reversed,
+the phase 3.2 prose with and without punctuation, the film's Architect lines, the
+227-character answer, the Bifid output, `seg0`, the object itself, the monologue's
+first and last 256 letters, and the 256 letters starting at the Architect's offer of
+the key, which is the closest thing in the puzzle to "the last words before the
+choice" — under six index conventions (0- and 1-based, mod 26, cumulative, digit-sum,
+sorted, reversed), and at both character and word granularity. Each pair of halves was
+combined twelve ways (yin, yang, both concatenations, both with one half reversed, two
+interleavings, two joined forms, XOR and modular addition of the halves) and each
+result hashed six to eight ways.
+
+**834,624 password candidates against both 80-byte locks, under both the SHA-256 and
+the MD5 key derivation.** The PKCS#7 filter accepted 3,075 of them, which is 0.368% —
+the false-positive rate of a one-block padding test is 0.39%, so the acceptance is
+chance to within noise. Decrypting all 3,075 gives **zero** plaintexts that are even
+85% printable. The route is spent at this breadth.
+
+## 24. The 29 dropped letters are positionally mechanical
+
+The community's open leads list "read the 29 dropped symbols as a message in their own
+right" as untried. Read in extraction order they are
+
+```
+OOIIOOOIIOOIOIIOIOOOOIOIIOIOI
+```
+
+and their positions in the 570-character Bifid output are all **odd**: 9, 37, 43, 45,
+109, 135, ... 567. That looks planted and is not. Section 15 established that the
+Bifid output splits as
+
+```
+even[j] = square[ row(ct[j]) ][ row(ct[285+j]) ]
+odd [j] = square[ col(ct[j]) ][ col(ct[285+j]) ]
+```
+
+and that the ciphertext alphabet `A`–`I` occupies only rows 0 and 1 of the square, so
+every even-position letter is drawn from `square[{0,1}][{0,1}]` = {`D`,`B`,`C`,`E`}.
+`I` sits at square index 2 and `O` at index 13; neither is reachable from an even
+position. **All 29 drops are forced onto odd positions by the cipher, not placed
+there.** As with the 4-letter even stream in section 8, the pattern is an artefact of
+the mechanism.
+
+The 29 letters were still read out: as a 29-bit word in both polarities, as an integer
+and a hex string, as Yellow/Blue and yin/yang expansions, as their position list, as
+their odd-stream index list, as their gap sequence, as gaps mapped to letters and to
+half-letters, and each of those as indices into ten texts — 82 readings, each in seven
+password forms against both locks under both digests, and each as a brainwallet key.
+Nothing.
+
+## 25. Yellow, Blue, primes and "zeroed out" on the non-textual objects
+
+The community's highest-ranked open lead is the ninth planted address,
+`1NULY7DhzuNvSDtPkFzNo6oRTZQWBqXNE9`, funded 2020-04-07 with no message and named by
+the creator a year later as still live. It is an exact offline oracle: hash a
+candidate, derive the address, compare. The lead's own kill condition is the creator's
+rules from that window — "Yellow has a number and so does Blue", "primes", "zeroed
+out" — read on a *non-textual* object and exhausted. That is the same family the
+reader's chain is in, so it was run.
+
+`tools/brain.c` is the checker: it reads candidates on stdin and tries each as
+SHA-256, as SHA-256 of the lower- and upper-cased form, as a raw phrase left- and
+right-padded to 32 bytes, as a literal 64-hex key, and as the bit-reversal of each,
+against all ten planted addresses in compressed and uncompressed P2PKH form. It is
+validated by the known preimage: feeding it `data/ans227.txt` reproduces
+`1M5ypvDbp124ZtKPbg3GJg1JqNs1x7TPoN` on the first try.
+
+`tools/gen_family.py` and `tools/gen_family2.py` generate the family. The colour grid
+is read in 20 spatial orders — rows, reversed rows, boustrophedon and columns, each on
+the identity, the transpose, all three rotations and both mirrors, plus both spirals
+and both diagonal readings. Under each order, Yellow and Blue are assigned their
+numbers ten ways (9/15, 15/9, 25/2, 2/25, 9/0, 0/15, 1/0, 0/1, 9/2, 25/15) with White
+and Black filled four ways (0/1, 1/0, both zero, both dropped), and the resulting
+sequence is masked seven ways for "zeroed out" and "primes" — keep prime indices, keep
+non-prime indices, in both index origins, zero the primes, zero the non-primes, or
+leave it whole. Each masked sequence is packed six ways into key material. The second
+generator adds the same prime and zeroing masks, the prime-rank substitutions, and the
+"esrever" readings across the object, the Bifid output, the dropped 29, the row bits,
+the base-5 column values, the 149 VIC digits and the QR modules.
+
+**31,320 candidates, about 150,000 derived keys, against all ten planted addresses:
+no match.** The same candidates were then run against both 80-byte locks in three
+password forms under both digests — 375,840 tests, 1,485 padding acceptances (0.395%,
+again chance), **zero** readable plaintexts.
+
+That closes the "Yellow/Blue + primes + zeroed out on a non-textual object" family at
+the breadth described. It does not close the third-door lead itself, which remains the
+best-shaped open target in the puzzle: an exact oracle, free to query, with a preimage
+that the creator has said exists.
