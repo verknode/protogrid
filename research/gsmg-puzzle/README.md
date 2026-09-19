@@ -22,8 +22,11 @@ before repeating anything here.
 
 ## 1. Key derivation, pinned down
 
-Every AES stage uses `openssl enc -aes-256-cbc -a` with `EVP_BytesToKey` over
-**SHA-256**, one iteration — not the MD5 default that older write-ups assume.
+Every AES stage **of the solved chain** uses `openssl enc -aes-256-cbc -a` with
+`EVP_BytesToKey` over **SHA-256**, one iteration — not the MD5 default that older
+write-ups assume. (Correction: upstream reports the large "Cosmic Duality" blob is
+the exception and needs MD5, so neither digest can be assumed for an unopened blob.
+Both are tried here.)
 Verified against the already-solved phase 3.2 blob:
 
 ```
@@ -587,3 +590,49 @@ section 16, and it comes out the right way. The square's reading order completes
 `seg2` only at index 76, with shuffle p 0.44, ranking 176,571st of the 362,880
 orderings. The encoding is specific to the block that carries the key, exactly as it
 should be if `seg0` is key material and `seg2` is ciphertext.
+
+---
+
+## 19. Images, the phase-2 blob, and an unused clue
+
+**Every puzzle image is clean.** The four PNGs and the Decentraland photo were
+scanned for metadata chunks, data appended after `IEND`, and the near-duplicate
+colour trick that `puzzle.png` uses. None carries any: the only chunks present are
+`IHDR`, `sRGB`, `gAMA`, `pHYs`, `IDAT` and `IEND`, nothing follows `IEND`, and the
+only rare near-duplicate colours are anti-aliasing at counts of one to three. The
+image on the final page is a browser screenshot of that page, showing the two
+titles, the token grid and the large blob. It hides nothing of its own.
+
+**The phase-2 blob, recovered and independently decrypted.** Upstream's
+`tools/oracle.py` embeds it as a certification vector; it is not in the community
+README, which publishes only the decrypted text. Decrypting it here with
+`sha256("causality")` reproduces that text exactly, so the transcription everyone
+works from is now verified against the ciphertext rather than trusted. Stored as
+`data/phase2.b64` and `data/phase2.txt`.
+
+Its substrings were then swept as blob passwords. Upstream covered the puzzle texts
+as *word windows*; this is the character-level pass, which also reaches the
+whitespace-stripped concatenations the creator's answers are always built from.
+2,330,568 candidates per blob over the phase 2 and phase 3 plaintexts in raw,
+lowercased and alphanumeric-only forms. Nothing survives.
+
+**An unused clue, worth flagging.** The phase 2 plaintext contains a line the
+community never consumed:
+
+```
+# X 2 S H 4 Y 0 Q B 15 #
+Q -> extend the name of a hackers' swordless fish, the I and W are below.
+B -> ((BV80605001911AP)- (sqrt(-1)))^2
+H -> (Answer to only this puzzle but nothing else) * -1
+S -> cha' + (vagh * jav)
+```
+
+Two of the four are settled: `S` is Klingon arithmetic, `cha'` + `vagh` × `jav`
+= 2 + 5 × 6 = 32, and `B` is an Intel i5 part number, so (5i − i)² = −16. `X`, `Y`,
+`H` and `Q` are open. Phase 3 was solved by the seven-part route instead, so this
+line was never needed and never resolved.
+
+That is unusual. In a puzzle whose final answer is missing, an explicitly posed
+sub-riddle that no stage ever consumed is a candidate for where the missing answer
+comes from. It is recorded here as an open question, not a result: nothing tested
+so far connects it to either blob.
