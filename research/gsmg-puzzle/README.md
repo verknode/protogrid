@@ -152,6 +152,8 @@ the page is unread.
 | `tools/wide.py`, `tools/wide2.py` | The same route at full breadth (section 23) |
 | `tools/drop29.py` | Every reading of the 29 dropped letters (section 24) |
 | `tools/gen_family.py`, `tools/gen_family2.py` | Yellow/Blue, primes, zeroed out (section 25) |
+| `tools/lastwords.py` | Suffixes of both Architect texts, with reversal (section 27) |
+| `tools/windows.py` | All word windows in exact published casing (section 27) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -871,3 +873,79 @@ That closes the "Yellow/Blue + primes + zeroed out on a non-textual object" fami
 the breadth described. It does not close the third-door lead itself, which remains the
 best-shaped open target in the puzzle: an exact oracle, free to query, with a preimage
 that the creator has said exists.
+
+## 26. What the SalPhaseIon page actually instructs, and a retraction chain worth knowing
+
+The final page's token stream, split on its `z` separators, reads:
+
+```
+seg0 | matrixsumlist | seg2 | z | lastwordsbeforearchichoice | z | thispassword
+| z | shabef ourfirsthintisyourlastcommand
+```
+
+with a second `abba` run inside the blob decoding to `enter`, and a trailing
+`shabefanstoo`. `shabef` is the creator's own spelling of SHA-256 (b=2, e=5, f=6).
+Read literally the page says: *the last words before the Architect choice — this
+password — SHA-256 — our first hint is your last command*. The first hint of the
+puzzle is `esrever`, so the last command is **reverse**.
+
+That is the reading a reader proposed, and it is the obvious one. It needs one caveat
+that is easy to miss and that took following a chain of three upstream sections to
+establish:
+
+- Upstream **section 11** reports the large Cosmic Duality blob as decrypted, with a
+  key that is the XOR of the SHA-256 digests of seven tokens, four of them these very
+  page strings. It concludes that `lastwordsbeforearchichoice` and `thispassword` are
+  *ingredients in a key derivation*, not an instruction, and that the last-words
+  reading is therefore probably wrong.
+- The XOR key does reproduce. Recomputed here it is
+  `a795de11…52e50735`, matching the published value exactly. Note in passing that two
+  of the seven tokens are the same string, `matrixsumlist`, so it cancels under XOR and
+  the key is really a five-token chain.
+- Upstream **section 14** then retracts section 11: those 32 raw bytes passed to
+  `EVP_BytesToKey` with MD5 is a convention the puzzle never uses, and 93 of 20,000
+  random 32-byte keys clear the same padding test, 92 of them with exactly one padding
+  byte — which is the signature of a 1328-minus-1 = 1327-byte "plaintext". The decrypt
+  is a padding accident and the 103x103 matrix read out of it is noise.
+
+**So the argument against the last-words reading does not survive.** It was resting on
+section 11, and section 14 pulls that out. The reading is not closed by reasoning —
+only by sweeping, which upstream did (section 15, 405,287 candidates, 0 match) and
+which this session extended below.
+
+## 27. The last-words directive, extended along two axes upstream did not sweep
+
+Upstream's section 15 swept word windows of these texts in **three** forms — lowercase
+joined, lowercase spaced, uppercase joined — under 7 password forms. Two axes are
+missing from that, and both matter for this creator:
+
+1. **Exact published casing and punctuation.** The phase 3 answer proved that case is
+   load-bearing: `causality`, `Safenet`, `Luna`, `HSM` had to be typed exactly. The
+   monologue is published in uppercase *with* apostrophes and a hyphen, and none of the
+   three swept forms is that string.
+2. **The reversal the page itself asks for.** `ourfirsthintisyourlastcommand` names
+   `esrever` as the final operation, and a reversal applied to the phrase *before*
+   hashing is a different candidate from one applied after.
+
+Both were run. Every contiguous window of 1 to 20 words of the puzzle's own Architect
+monologue, of the phase 3.2 introduction, and of the film scene's closing passage,
+each under sixteen normalisations (exact, lowercase and uppercase, each spaced and
+joined, punctuation-stripped, apostrophe-stripped) and three reversals (none, string
+reversed, word order reversed), in four password forms, against both locks under both
+key derivations.
+
+**182,164 distinct phrases, 2,914,624 decryptions.** 11,289 padding acceptances, which
+is 0.387% against a theoretical 0.39%. **Zero** readable plaintexts. A separate,
+narrower pass over every suffix of both monologues with digest-reversal added
+(8,256 phrases, 231,168 decryptions) is also negative.
+
+One structural note for whoever picks this up. Both locks carry exactly 80 bytes of
+ciphertext. If the plaintext is two 32-byte keys — which is what *"the private keys
+belong to half and better half"* says, and it sits directly above the first of the two
+blobs — then it is exactly 64 bytes, and PKCS#7 gives it a **full** 16-byte padding
+block. Under that assumption the right filter is not "valid padding" but "the final
+block decrypts to sixteen bytes of `0x10`", which no wrong key will ever pass by
+chance. It does not speed up the search, but it means a hit needs no adjudication.
+
+`tools/lastwords.py` and `tools/windows.py` run these sweeps. They read the film
+passage from a local file that is deliberately not committed here; supply your own.
