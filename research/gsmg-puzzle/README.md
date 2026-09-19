@@ -5,9 +5,10 @@ Self-contained research notes, data and tooling from one working session on the
 Unrelated to the ProtoGrid product; kept here only so the work survives.
 
 **Outcome: the puzzle was not solved.** What this directory contributes is
-independent verification, reproducible tooling, one refuted public claim, and two
-structural observations that do not appear in the two community repositories
-checked (sections 7 and 8).
+independent verification, reproducible tooling, one refuted public claim, two
+structural observations absent from the community repositories checked (sections 7
+and 8), and a close-out of the phase-0 image and its QR code as hiding places
+(sections 10 and 11).
 
 The most complete public research is
 [floflo777/open-crypto-puzzles](https://github.com/floflo777/open-crypto-puzzles/tree/main/1-big-prizes/gsmg-io-5btc-puzzle),
@@ -129,6 +130,8 @@ the page is unread.
 | `tools/decode_vic.py` | Straddling checkerboard over the 149 digits |
 | `tools/bifid_step.py` | Bifid step, stream split, dropped letters, 2-bit channel |
 | `tools/btc.py` | secp256k1 and P2PKH address oracle |
+| `tools/analyse_image.py` | Grid, block canvas, colour roles, sub-cell channel |
+| `tools/verify_qr.py` | QR modules, segments and Reed-Solomon parity |
 | `tools/crack.c` | Tests candidate phrases from stdin |
 | `tools/crack2.c` | Enumerates all substrings of a corpus |
 | `tools/crack3.c` | Enumerates XOR subsets of token hashes |
@@ -225,3 +228,64 @@ extended with the straddling-checkerboard plaintext, which
 
 > IN CASE YOU MANAGE TO CRACK THIS THE PRIVATE KEYS BELONG TO HALF AND BETTER HALF
 > AND THEY ALSO NEED FUNDS TO LIVE
+
+---
+
+## 10. The phase-0 image, gone over exhaustively
+
+`tools/analyse_image.py` re-derives everything below from `puzzle.png` on each run.
+The upstream leads file says what would open the third door is a rule of the
+creator's from early 2020 read on a **non-textual object**, and the 2020 poem points
+at this image, so it is worth knowing exactly what the image does and does not hold.
+
+**The canvas is finer than the puzzle grid.** Every drawn run is a multiple of 15
+pixels, so the real canvas is 70x70 blocks and each of the 14x14 cells is exactly
+5x5 blocks. That leaves room for a sub-cell channel, and there is none: exactly 7
+cells of 196 are non-uniform, their 50 deviating blocks draw the white rabbit
+outline, and every other cell is a perfectly uniform 5x5 block.
+
+**The coloured cells mark the low bit of every byte.** In the reading order that
+actually decodes the message, a counter-clockwise spiral from the top-left, the 24
+coloured cells sit at spiral indices congruent to 7 mod 8. Issue #111 reports the
+same 24 cells as "spiral index 5 mod 8 clockwise"; stated against the decoding
+order, they are the least significant bit of each of the 24 characters. Blue is 1
+and yellow is 0, so the colours carry nothing the message does not already say.
+
+**The one anomalous cell does not hide a second URL.** Exactly one cell is
+RGB (254,254,254) rather than white, at row 7, column 4. Its spiral index is 163,
+which is character 20, bit 3. Character 20 is `n`, and flipping that bit gives `~`,
+so `gsmg.io/theseedispla~ted` is not a door. Whatever the cell marks, it is not a
+one-bit variant of the URL.
+
+**No metadata.** The PNG carries only IHDR, sRGB, gAMA, pHYs, IDAT and IEND. There
+is no text, EXIF or trailing-data chunk.
+
+## 11. The QR code is standard, byte for byte
+
+Issue #107 lists QR decoding as an untried next step. `tools/verify_qr.py` settles
+it, reading the module matrix straight from the pixels rather than trusting a
+library:
+
+| Property | Value |
+|---|---|
+| Version, EC level, mask | 4, L, 2 |
+| Segments | ECI designator 26 (UTF-8), then byte mode, length 73 |
+| Payload | `https://www.blockchain.com/btc/address/1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe` |
+| Padding after terminator | `EC 11 EC`, the standard pad bytes |
+| Reed-Solomon parity | recomputed from scratch, matches all 20 codewords |
+
+The ECI header is why a naive re-encode of the same URL differs in roughly a third
+of its modules, and why OpenCV warns while decoding. It is not tampering. With
+standard padding and matching parity there is no room left in the symbol for hidden
+data, so the QR can be closed as a channel.
+
+## 12. Further negatives from this pass
+
+- **Bifid on `seg0`.** The same square that solves the 570-character segment,
+  applied to the 91-character one at every plausible period, gives nothing.
+- **`seg0` against the 91-letter phrase.** Both are exactly 91 characters, which
+  looks like a lead and is not. No positional relation survives: the letter-to-letter
+  map conflicts 59 times, and no modular or square-coordinate relation beats chance.
+- **Bifid-object substrings as blob passwords.** Upstream tested substrings of the
+  Bifid output and its two streams as address-key preimages, not as AES passwords.
+  That gap is now closed: 5,424,880 candidates per blob, nothing surviving.
