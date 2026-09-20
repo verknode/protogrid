@@ -162,6 +162,7 @@ the page is unread.
 | `tools/mutate.py`, `tools/concat.py` | Mutated and concatenated dictionary generators (section 33) |
 | `tools/doorarith.py`, `tools/doorvar.py` | Third-door arithmetic relations and construction variants (section 34) |
 | `tools/rawcrack.c` | Raw-byte passwords into EVP_BytesToKey-MD5, all three blobs (section 35) |
+| `tools/primeword.py` | The prime-A1Z26 word filter and the index-479 check (section 36) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1498,3 +1499,52 @@ produced a reproducible result here, and the one the creator's convention arguab
 describes — does not open any of the three locks under the SHA-256 of any puzzle string,
 any XOR subset of the page tokens, or the recovered key material. `tools/rawcrack.c` is
 the tool; it and `ccrack.c` together cover both readings of "the password", text and raw.
+
+## 36. A reader's prime-word chain: what checks out, what doesn't, what it opens
+
+A reader (via ChatGPT) proposed extending the 9/15 chain past the matrix sums into the
+Architect's closing line. Parts of it are arithmetically real and worth recording; none
+of it opens anything.
+
+**Confirmed — the origin of 9 and 15.** The 14x14 colour grid has exactly **9 yellow
+cells and 15 blue cells**. That is where the numbers come from — cell counts, not the
+A1Z26 values of `I` and `O`. Both readings happen to point the same way, which is part of
+why the chain feels tight.
+
+**Confirmed — the prime-word filter.** Take the Architect's last words before the choice
+and keep only the words whose A1Z26 letter-sum is prime:
+
+```
+last 9 words : IS NOTHING THAT YOU CAN DO TO STOP IT
+   primes    :             YOU(61)  DO(19)      IT(29)   ->  YOU DO IT
+last 15 words: … AND THERE IS NOTHING THAT YOU CAN DO TO STOP IT
+   primes    :   AND(19)              YOU(61)  DO(19)  IT(29) -> AND YOU DO IT
+```
+
+The arithmetic is exact: the prime-valued words really do spell `YOU DO IT` and
+`AND YOU DO IT`. It is a genuine, pretty pattern. `tools/primeword.py` reproduces it.
+
+**True but underived — the 479 pointer.** Index 479 (0-based) of the recovered Beaufort
+monologue is exactly the start of `privatekeyyouveearnedit`, i.e. the sentence *"take the
+private key you've earned it"*. That alignment is real, and 479 is prime. But the chain's
+claim that 479 comes from "yellow primes = 479, blue = 484" does **not** reproduce: no
+natural yellow/blue aggregation of the grid, and no prime-row/col-sum total of the 16x16
+object under A1Z26, column, row or square-index scoring, yields 479 or 484 (the closest is
+497). So 479 appears reverse-engineered to land on the phrase, not derived. Recorded as a
+striking coincidence, not a result.
+
+**Negative — everything it produces.** The strings the chain yields — `YOUDOIT`,
+`ANDYOUDOIT`, their yin/yang concatenations, `privatekeyyouveearnedit` and its neighbours,
+the full last-words phrases, and each joined with `yinyang`/`matrixsumlist` — were tested:
+
+- as passwords against all three blobs under the strong filters: the only hits are
+  single 14/16 noise blocks with invalid padding, none readable;
+- as brainwallet keys against the third door and all ten planted addresses, in
+  `brain.c`'s whole construction set: no match.
+
+So the chain is another well-motivated path whose arithmetic partly holds — the 9/15
+counts genuinely, the prime-word filter genuinely — but which yields no password, no key,
+and no address. Its one arresting feature, 479 pointing at "the private key you've earned
+it", has no verified derivation and opens nothing. The author's line the chain quotes,
+*"we won't give away the password / it's in front of your eyes"*, remains as true and as
+unhelpful as before.
