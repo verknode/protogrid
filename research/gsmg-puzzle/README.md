@@ -1192,6 +1192,13 @@ two-32-byte-key hypothesis of section 27 requires. Whatever the table is for, it
 resolved value is not the password of either lock under any assignment in that range
 and any of those renderings.
 
+The independent oracle says the same. The same renderings over the narrower range
+**X, H, Y in -12..+12** were put through `tools/brain.c` against all ten planted
+addresses and the prize, in its six key constructions (SHA-256, of the lower- and
+upper-cased form, raw left- and right-padded to 32 bytes, and the bit-reversal of
+each): **240,966 strings, roughly 1.4 million keys, no match.**
+
 That is worth having as a bounded negative: the open sub-riddle can now be set aside as
-a *direct* password source, which is where anyone finding it would naturally take it
-first. Its four unknowns remain unresolved, and the table remains unconsumed.
+a *direct* password source and as a direct preimage, which is where anyone finding it
+would naturally take it first. Its four unknowns remain unresolved, and the table
+remains unconsumed.
