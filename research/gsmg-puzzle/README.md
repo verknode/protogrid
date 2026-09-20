@@ -163,6 +163,7 @@ the page is unread.
 | `tools/doorarith.py`, `tools/doorvar.py` | Third-door arithmetic relations and construction variants (section 34) |
 | `tools/rawcrack.c` | Raw-byte passwords into EVP_BytesToKey-MD5, all three blobs (section 35) |
 | `tools/primeword.py` | The prime-A1Z26 word filter and the index-479 check (section 36) |
+| `data/eyes-phrase-candidates.txt` | The "in front of your eyes" quote and roadmap neighbours (section 37) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1548,3 +1549,53 @@ and no address. Its one arresting feature, 479 pointing at "the private key you'
 it", has no verified derivation and opens nothing. The author's line the chain quotes,
 *"we won't give away the password / it's in front of your eyes"*, remains as true and as
 unhelpful as before.
+
+## 37. "It's in front of your eyes" — the quote, its provenance, and what a parallel effort already spent on it
+
+The creator's roadmap (attributed, binary-decoded, dated 2023-02-25) reads
+`yellowblueprimes → matrixsumlist → lastwordsbeforearchichoice → yinyang`, followed by:
+
+> "we wont give away the password its in front of your eyes but you're not seeing it"
+> "very last step is a true give away promised"
+
+A second, separately dated attribution (2026-03-03) has a community member quoting the
+same line back to the creator in a live chat, who replies **"Bingo"**, then names
+*Looking Forward* (Keyes & Fresco, 1969) — which connects cleanly to `jacquefresco`
+already being part of the verified phase 3.2 password.
+
+**A provenance caveat, stated plainly.** The 2023 roadmap line is corroborated by this
+file's own analysis (the matrix-sum chain in sections 23 and 29 independently arrives at
+`matrixsumlist` and `lastwordsbeforearchichoice`, which are also the literal decoded
+strings on the puzzle's own final page — see section 6). The 2026-03-03 exchange is not:
+it is sourced from a third party's transcript of a private Telegram group this session
+cannot reach, with no on-chain or page-published corroboration. It is recorded here as
+"reported", not as verified fact, which is a different evidentiary class from the
+OP_RETURN messages this file treats as ground truth elsewhere.
+
+### What a parallel effort already spent on it
+
+A separate, independent research fork (not this session's work, encountered while
+tracing the Cosmic Duality blob in section 31) took the "Bingo" attribution at face value
+and ran *Looking Forward*'s full text as a corpus: 5.77 million AES password candidates,
+7.05 million running-key alignments, a book-cipher reading, and a sweep of its 16
+illustrations and scanned pages. All zero. That is a large, specific space and this
+session did not repeat it — rerunning millions of already-negative tests without new
+insight would add nothing.
+
+### What this session tested directly, independently
+
+The quote itself, its roadmap neighbours, and their normalisations — 72 candidates —
+against every object this file's own tools have certified:
+
+- **The recovered Cosmic Duality blob**, under `tools/ccrack.c`'s printable-first-block
+  filter, raw and as SHA-256 in three forms, both digests: 432 decryptions, **zero**
+  candidates reaching the threshold at all.
+- **Both 80-byte locks**, raw and hashed, both digests: 864 decryptions, 2 chance padding
+  hits (`itsinfrontofyoureyes`, `verylaststepisatruegiveawaypromised`), each a single
+  `0x01` byte at 37-38% printable — exactly chance noise, not language.
+- **The third door and all ten planted addresses**, as brainwallet keys through
+  `brain.c`'s full construction set: no match.
+
+**Negative, cleanly.** The phrase does not open any object this session holds, under any
+reading tried here or, at far greater scale, in the parallel effort's book-corpus sweep.
+Candidates in `data/eyes-phrase-candidates.txt`.
