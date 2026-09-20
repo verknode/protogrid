@@ -164,6 +164,7 @@ the page is unread.
 | `tools/rawcrack.c` | Raw-byte passwords into EVP_BytesToKey-MD5, all three blobs (section 35) |
 | `tools/primeword.py` | The prime-A1Z26 word filter and the index-479 check (section 36) |
 | `data/eyes-phrase-candidates.txt` | The "in front of your eyes" quote and roadmap neighbours (section 37) |
+| `tools/intertwine.py` | All 5,040 character-interleavings of the phase-3 parts and stage answers (section 38) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1599,3 +1600,49 @@ against every object this file's own tools have certified:
 **Negative, cleanly.** The phrase does not open any object this session holds, under any
 reading tried here or, at far greater scale, in the parallel effort's book-corpus sweep.
 Candidates in `data/eyes-phrase-candidates.txt`.
+
+## 38. "Seven intertwined passwords", read literally as interleaving
+
+The Architect's monologue says the solver will be required to select from *"over
+twenty-three ciphers, sixteen encryptions and/or seven intertwined passwords"*. Every
+prior seven-part test in this file's history (and upstream's) read "seven" as things to
+**concatenate** — which is how the phase 3 answer itself is built from its 7 parts. None
+tried "intertwined" at its plainer meaning: interleaved character by character.
+
+While re-checking an early dismissal — a 565-character run of what looked like page
+punctuation in `phase32.txt` — it turned out to already be identified. Confirmed here:
+those bytes are the same Beaufort ciphertext already in `data/beaufort_raw.bin` (1539 of
+1539 bytes identical); the "symbols" were an artifact of filtering the raw high-byte
+EBCDIC-range data down to printable ASCII. Not a new object.
+
+### What was tried
+
+Two objects, both explicitly "seven" in the puzzle's own language:
+
+1. **The phase 3 answer's seven parts** — `causality`, `Safenet`, `Luna`, `HSM`,
+   `11110`, the genesis-coinbase hex, and the FEN string — the object
+   `data/planted-addresses.csv` itself calls "the 7 parts ... concatenated".
+2. **The seven distinct stage preimages** from the planted addresses (the flower
+   sentence, `causality`, the phase 3.2 passphrase, the seed URL, the prize address,
+   `matrixsumlist`, `yinyang`).
+
+Each set was interleaved character by character, cycling through parts and dropping
+exhausted ones, under **all 5,040 permutations** of the 7-part ordering (`tools/
+intertwine.py`) — 10,080 distinct strings, none of them the straight concatenation
+that produces the real answer.
+
+### Result
+
+Tested as passwords (raw and SHA-256, both digests) against all three blobs, and as
+brainwallet keys against the third door and all ten planted addresses:
+
+| Target | Decryptions / keys | Result |
+|---|---|---|
+| Cosmic Duality, printable-first-block filter at 15/16 | 60,480 | 0 reaching threshold |
+| Both 80-byte locks, padding + full-decrypt printability | 120,960 | 446 chance padding hits (0.369%, at chance), 0 full pad block, 0 readable |
+| Third door + all 10 planted addresses, brainwallet | 60,480 keys | 0 match |
+
+**Negative.** "Intertwined" read as literal interleaving, exhausted over every ordering
+of both natural seven-element objects the puzzle names, opens nothing. The word most
+likely just means "combined" in the looser sense the earlier concatenation sweeps already
+covered.
