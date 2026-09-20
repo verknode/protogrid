@@ -167,6 +167,8 @@ the page is unread.
 | `tools/intertwine.py` | All 5,040 character-interleavings of the phase-3 parts and stage answers (section 38) |
 | `data/and-or-chain-candidates.txt` | The AND/OR/heart-of-KEY chain outputs (section 39) |
 | `tools/countcrack.c` | EVP_BytesToKey with a configurable iteration count (section 40) |
+| `tools/bcde_io.py` | The I/O to AND/OR to BCDE-coordinate chain, with its null models (section 41) |
+| `tools/hex1234.py` | Byte constructions of 0x1234D3F1 tested against every object (section 41) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1733,3 +1735,96 @@ section 33 (chance predicts a handful of such hits at this volume), and zero rea
 either open lock or the recovered blob, under the dictionaries built across this
 session. `tools/countcrack.c` is kept as a reusable check: it takes any candidate stream
 and any iteration count, so a future guess about *which* count is meant is cheap to test.
+
+## 41. The I/O → AND/OR → 0x1234D3F1 chain: the strongest single reproduction this file has recorded, with two real deflations
+
+A reader combined four previously-separate results into one construction, and every
+step of it reproduces **exactly** on this file's own certified data, independently
+re-derived here from scratch.
+
+### What reproduces exactly
+
+**The AND/OR/XOR split of Yellow/Blue's disputed prime sums lands on two real,
+unique phrase boundaries.** With `Yellow=479` and `Blue=484` as inputs (still not
+independently derived from the certified grid — see section 36's open caveat, which
+this section inherits rather than resolves):
+
+```
+479 AND 484 = 452     479 XOR 484 = 59     479 OR 484 = 511
+```
+
+On `data/beaufort_plain.txt`, `beau[452:511]` is *exactly* 59 characters —
+`elastpartofthepuzzletaketheprivatekeyyouveearneditbutplease` — matching the XOR
+value as its length, both endpoints unique in the 1539-letter text. Its first
+character, `e`, is A1Z26 5, matching `484-479`. Its centre character (position 29 of
+0–58) is `i`. `beau[59]` is `o`. All five of these are exact, checked independently.
+
+**The I/O-selects-AND/OR-of-BCDE-coordinates construction reproduces to the exact
+claimed hex value.** The 29 dropped I/O letters (section 24) paired with the even
+Bifid-stream letter immediately before each drop — always in `{B,C,D,E}` per section
+15's mechanical account — read as that letter's row/col coordinate in the confirmed
+`DBIFH/CEGAK/…` square (`D=00 B=01 C=10 E=11`, which is simply that square's own
+layout, not a chosen mapping), combined with **AND** when the paired symbol is `O` and
+**OR** when it is `I`:
+
+```
+io  : OOIIOOOIIOOIOIIOIOOOOIOIIOIOI
+bcde: ECDCDDCEBCEDBECDECCEECEBCDDDC
+out : 10010001101001101001111110001  =  0x1234D3F1
+```
+
+This is now independently reproduced from the raw certified objects
+(`tools/bcde_io.py`), not taken on trust.
+
+### Two things worth deflating, both checked rather than asserted
+
+**The "yin/yang" AND/XOR relationship is not special to 479 and 484.** For *any* two
+integers `a, b`: `(a AND b) + (a XOR b) = (a OR b)` and `(a AND b) AND (a XOR b) = 0`,
+always — because a bit position can be 1 in the AND result only if both inputs agree
+on 1, and 1 in the XOR result only if they disagree, so the two results can never
+share a set bit. Verified over 1,000 random integer pairs. It is true arithmetic, but
+it is a property of AND/XOR/OR in general, not a signature of this puzzle's numbers.
+
+**The claimed 1-in-8,300 rarity of the "1234" prefix does not hold up under a fair
+null.** The reported figure shuffles both the I/O sequence and the BCDE sequence
+together. Re-run here with three separate permutation nulls, 300,000 trials each:
+
+| Null model | Rate |
+|---|---|
+| shuffle both sequences | 1 in 6,977 |
+| shuffle BCDE only, I/O fixed | 1 in 2,542 |
+| **shuffle I/O only, BCDE fixed** | **1 in 50** |
+
+The rate is wildly sensitive to which object is held fixed — two orders of magnitude
+apart — which means "1 in 8,300" was never a stable estimate of anything; it is one
+arbitrary choice among nulls that disagree with each other by 140x. The instability has
+a mechanical cause, found by decomposing the construction: at an `O` (AND) position the
+output bit is just "is this letter `E`", and at an `I` (OR) position it is just "is this
+letter not `D`". The Boolean-operator framing is a relabelling of a single-letter
+identity test per position, not a rich combination — which is also why shuffling only
+the low-entropy 4-letter BCDE stream barely moves the rate, while shuffling the I/O
+selector (which decides which of two very different single-letter tests applies)
+moves it by 100x.
+
+### The output, tested anyway
+
+`0x1234D3F1` / `1234D3F1` / `D3F1` / `305452017` and the raw 29-bit string, in raw,
+hex, byte-packed (both bit orders), zero-padded-to-32-byte, and SHA-256/MD5-hashed
+forms — 60 candidates (`tools/hex1234.py`) — against:
+
+- all ten planted addresses, the prize and the third door, as brainwallet keys: no
+  match;
+- the recovered Cosmic Duality blob, printable-first-block filter: 0 candidates
+  reaching threshold;
+- both 80-byte locks: 5 chance padding hits, ordinary noise, nothing readable.
+
+`D3F1` read as a decimal index (54,257) into the monologue, the object and the phase
+3.2 plaintext, modulo each one's length, lands on no recognisable content.
+
+**Where this leaves it.** The chain from the 29 dropped letters through to
+`0x1234D3F1` is real and now independently verified end to end — the best-reproducing
+result this file has recorded, better than the matrix-sum or AND/OR-boundary chains
+that preceded it, because every step checks out on first-party data rather than
+requiring an unmarked interpretive leap. But its apparent significance rests on an
+unstable null and its apparent mechanism is simpler than it looks, and the value it
+produces opens nothing tried so far.
