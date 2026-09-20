@@ -157,6 +157,7 @@ the page is unread.
 | `tools/issue108.py` | Reproduces and refutes the community's small-blob decrypt (section 28) |
 | `tools/yinyang29.py` | The 9/15 rows, the 29-char phrase and the 29-bit mask (section 29) |
 | `tools/table.c` | Brute-forces the phase-2 variable table's four unknowns (section 30) |
+| `tools/cosmic.py` | The recovered Cosmic Duality blob, its decrypt and the control (section 31) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -905,7 +906,8 @@ establish:
   `a795de11…52e50735`, matching the published value exactly. Note in passing that two
   of the seven tokens are the same string, `matrixsumlist`, so it cancels under XOR and
   the key is really a five-token chain.
-- Upstream **section 14** then retracts section 11: those 32 raw bytes passed to
+- Upstream **section 14** then retracts section 11 (and section 31 now confirms this
+  first-hand, on the recovered bytes): those 32 raw bytes passed to
   `EVP_BytesToKey` with MD5 is a convention the puzzle never uses, and 93 of 20,000
   random 32-byte keys clear the same padding test, 92 of them with exactly one padding
   byte — which is the signature of a 1328-minus-1 = 1327-byte "plaintext". The decrypt
@@ -1202,3 +1204,68 @@ That is worth having as a bounded negative: the open sub-riddle can now be set a
 a *direct* password source and as a direct preimage, which is where anyone finding it
 would naturally take it first. Its four unknowns remain unresolved, and the table
 remains unconsumed.
+
+## 31. The Cosmic Duality blob, recovered — and its "solution" refuted first-hand
+
+Every statement this file has made about the large blob until now came from upstream's
+description of it. The bytes themselves were never in hand: they are on a live page
+that the network here cannot reach, and neither the community README nor upstream's
+oracle carries them. Section 26 therefore had to take the refutation on trust.
+
+**The blob is now recovered**, from a fork of the community repository that archives
+saved copies of the live page. It is carried byte-identically by seven independent
+files in that repository — the September 2026 capture of the live page body, a saved
+`salphaseion.html`, and five archived snapshots of the endgame page dated 2023-06-01,
+2023-11-27, 2024-11-23, 2025-10-31 and 2026-04-05. All seven agree exactly.
+
+```
+total            1344 bytes  =  "Salted__" + 8-byte salt + 1328 bytes of ciphertext
+salt             2d3f6fe06dc950e6
+ciphertext       83 AES blocks
+sha256(file)     b18950551a4dd0cb8a9378f0906ba18c03a15f0ee83eb98c6bc90165c5f79805
+```
+
+Two checks were run before trusting it: the first 24 base64 characters match what is
+legible in the page screenshot committed to the community repository, and the salt
+matches the value reported independently in community discussion. Stored as
+`data/cosmic-duality.b64`.
+
+### The community decrypt reproduces exactly
+
+With the blob in hand the claim can be run rather than described. The key is the XOR of
+the SHA-256 digests of seven tokens, passed as **32 raw bytes** to `EVP_BytesToKey`
+under **MD5**:
+
+| | |
+|---|---|
+| derived key | `a795de11…52e50735` |
+| padding | **valid**, a single `0x01` byte |
+| plaintext length | 1327 bytes |
+| plaintext SHA-256 | `4f7a1e4efe4bf6c5581e32505c019657cb7b030e90232d33f011aca6a5e9c081` |
+
+That is the published value, bit for bit. Under SHA-256 the same key gives no valid
+padding at all, so the result exists only under a derivation the creator never uses.
+
+### And it is noise — measured on the blob itself
+
+| Check | Result |
+|---|---|
+| plaintext entropy | **7.870 bits/byte** over 255 distinct values in 1327 bytes |
+| printable fraction | 0.389 — what uniform bytes give |
+| container marker (`Salted__` / `U2FsdGVk`) | none |
+| 40,000 random 32-byte keys, MD5, **on this blob** | 165 valid paddings = 0.412% (chance 0.391%) |
+| of those, exactly one `0x01` pad byte | **165 of 165** |
+
+So one random key in roughly 250 produces a result with exactly this shape, and every
+one of them lands on a single `0x01` byte — which is the entire signature of the
+published decrypt. The 103x103 matrix, the base-38 decode and the four trailing bytes
+of the community's chain are readings of 1327 bytes of noise.
+
+Two other keys circulating for this blob were tried and fail outright, with no valid
+padding under either derivation: `818af53d…d76bb402`, and the "theseedisplanted plus
+three rounds of SHA-256" construction in four iteration counts and two base strings.
+
+**This upgrades section 26 from second-hand to first-hand.** The refutation no longer
+rests on anyone's account of the bytes. The large blob is closed, with an unknown key,
+and it is now in `data/` so the next person does not have to go looking for it.
+`tools/cosmic.py` holds the decrypt, the padding test and the control.
