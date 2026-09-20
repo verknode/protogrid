@@ -169,6 +169,7 @@ the page is unread.
 | `tools/countcrack.c` | EVP_BytesToKey with a configurable iteration count (section 40) |
 | `tools/bcde_io.py` | The I/O to AND/OR to BCDE-coordinate chain, with its null models (section 41) |
 | `tools/hex1234.py` | Byte constructions of 0x1234D3F1 tested against every object (section 41) |
+| `tools/wordboundary_null.py` | Independent significance null for the AND-boundary coincidence (section 42) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1828,3 +1829,87 @@ that preceded it, because every step checks out on first-party data rather than
 requiring an unmarked interpretive leap. But its apparent significance rests on an
 unstable null and its apparent mechanism is simpler than it looks, and the value it
 produces opens nothing tried so far.
+
+## 42. Refining the AND/OR boundary: a genuine off-by-one, a familiar prime-grid claim, and an unverifiable object
+
+A follow-on to sections 39 and 41 refines the AND/OR chain with `Yellow=479` and
+`Blue=484` used directly (no `Red=2` zeroing), and adds a new detail worth checking
+carefully: everything reproduces except one number, and the file already has the
+tools to say precisely where the reasoning is sound and where it overreaches.
+
+### What reproduces exactly, including a genuine new detail
+
+`479 AND 484 = 452`, `479 OR 484 = 511` (both confirmed in section 41). The new claim
+is finer: `beau[452]` is `e`, but that position is the *last* letter of `"...complete
+THE last part..."`, not a word start — confirmed against the authentic spaced
+transcript, which gives an unambiguous word-start offset set. `beau[453]`, the very
+next position, *is* a real word start, beginning `"LAST PART OF THE PUZZLE..."`. And
+`453 = 452 + A1Z26('e')`... no — more precisely, the single character at the AND
+position is exactly the one that has to be removed to reach the next real word
+boundary, and its A1Z26 value, 5, is exactly `484 − 479`. `beau[511]` is also
+confirmed a real word start (`"TAKE THIS TO HEART"`). All four checked independently
+against a word-start set built from the community's original spaced transcript, not
+assumed.
+
+`511 − 453 = 58 = 2 × 29` is correct arithmetic, and 29 is indeed the count of
+dropped I/O letters (section 24) — worth having as an observation, though on its own
+it is one coincidence of a length matching an earlier count, not yet a demonstrated
+link. Every construction tried on it — the I/O mask multiplexing left/right characters
+of each of the 29 pairs, forward and reversed mask, forward and reversed pairing, and
+a pair-reordering variant — produces no readable text, confirmed and extended here
+(`tools/wordboundary_null.py` covers the boundary check; the mask variants were run
+ad hoc and are consistent with the reader's own negative).
+
+### Not a new result: the 23/16/7×7 prime-grid structure
+
+The "alphabet 23, matrix 16×16, 7 prime rows, 7 prime columns" observation reproduces
+exactly — but it is **byte-for-byte the same finding as section 29**, computed the
+same way (letter's column coordinate in the confirmed Bifid square), giving the
+identical prime row and column indices. Section 29 already measured its rate at
+1 in 600 by permutation of the object's own letters, and downgraded it: "exactly
+seven" was chosen after seeing it matched the Architect's line, and the expected count
+under the same scoring is close to seven anyway. Presenting it again as a new,
+independent confirmation of "23 → 16 → 7 → 7×7" overstates what section 29 already
+established and qualified.
+
+The specific 7×7 = 49-letter grid built by crossing those seven rows and seven
+columns does reproduce exactly: `QNDPGPSDKLRNNLGFAKNSRRGVVDMGWGYBGLRAEELMKAEPMXXRM`.
+It is not language in any obvious reading, and tested as a password, key and text it
+opens nothing (below).
+
+### One claim that cannot be checked here
+
+A companion 49-character string, `YOUWONXCPKWGBNAXDGJGDUNNVMPABTAFPAAXMJYLZBUWERDNX`, is
+said to sit as the middle block of a 21|49|21 = 91-character structure built from
+"DBBI" and the VIC digits. `seg0` (`data/seg0.txt`) is the puzzle's own 91-letter
+object beginning `dbbi…`, and 21+49+21 does equal 91 — but `seg0`'s entire alphabet
+is `{a,b,c,d,e,f,g,h,i}` (confirmed: it is the reading-order key for the Bifid square,
+section 16), and the claimed 49-character string uses many letters outside that set
+(`Y,O,U,W,N,X,C,P,K,...`). It does not match `seg0` or any object recovered so far.
+This is recorded as unverifiable against this file's own held data, not as false —
+its source may be a different community object not currently in hand.
+
+### The significance claim, independently re-tested
+
+The reported control — "1 of 48 orientations satisfies both conditions" — was not
+reproduced with matching methodology (the orientation set was not fully specified),
+so a standard permutation null was run instead: draw random number pairs in a
+plausible range and check how often the same two-part condition (AND-position letter
+equals the pair's difference, and the next position is a real word start) occurs.
+
+| Null | Rate |
+|---|---|
+| random pairs, difference 1–26, values 200–800 | 1 in 107 |
+| difference fixed at 5, values swept 200–800 | 1 in 32 |
+
+Both are far more common than "1 in 48" suggests, and nowhere near rare enough to
+carry weight on their own — consistent with the pattern in sections 29, 39 and 41,
+where every claimed rarity in this puzzle's number games turns out weaker under a
+fair, independently-run null.
+
+### Tested anyway
+
+The 7×7 grid string, the E-zeroed 58-character phrase, the raw I/O mask, and their
+hashes — against the recovered Cosmic Duality blob (printable-first-block filter),
+both 80-byte locks, and as brainwallet keys against the third door, prize and all ten
+planted addresses. No match anywhere.
