@@ -156,6 +156,7 @@ the page is unread.
 | `tools/windows.py` | All word windows in exact published casing (section 27) |
 | `tools/issue108.py` | Reproduces and refutes the community's small-blob decrypt (section 28) |
 | `tools/yinyang29.py` | The 9/15 rows, the 29-char phrase and the 29-bit mask (section 29) |
+| `tools/table.c` | Brute-forces the phase-2 variable table's four unknowns (section 30) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1121,3 +1122,76 @@ by 9 and 15, which is more than section 23 could say. But the two coincidences c
 it are a 5% event and a post-hoc 1-in-600 event resting on a contested transcript, and
 the operation they point at produces nothing on either lock or any planted address. It
 is a better-shaped hypothesis than its predecessors and it is still negative.
+
+## 30. The phase-2 variable table, resolved by exhaustion rather than by riddle
+
+Section 19 flagged the phase-2 table as the one explicitly posed sub-riddle that no
+solved stage ever consumed. That flag is now firmer, because the rest of the text
+around it **was** consumed and can be traced.
+
+The phase-2 plaintext uses inline digits as part markers — `2name`, `3Moon`,
+`4How so mate?` — and each one supplies a part of the phase-3 answer: the keymakers'
+ironic name is `Safenet`, the Latin moon is `Luna`, and the fourth is `HSM`. Part 1,
+`causality`, comes from the phase-3 text's own `1name` marker, and part 5, `11110`, is
+JFK's Executive Order 11110, not the table. So every element of that page has a
+destination **except** the table and its four definitions:
+
+```
+# X 2 S H 4 Y 0 Q B 15 #
+Q -> extend the name of a hackers' swordless fish, the I and W are below.
+B -> ((BV80605001911AP)- (sqrt(-1)))^2
+H -> (Answer to only this puzzle but nothing else) * -1
+S -> cha' + (vagh * jav)
+```
+
+Two are settled. `S` is Klingon arithmetic, *cha'* + *vagh* × *jav* = 2 + 5 × 6 = **32**.
+`B` names an Intel spec code whose processor is an i5, so (5i − i)² = (4i)² = **−16**.
+`X`, `H`, `Y` and `Q` have no agreed reading, and `X` and `Y` are not even given a
+definition line — they appear in the table and nowhere else.
+
+The closing line, *"on the highway, let put it in the worst gear"*, is the puzzle's
+`esrever` again: reverse is the worst gear on a highway. So every rendering is also
+tried backwards.
+
+### Reading the two open definitions
+
+`Q` is most likely **2**. The fish ciphers are Blowfish, Twofish and Threefish; the
+hacker film is *Swordfish*, so "swordless fish" strips the sword and leaves the family.
+"The I and W are below" fits `TWOFISH` and `BLOWFISH` and rules out `THREEFISH`, which
+has no W — which points at the Two/Blow pair and so at the number two.
+
+`H` resists. "The answer to only this puzzle but nothing else" plays on the answer to
+life, the universe and everything, narrowed to a single puzzle, and there is no
+defensible value: 42 negated, the phase number, the prize in BTC and a self-referential
+zero all fit the wording equally.
+
+### So it was not read — it was exhausted
+
+Rather than argue, the whole table was brute-forced. `X`, `H` and `Y` over **−50 to
++50** and `Q` over {2, 3, 4}, with `S` and `B` fixed at their settled values, rendered
+seven ways — joined, absolute values, space-separated, hash-delimited, and reversed in
+three of those forms — and each rendering tried raw **and as the lowercase and
+uppercase hex SHA-256 of itself**, which is the creator's own documented convention
+(*"parts 1..7 → sha-256 → dgst is the password"*). Against both 80-byte locks, under
+both key derivations.
+
+```
+combinations   3,090,903          (101 x 101 x 101 x 3)
+decryptions  259,635,852
+padding-valid    1,017,387  = 0.3918%   (chance 0.3906%)
+full 16-byte padding block         0
+```
+
+`tools/table.c` runs it, sharded across cores. Its key derivation was checked against
+`tools/oracle.py` byte for byte on both digests before the run, because a sweep that
+cannot derive a key correctly produces exactly this result for the wrong reason.
+
+**Nothing.** Acceptance sits on the theoretical rate to four significant figures, and
+not one candidate in 260 million produced the full 16-byte padding block that the
+two-32-byte-key hypothesis of section 27 requires. Whatever the table is for, its
+resolved value is not the password of either lock under any assignment in that range
+and any of those renderings.
+
+That is worth having as a bounded negative: the open sub-riddle can now be set aside as
+a *direct* password source, which is where anyone finding it would naturally take it
+first. Its four unknowns remain unresolved, and the table remains unconsumed.
