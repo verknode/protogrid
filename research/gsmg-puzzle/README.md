@@ -154,6 +154,7 @@ the page is unread.
 | `tools/gen_family.py`, `tools/gen_family2.py` | Yellow/Blue, primes, zeroed out (section 25) |
 | `tools/lastwords.py` | Suffixes of both Architect texts, with reversal (section 27) |
 | `tools/windows.py` | All word windows in exact published casing (section 27) |
+| `tools/issue108.py` | Reproduces and refutes the community's small-blob decrypt (section 28) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -949,3 +950,77 @@ chance. It does not speed up the search, but it means a hit needs no adjudicatio
 
 `tools/lastwords.py` and `tools/windows.py` run these sweeps. They read the film
 passage from a local file that is deliberately not committed here; supply your own.
+
+## 28. The "SalPhaseIon typos" decrypt (community issue #108) is a padding accident
+
+A 2026 issue on the community repository reports the small blob solved: two typos on the
+live page had allegedly corrupted the base64 for years, and the corrected blob opens
+under `EVP_BytesToKey`/MD5 with the page's own tokens concatenated as the password,
+
+```
+matrixsumlist | enter | lastwordsbeforearchichoice | thispassword | matrixsumlist
+```
+
+yielding 79 bytes read as two 32-byte keys `K_C1`, `K_C2` and a 15-byte `E_C`. It is
+checkable entirely offline, so it was checked.
+
+**The premise is wrong.** The "corrected" blob is byte-identical to the one the
+community README has always carried. Position 18 already reads `J` and position 51
+already reads `s`. Nothing was corrected; the diff is empty.
+
+**The decrypt itself reproduces exactly.** That password under MD5 gives precisely the
+79 bytes the issue publishes, `9fa9db91…` and `15173896…` and `38d4f4c9…`.
+
+**And it is noise.** Every independent check fails:
+
+| Check | Result |
+|---|---|
+| `K_C1`, `K_C2` and 22 derivatives (double, half, ±1, byte- and hex-reversals, digests, their XOR) as private keys against all 10 planted addresses and the prize | 0 match |
+| `E_C` in 56 forms as the password of either 80-byte lock, both digests | 0 padding-valid |
+| Plaintext entropy | 6.13 bits/byte over 72 distinct values in 79 bytes — uniform to within sampling |
+| Container marker (`Salted__` / `U2FsdGVk`) anywhere in the plaintext | none |
+| The claimed corroboration, "`K_C1` matches the WIF key from issue #68" | issue #68 publishes no such key; its own comments state the private key remains undiscovered, and it repeats the master XOR key and Cosmic Duality hash that section 26 shows are noise |
+
+The statistical signature is the giveaway, and it was measured rather than assumed.
+Decrypting the small blob under MD5 with **40,000 random passwords**:
+
+```
+valid PKCS#7 padding : 160 of 40,000  = 0.400%   (chance: 1/256 = 0.391%)
+of those, exactly one 0x01 pad byte  : 160 of 160
+```
+
+A second draw of 40,000 gave 139 and 138 — the rate is sampling noise around 1/256,
+not a constant. Essentially every chance hit has exactly one padding byte, because a
+trailing `0x02` needs two bytes to agree, a `0x03` three, and so on. So "the plaintext came out 79 bytes"
+is not a sign of success — it is what failure looks like. The issue's result has that
+signature and nothing else.
+
+### How many more of these are waiting
+
+The same family was then exhausted, to show this is not a one-off. Every ordered
+concatenation of up to four of the nine tokens the final page yields — `matrixsumlist`,
+`enter`, `lastwordsbeforearchichoice`, `thispassword`, `shabef`,
+`ourfirsthintisyourlastcommand`, `shabefanstoo`, plus the two the community's XOR key
+invents, `yourlastcommand` and `secondanswer` — under four joiners and four casing and
+digest forms, against both locks under both derivations:
+
+```
+57,636 distinct passwords, 230,544 decryptions
+padding-valid : 937  = 0.406%   (chance 0.391%)
+one 0x01 byte : 933 of 937
+```
+
+**There are roughly 900 further "solutions" of exactly the #108 kind sitting in that
+space**, each as reproducible and as meaningless — `shabefthispassword`,
+`MATRIXSUMLIST SECONDANSWER`, `lastwordsbeforearchichoice-yourlastcommand` and so on.
+Anyone concatenating page tokens and stopping at "valid padding" will keep finding them
+indefinitely.
+
+**The rule this suggests.** On an 80-byte lock, valid padding is not evidence. A claim
+is only worth reporting when the plaintext does something: derives a funded or planted
+address, opens the next container, or carries a structure that could not have been
+imposed afterwards. Under the two-32-byte-key hypothesis of section 27 the plaintext
+would be exactly 64 bytes with a **full** 16-byte pad block, and that filter has no
+false positives at all — it is the one worth running.
+
+Both locks remain closed.
