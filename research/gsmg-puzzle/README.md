@@ -160,6 +160,7 @@ the page is unread.
 | `tools/cosmic.py` | The recovered Cosmic Duality blob, its decrypt and the control (section 31) |
 | `tools/ccrack.c` | Password search on a long blob via the printable-first-block filter (section 32) |
 | `tools/mutate.py`, `tools/concat.py` | Mutated and concatenated dictionary generators (section 33) |
+| `tools/doorarith.py`, `tools/doorvar.py` | Third-door arithmetic relations and construction variants (section 34) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1373,3 +1374,70 @@ shape that a human would reach for, under a filter strong enough that a hit coul
 have hidden. What remains unrun is unbounded natural-language phrasing, which no
 dictionary reaches — consistent with the creator's confirmed passwords, which are all
 long hand-written phrases rather than anything a wordlist contains.
+
+## 34. The third door, attacked as a free oracle
+
+The one planted address with no published preimage, `1NULY7DhzuNvSDtPkFzNo6oRTZQWBqXNE9`,
+funded 2020-04-07 with an empty `OP_RETURN`, is the community's highest-ranked open lead.
+The creator named it in December 2020 as a verification address and a year later said
+that door was "still a thing". It is an exact, free, offline oracle: hash or pad a
+candidate into a key, derive its P2PKH address, compare.
+
+**What it is is worth stating first.** A verification address means its preimage is
+something the solver is meant to arrive at — plausibly the final answer itself or a
+component of it. So "opening" the third door by search is only possible if that preimage
+is short and puzzle-derived; if it is the unsolved final key, no dictionary reaches it by
+construction. The runs below test the first case and leave the second where it stands.
+
+### The construction is known exactly
+
+The two addresses funded four days earlier, both messaged "Good job, Neo!", fix the
+door construction precisely. `tools/brain.c` reproduces both from the string
+`gsmg.io/theseedisplanted`:
+
+```
+148XH2YBmLr4oAJXQcG84FpNYoBmqnVPHQ   raw ASCII bytes, padded to 32
+13HGhjkmKUkP8sk9k63BLmhkxRjy7uK4Rp   the same 192 bits read backwards
+```
+
+So the tool's construction set — `sha256`, `sha256` of the lower- and upper-cased form,
+raw left- and right-padded, and the bit-reversal of each — is exactly the family the
+creator uses for doors, proven on the doors themselves.
+
+### Three attacks, all validated by what they recover
+
+**Door-themed preimages.** 202 strings: every known `gsmg.io/` slug, the film's
+two-doors passage in letters-only chunks (`thedoortoyourright`, `thesourceandthe
+salvationofzion`, …), explicit "third door" phrases, and the stage answers, each in
+raw / bit-reversed / byte-reversed / SHA-256 / double-SHA-256 form. No match.
+
+**Arithmetic relations to the known door keys.** The 2021 "neighbors, half and double"
+transaction paid 2P, P/2, P+G and P-G of the prize key, so the third door might be a
+simple function of the two known door keys. 62 relations — each key doubled, halved,
+negated, ±1, their pairwise XOR, sum and difference, and SHA-256 of each and of their
+concatenation (`tools/doorarith.py`). No match.
+
+**The full brainwallet dictionary.** Every candidate this session built — 727,154
+distinct strings: all puzzle vocabulary and stage answers, every length-3-to-40
+substring of every held text and the Architect film lines, the complete 370,105-word
+English dictionary, and the `giveit`-insertion and affix mutations — run through
+`tools/brain.c` in all its constructions against the third door and the whole planted
+set at once.
+
+The run is self-proving. In the same pass it recovered **seven** known preimages that
+happen to sit in the candidate list: both doors (raw and bit-reversed), five stage
+answers (`theflowerblossoms…`, `causality`, the phase 3.2 phrase, the prize address, and
+`1GSMG…` for the "do you believe me" address) via SHA-256, and the 227-character answer
+as a literal hex key. A pipeline that re-derives every planted address whose preimage is
+present is not silently broken. Against the third door, across all 727,154 candidates:
+**no match.**
+
+**Verdict.** The third door's preimage is not a `gsmg.io/` path, not a door phrase from
+the film, not a stage answer, not a simple arithmetic relation of the two known door
+keys, and not any single English word or held-text substring, under the exact
+construction family the creator uses for doors — a family proven correct on that same run
+by seven recoveries. That is consistent with the address being a verification checkpoint
+whose preimage is the unsolved final answer rather than an independent clue: it can be
+queried for free, but it will only open when the puzzle does. The oracle stays useful —
+every future final-key candidate should be checked against it first — but it is not a way
+in on its own.
