@@ -161,6 +161,7 @@ the page is unread.
 | `tools/ccrack.c` | Password search on a long blob via the printable-first-block filter (section 32) |
 | `tools/mutate.py`, `tools/concat.py` | Mutated and concatenated dictionary generators (section 33) |
 | `tools/doorarith.py`, `tools/doorvar.py` | Third-door arithmetic relations and construction variants (section 34) |
+| `tools/rawcrack.c` | Raw-byte passwords into EVP_BytesToKey-MD5, all three blobs (section 35) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1441,3 +1442,59 @@ whose preimage is the unsolved final answer rather than an independent clue: it 
 queried for free, but it will only open when the puzzle does. The oracle stays useful —
 every future final-key candidate should be checked against it first — but it is not a way
 in on its own.
+
+## 35. The MD5 raw-key construction, tested at scale on all three blobs
+
+The one result that ever reproduced on the large blob (§31) used a construction distinct
+from every password sweep above: the password was not a text string but **32 raw bytes**
+— an XOR of token digests — fed to `EVP_BytesToKey` under **MD5**. That is worth taking
+seriously as a *shape*, because it is also a defensible reading of the creator's own
+convention. The archived page says *"parts 1..7 → sha-256 → dgst is the password"*, and
+"dgst" can mean the raw 32-byte digest just as well as its hex text. Every earlier sweep
+fed the hex; this one feeds the raw digest.
+
+`tools/rawcrack.c` takes hex-encoded passwords and feeds the *bytes* to the KDF under
+both MD5 and SHA-256, with the same printable-first-block filter as `ccrack.c`. It is
+validated on the known XOR key: fed `a795de11…`, under MD5 it reproduces the §31 padding
+accident (valid padding, noise block 0), confirming the raw-byte EVP path is correct.
+
+Candidate raw passwords, 742,824 distinct:
+
+- **SHA-256 of every one of the 727,154 dictionary strings from §33**, taken as 32 raw
+  bytes — the creator's "dgst is the password" convention under its raw reading;
+- double-SHA-256, MD5 digests, and byte-reversed digests of the curated and door sets;
+- **every XOR subset of the nine page-token digests** (511 subsets), generalizing the
+  community's seven-token key, plus ordered SHA-256 chains of them;
+- the recovered small-blob key material and the two circulating keys, with reversals,
+  re-hashes and pairwise XORs.
+
+Run against the large blob under both derivations:
+
+```
+1,485,648 decryptions
+printable block 0 >= 14/16 : ~76  (expected ~85 at the measured 5.7e-5 rate)
+of those, valid padding    : 0
+readable plaintext         : 0
+```
+
+Every hit is pure noise — 14 or 15 printable bytes with a non-language block 0 and
+invalid padding, at exactly the chance rate. No raw password produced the conjunction a
+real key would: printable block, valid padding, language.
+
+The same 742,824 raw passwords were then run against **both 80-byte locks** under MD5 and
+SHA-256, where the plaintext is too short for a printable-block filter so the test is
+padding plus a full-decrypt printability check:
+
+```
+2,971,296 decryptions
+padding-valid    : 11,505 = 0.387%  (chance 0.391%)
+full 16-byte pad : 0
+readable         : 0
+```
+
+**About 4.46 million decryptions with raw-byte passwords under MD5, across all three
+blobs, and nothing.** The MD5 raw-key shape — the only construction that has ever
+produced a reproducible result here, and the one the creator's convention arguably
+describes — does not open any of the three locks under the SHA-256 of any puzzle string,
+any XOR subset of the page tokens, or the recovered key material. `tools/rawcrack.c` is
+the tool; it and `ccrack.c` together cover both readings of "the password", text and raw.
