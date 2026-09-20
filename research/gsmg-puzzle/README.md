@@ -158,6 +158,7 @@ the page is unread.
 | `tools/yinyang29.py` | The 9/15 rows, the 29-char phrase and the 29-bit mask (section 29) |
 | `tools/table.c` | Brute-forces the phase-2 variable table's four unknowns (section 30) |
 | `tools/cosmic.py` | The recovered Cosmic Duality blob, its decrypt and the control (section 31) |
+| `tools/ccrack.c` | Password search on a long blob via the printable-first-block filter (section 32) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1269,3 +1270,58 @@ three rounds of SHA-256" construction in four iteration counts and two base stri
 rests on anyone's account of the bytes. The large blob is closed, with an unknown key,
 and it is now in `data/` so the next person does not have to go looking for it.
 `tools/cosmic.py` holds the decrypt, the padding test and the control.
+
+## 32. Attacking the recovered Cosmic Duality blob directly
+
+AES-256-CBC has no shortcut, so "breaking it directly" means searching the password
+space — but the recovered blob makes that search far sharper than it is on the small
+locks. It is 1328 ciphertext bytes, and its solved sibling (the phase 3.2 blob) decrypts
+to text whose first block is `I've been waitin` — 16 of 16 printable. So if this blob is
+text too, the **first plaintext block is printable ASCII**, and that is a filter of
+about 2^-23, three orders of magnitude tighter than the 1/256 a padding test gives.
+
+That difference is the whole point. Everyone who has run a dictionary at this blob used
+padding as the filter and drowned in ~1-in-256 false hits they could not adjudicate.
+With a printable-first-block filter the same dictionaries clear cleanly.
+
+`tools/ccrack.c` implements it: one AES block per candidate, counting printable bytes in
+plaintext block 0, across raw / lowercase-hex-SHA-256 / uppercase-hex-SHA-256 passwords
+under both digests. It was validated on the phase 3.2 blob, where the known password
+`sha256("jacque…principle")` is recovered at 16/16 with valid padding, and nothing else
+reaches the threshold.
+
+The false-positive rate was measured, not assumed. 200,000 random passwords
+(1.2M decryptions) against this blob:
+
+| printable bytes in block 0 | count | rate |
+|---|---|---|
+| >= 13 | 438 | 3.7e-4 |
+| >= 14 | 68 | 5.7e-5 |
+| >= 15 | 0 | < 8e-7 |
+
+A real text plaintext scores 16. Noise essentially never reaches 15.
+
+Three candidate spaces were run:
+
+| Space | Candidates | Decryptions | Hits >= 15/16 | Language, valid padding |
+|---|---|---|---|---|
+| Curated: the community's known tokens and stage answers, every word and 2-4-gram of every held text, ordered concatenations of the 12 page tokens, the XOR chain and its hex | 2,862 | 17,172 | 0 | 0 |
+| The `corpus*` and `tokens7` lists (the earlier password work) | 43,580 | 261,480 | 0 | 0 |
+| **Every substring of length 3 to 40** of the Beaufort monologue, the 227-answer, the object, the Bifid output, `seg0`, `seg2`, the phase-2 and phase-3.2 plaintexts, and the Architect film lines | 192,554 | 1,155,324 | 4 | 0 |
+
+The four hits in the substring pass sit at exactly 15/16, all with invalid padding and a
+block-0 that is not language (`eDm$oi.1(L&<t.],`, `>JPU|yQGV.]l)tUV`, …). At 1.15M
+decryptions and a measured >=15 rate under 8e-7 the expected count of pure-noise hits at
+15 is order one, so four zero-padding non-language hits is exactly noise and nothing more.
+
+**Negative, and this time with headroom.** The substring hypothesis — that the password
+is a run of characters from some text the solver already holds — is the most natural
+remaining guess, and upstream could only test it against the small locks and the planted
+addresses. Here it is cleared against the large blob under a filter that would not have
+hidden a real hit: a correct password would have surfaced at 16/16 printable with valid
+padding, the way the phase 3.2 password does. It did not appear. The blob's password is
+not a substring of any text the puzzle has so far yielded.
+
+`tools/ccrack.c` is the reusable piece: point it at any of the three `Salted__` blobs in
+`data/` and pipe candidates at it, and a genuine text plaintext cannot hide behind the
+noise the way it does under a padding-only test.
