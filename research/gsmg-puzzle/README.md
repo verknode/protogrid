@@ -159,6 +159,7 @@ the page is unread.
 | `tools/table.c` | Brute-forces the phase-2 variable table's four unknowns (section 30) |
 | `tools/cosmic.py` | The recovered Cosmic Duality blob, its decrypt and the control (section 31) |
 | `tools/ccrack.c` | Password search on a long blob via the printable-first-block filter (section 32) |
+| `tools/mutate.py`, `tools/concat.py` | Mutated and concatenated dictionary generators (section 33) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1325,3 +1326,50 @@ not a substring of any text the puzzle has so far yielded.
 `tools/ccrack.c` is the reusable piece: point it at any of the three `Salted__` blobs in
 `data/` and pipe candidates at it, and a genuine text plaintext cannot hide behind the
 noise the way it does under a padding-only test.
+
+## 33. Wider mutated dictionaries through the strong filter
+
+With the printable-first-block filter validated (section 32) the same machine takes far
+more than the puzzle's own vocabulary, because a wrong key almost never produces a
+printable block 0 and a real one always does. So the broad dictionary attacks that were
+pointless under a padding filter — every hit drowned in 1-in-256 noise — become
+decisive here.
+
+Four spaces were run against the recovered Cosmic Duality blob, each in raw,
+lowercase-hex-SHA-256 and uppercase-hex-SHA-256 form under both digests:
+
+| Space | Candidates | Decryptions | Real hits |
+|---|---|---|---|
+| Theme-token concatenations (pairs and triples of 45 page tokens, stage answers, Matrix and Zeitgeist terms) plus the author's own mutations (reverse, `giveit`/`the`/`gsmg` affixes, doubling, trailing digits) | 96,350 | 578,100 | 0 |
+| The full 370,105-word English dictionary | 370,105 | 2,220,630 | 0 |
+| 4,000,000 pairs of the 2,000 commonest English words (the "correcthorse" hypothesis) | 4,000,000 | 24,000,000 | 0 |
+| `giveit`-style word insertions into every stage answer (the author's confirmed habit from the phase 3.2 password) plus reverse/affix mutations of the 10,000 commonest words | 68,426 | 410,556 | 0 |
+
+**About 4.5 million candidates, 27.2 million decryptions, and not one readable
+plaintext.** A correct password would have surfaced exactly as the phase 3.2 password
+does on its blob: block 0 as legible English at 16 of 16 printable, with valid padding.
+
+### A calibration worth recording
+
+The runs also pin down where the noise floor sits, which matters for anyone doing this.
+At threshold 15/16 printable, pure noise gives a handful of hits per million
+decryptions; at 16/16 it is not zero either — a random key produces 16 printable bytes
+with probability about (95/256)^16 ≈ 1.3e-7, so the 24-million-decryption pair run threw
+**three** 16/16 hits by chance, all with random-looking block 0 and invalid padding
+(`eW2&('T;}\&9j0V`, `0t/H1{U5p?w3hsT2`, `[l{c_4K*Oc+$`gl-`). Expected count at that
+volume is 3.1; observed 3.
+
+So printable-block count alone is not sufficient at tens of millions of tries. The
+decisive signal is the **conjunction**: block 0 that reads as language, *and* valid
+PKCS#7 padding, *and* — for certainty — a full decrypt that is printable throughout.
+None of the ~4.5 million candidates met it. The generators are `tools/mutate.py` and
+`tools/concat.py`; the English lists are the public `dwyl/english-words` and
+`google-10000-english`, not vendored here.
+
+**Where this leaves the blob.** Its password is not any single English word, not a pair
+of common words, not a concatenation of the puzzle's own tokens, and not a substring of
+any text the puzzle has yielded (section 32). It is closed against every dictionary
+shape that a human would reach for, under a filter strong enough that a hit could not
+have hidden. What remains unrun is unbounded natural-language phrasing, which no
+dictionary reaches — consistent with the creator's confirmed passwords, which are all
+long hand-written phrases rather than anything a wordlist contains.
