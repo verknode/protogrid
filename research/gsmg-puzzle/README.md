@@ -166,6 +166,7 @@ the page is unread.
 | `data/eyes-phrase-candidates.txt` | The "in front of your eyes" quote and roadmap neighbours (section 37) |
 | `tools/intertwine.py` | All 5,040 character-interleavings of the phase-3 parts and stage answers (section 38) |
 | `data/and-or-chain-candidates.txt` | The AND/OR/heart-of-KEY chain outputs (section 39) |
+| `tools/countcrack.c` | EVP_BytesToKey with a configurable iteration count (section 40) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1694,3 +1695,41 @@ forms — against all three blobs and as brainwallet keys against the third door
 planted addresses. The two hits that clear any filter (`450` and `HEARTOFKEY` at
 12/16 printable on Cosmic Duality; two padding hits on `phase322`) are ordinary chance
 noise, not readable, not full-padded, no address match.
+
+## 40. "Sixteen encryptions", read as the KDF iteration count
+
+The Architect's line names three numbers: *"select from over twenty-three ciphers,
+sixteen encryptions and/or seven intertwined passwords"*. This file has used 23 (the
+object's alphabet size) and, as of section 38, 7 (character-interleaving) — but every
+key derivation anywhere in this research, on every blob, has used `EVP_BytesToKey` with
+its default iteration count of **1**. Nothing had tried reading "sixteen encryptions"
+as the KDF's count parameter: hash the digest 16 times per round instead of once.
+
+`tools/countcrack.c` implements OpenSSL's real multi-round `EVP_BytesToKey`
+(`D_i = Hash^count(D_{i-1} || password || salt)`, re-hashing the digest `count-1` more
+times before moving to the next output block), with `count` as a runtime argument.
+
+**Validated two ways.** Its key derivation was cross-checked byte-for-byte against an
+independent Python reference implementation for `count=16`. And functionally: the known
+phase 3.2 password recovers the block-0 text `I've been waitin` with valid padding under
+`count=1` — and produces nothing under `count=16` with the same password, confirming
+`count=1` is not some accidental fallback that would mask a real result at other counts.
+
+### What was run
+
+Both open 80-byte locks, under `count=16`, `count=23` and `count=7`, against the
+curated, door, "eyes"-quote and interleaved candidate sets (about 13,000 phrases, raw and
+as SHA-256 hex, both digests): the only hits are ordinary chance-rate padding matches at
+2–13 of 16 printable bytes — no conjunction of high printability and valid padding at
+any count.
+
+The recovered Cosmic Duality blob, under `count=16`, against the full 727,154-word
+dictionary plus the curated, door, "eyes" and interleaved sets (about 740,000 candidates,
+raw and hashed, both digests — several million decryptions): 20 candidates reach 15 or
+16 of 16 printable bytes, none with valid padding — the same noise signature measured in
+section 33 (chance predicts a handful of such hits at this volume), and zero readable.
+
+**Negative.** "Sixteen encryptions" as a literal KDF iteration count opens nothing on
+either open lock or the recovered blob, under the dictionaries built across this
+session. `tools/countcrack.c` is kept as a reusable check: it takes any candidate stream
+and any iteration count, so a future guess about *which* count is meant is cheap to test.
