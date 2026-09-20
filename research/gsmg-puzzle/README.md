@@ -155,6 +155,7 @@ the page is unread.
 | `tools/lastwords.py` | Suffixes of both Architect texts, with reversal (section 27) |
 | `tools/windows.py` | All word windows in exact published casing (section 27) |
 | `tools/issue108.py` | Reproduces and refutes the community's small-blob decrypt (section 28) |
+| `tools/yinyang29.py` | The 9/15 rows, the 29-char phrase and the 29-bit mask (section 29) |
 
 Build: `gcc -O3 -march=native -o crack2 crack2.c -lcrypto`.
 Throughput is roughly 750k candidates per second per core.
@@ -1024,3 +1025,99 @@ would be exactly 64 bytes with a **full** 16-byte pad block, and that filter has
 false positives at all — it is the one worth running.
 
 Both locks remain closed.
+
+## 29. The 9/15 → rows → 29 chain: arithmetic confirmed, significance deflated, step exhausted
+
+A reader proposed a tighter chain than section 23's: score the 16x16 object not by an
+invented alphabet but by each letter's **column coordinate in the confirmed Bifid
+square**, which is the natural choice because the object is a repacking of column
+coordinates in the first place.
+
+```
+D B I F H
+C E G A K      column = 0 1 2 3 4
+L M N O P
+Q R S T U
+V W X Y Z
+```
+
+**Every arithmetic claim reproduces on the certified extraction.** Unlike the "sums
+total 101" claim of section 23, this one is exact:
+
+```
+row sums : 36 31 26 35 36 29 37 17 29 26 25 29 20 27 29 33
+col sums : 34 32 22 19 25 30 39 37 26 31 29 29 29 28 24 31
+```
+
+Seven row sums are prime (rows 2, 6, 7, 8, 9, 12, 15) and seven column sums are prime
+(columns 4, 8, 10, 11, 12, 13, 16). Rows **9** and **15** — Yellow and Blue — both sum
+to **29**, which is prime and is also the count of letters dropped in the reduction.
+Columns 9 and 15 sum to 26 and 24, neither prime, so the numbers do pick out the row
+direction rather than the column one.
+
+### What the numbers are worth
+
+Two honest deflations, both measured rather than asserted.
+
+**The 7-and-7 is real but modest.** Shuffling the object's own 256 letters and
+recomputing, 200,000 times:
+
+| Outcome | Frequency |
+|---|---|
+| exactly 7 prime rows and 7 prime columns | 327 / 200,000 = 0.164% |
+| at least 7 and 7 | 726 / 200,000 = 0.363% |
+
+So about 1 in 600 — genuinely uncommon. But "exactly seven" was chosen *after* seeing
+the data, because seven matches the Architect's line. Sums in the 17–39 band are prime
+about a quarter of the time, so 4 is the expected count and 7 is a good roll, not a
+signature. Against the number of structural readings already tried on this object, 1 in
+600 does not survive as evidence on its own.
+
+**The 29/29 is much weaker than it looks.** 29 is the **modal** row sum: four of the
+sixteen rows carry it — rows 6, **9**, 12 and **15**. Picking two named rows and having
+both land on the modal value has probability 4/16 × 3/15 = **5%**. Rows 6 and 12 give 29
+too and no part of the hint points at them.
+
+### The last-words alignment, and a fragility in it
+
+The chain then observes that the Architect's closing seven words before Neo chooses run
+to 23 letters and 29 characters counting spaces, matching the 29 dropped symbols, and
+that the full sentence is 15 words and its tail 9 — Blue and Yellow. The counts are
+right as quoted.
+
+**They depend on which transcript you use.** Published transcripts of that line differ
+by one word: some read "nothing you can do", others "nothing **that** you can do". With
+the second, the sentence is 16 words and the tail 10, and the 15/9 correspondence
+disappears entirely. The alignment is therefore contingent on a transcription choice,
+which is the same failure mode as the 101-versus-102 cell in section 23. Both variants
+were carried through the sweep below so that nothing rests on the choice.
+
+### The step itself, run out
+
+The last arrow — the YIN/YANG operation joining the two 16-character rows, the
+29-character phrase and the 29-symbol mask — is a small, well-specified space, so it was
+exhausted rather than sampled. The mask was applied in both polarities, forward and
+reversed, over both the 29 characters and the 23 letters; as a selector, as a case
+toggle, and as a **two-value Vigenere key with shifts 9 and 15** in both assignments and
+both directions, which is the reading "Yellow has a number and so does Blue" most
+directly suggests and which the proposal had not tried. The rows were taken alone,
+concatenated both ways, interleaved, reversed, XORed and added mod 26, and used as
+Vigenere and Beaufort keys over the phrase and vice versa, in four transcript variants.
+
+```
+742 distinct candidates, 14,840 decryptions against both locks under both derivations
+padding-valid        : 49  (0.330%, chance 0.391%)
+full 16-byte pad block: 0
+readable plaintexts  : 0
+same candidates as private keys, 5,178 keys vs the ten planted addresses: 0 match
+```
+
+The 9/15 Vigenere readings are worth recording as plainly dead, since they are the most
+natural thing the hint could mean: over the 23 letters they give `CDCQXCVHXJRJCMXIXHIDERI`
+and its three siblings, none of them language.
+
+**Verdict.** The chain's arithmetic is correct and the row direction really is selected
+by 9 and 15, which is more than section 23 could say. But the two coincidences carrying
+it are a 5% event and a post-hoc 1-in-600 event resting on a contested transcript, and
+the operation they point at produces nothing on either lock or any planted address. It
+is a better-shaped hypothesis than its predecessors and it is still negative.
