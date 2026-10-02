@@ -1,0 +1,70 @@
+{
+  "half_hex": "0423d9115a1dc756d5d08d2de880ab508bd4745fc97709f4fcb513f2cb8fcc35",
+  "better_hex": "48cc46e66bdd36b09ae344552f606a761f9d90681f20dfefe2b43db18b623971",
+  "trail_hex": "fc0c1b02",
+  "table": [
+    -4,
+    2,
+    32,
+    12,
+    4,
+    27,
+    0,
+    2,
+    -16,
+    15
+  ],
+  "foundation_caveat": "HALF/BETTERHALF/TRAIL are derived from the Cosmic Duality 'plaintext' that README.md section 31 measures as a padding-accident / statistical-noise decrypt, not a real solve. This script's own plaintext SHA-256 recomputation (see below) reproduces the exact published noise-plaintext digest, confirming it. Everything below was still run, per explicit instruction, as a cheap just-in-case control.",
+  "new_graphs": 136,
+  "duplicates_skipped": 0,
+  "private_key_hits": 0,
+  "target_hash160_hits": 0,
+  "aes_strict_padding_hits": 0,
+  "aes_known_checkpoint_hits": 0,
+  "known_checkpoint_hits": 0,
+  "errors": [],
+  "findings": {
+    "PRIVATE_KEY_HIT": [],
+    "TARGET_HASH160_HIT": [],
+    "AES_CHECKPOINT_HIT": [],
+    "KNOWN_32BYTE_CHECKPOINT_HIT": [],
+    "STRUCTURAL_ONLY": [
+      {
+        "graph": "[crc32_selector] CRC32(A)",
+        "value_hex": "34dc148c",
+        "note": "CRC-32/ISO-HDLC (zlib default) used as the one universal default; CrypTool 2's own CRC component default polynomial/init/reflect could not be confirmed from source in this session (GitHub access here is scoped to verknode/protogrid only, so CrypTool-2's own repository is unreachable) -- treated as selector/checksum info only, never as a private-key candidate on its own."
+      },
+      {
+        "graph": "[crc32_selector] CRC32(B)",
+        "value_hex": "a3b673f1",
+        "note": "CRC-32/ISO-HDLC (zlib default) used as the one universal default; CrypTool 2's own CRC component default polynomial/init/reflect could not be confirmed from source in this session (GitHub access here is scoped to verknode/protogrid only, so CrypTool-2's own repository is unreachable) -- treated as selector/checksum info only, never as a private-key candidate on its own."
+      },
+      {
+        "graph": "[crc32_selector] CRC32(A||B)",
+        "value_hex": "991f43f4",
+        "note": "CRC-32/ISO-HDLC (zlib default) used as the one universal default; CrypTool 2's own CRC component default polynomial/init/reflect could not be confirmed from source in this session (GitHub access here is scoped to verknode/protogrid only, so CrypTool-2's own repository is unreachable) -- treated as selector/checksum info only, never as a private-key candidate on its own."
+      }
+    ]
+  },
+  "pkcs5_status": "UNRESOLVED: CrypTool 2's PKCS#5 component's exact default salt / iteration count / digest could not be established -- its own GitHub source is outside this session's repository scope (verknode/protogrid only) and no cached copy of CrypTool-2's Pkcs5 component source exists anywhere in this repository. Per the v145 instructions, no salt/iteration count was invented and no brute force was run.",
+  "crc_results": {
+    "A": "34dc148c",
+    "B": "a3b673f1",
+    "A||B": "991f43f4"
+  },
+  "tiger_results": {
+    "A": "dc1d7a876eb195313e5d73778578121652c4094fa18acef6",
+    "B": "882f6d2506b01788db20760d9616e72908b158f32066de01",
+    "A||B": "4075a420a25721139f24adb49bea40ba8140c26d931be533",
+    "B||A": "7be704972de2a00f23b36a2609c84f2176ed8e6a262c9126",
+    "A||NOT(B)": "63f4495290c7a065ca7cb502027b665d786467ffdc84f7c6",
+    "NOT(A)||B": "f686cd69ca88616c5b620c7c251375bab7849aafc5d11508"
+  },
+  "unverified_extra_targets": [
+    "17ucy1K9ZUAaoY6JVtM932W9jUp5LXfyHa",
+    "1JG648yaB7Wp2dpUfcZoRSD4q35oq47vCu",
+    "15E3pcDDXSKhvi3CLVhRTHEgd8dbVKvSZg",
+    "145ZQ9siLrsXBKf465wjdyQYAP5dRwhRhQ",
+    "1FhbJnrdq1FmeiXrpTqnpQ8jvYV7naze96"
+  ]
+}
